@@ -49,7 +49,7 @@ namespace Server
         IPAddress localAddr;
 
         private ServerFrm mainFm;
-
+        //test
         public ServerHandler(ServerFrm mainFm)
         {
             this.mainFm = mainFm;
