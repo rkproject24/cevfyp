@@ -1,2 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<server pluginPath="C:\vlc-0.9.9" streamType="ts" videoDir="D:\jacky.mpg" maxClient="3" vlcStreamPort="1234" SLisPort="1100" Dataport="1200" ConportBase="1301" TreeSize="2" />
