@@ -134,13 +134,13 @@
             this.preferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem1});
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.preferenceToolStripMenuItem.Text = "Tools";
             // 
             // preferenceToolStripMenuItem1
             // 
             this.preferenceToolStripMenuItem1.Name = "preferenceToolStripMenuItem1";
-            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 
