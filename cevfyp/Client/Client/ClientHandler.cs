@@ -70,6 +70,8 @@ namespace Client
         public delegate void UpdateTextCallback(string message);
         private PeerHandler peerh;
 
+        bool playState = false; //yam:11-10-09
+
         ClientConfig cConfig = new ClientConfig();
 
         public ClientHandler(ClientForm mainFm)
@@ -94,6 +96,11 @@ namespace Client
             //{
             //    chunkList_wIndex[i] = 0;
             //}
+        }
+//yam:11-10-09
+        public void setPlayState(bool state)
+        {
+            playState = state;
         }
 
         public void getMute()
@@ -239,6 +246,7 @@ namespace Client
             TcpClient clientD = tcpClient;
             NetworkStream stream = clientD.GetStream();
             BinaryFormatter bf = new BinaryFormatter();
+         
            
             try
             {
@@ -248,50 +256,54 @@ namespace Client
 
                 while (serverConnect)
                 {
-                    byte[] responseMessage = new byte[cConfig.ChunkSize];
-                    responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
+                  
 
-                    if (streamingChunk == null)
-                    {
+                        byte[] responseMessage = new byte[cConfig.ChunkSize];
+                        responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
+
+                        if (streamingChunk == null)
+                        {
+                            Thread.Sleep(3);
+                            continue;
+                        }
+                        //by yam
+                        if (treeIndex == 0 && streamingChunk.seq % 2 != 0)
+                        {
+                            if (oddList.Count() <= cConfig.ChunkCapacity)
+                                oddList.Add(streamingChunk);
+                            else
+                                oddList[oddList_wIndex] = streamingChunk;
+
+                            if (oddList_wIndex == cConfig.ChunkCapacity)
+                                oddList_wIndex = 0;
+                            else
+                                oddList_wIndex += 1;
+
+                            currentOddNo = streamingChunk.seq;
+
+                        }
+                        else
+                        {
+                            if (evenList.Count() <= cConfig.ChunkCapacity)
+                                evenList.Add(streamingChunk);
+                            else
+                                evenList[evenList_wIndex] = streamingChunk;
+
+                            if (evenList_wIndex == cConfig.ChunkCapacity)
+                                evenList_wIndex = 0;
+                            else
+                                evenList_wIndex += 1;
+
+                            currentEvenNo = streamingChunk.seq;
+                        }
+
+                       // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { chunkList_wIndex.ToString() + ":" + streamingChunk.seq });
+                        mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { currentOddNo.ToString() + ":" + currentEvenNo.ToString() });
+
                         Thread.Sleep(3);
-                        continue;
-                    }
-                 //by yam
-                    if (treeIndex == 0 && streamingChunk.seq % 2 != 0)
-                    {
-                        if (oddList.Count() <= cConfig.ChunkCapacity)
-                            oddList.Add(streamingChunk);
-                        else
-                            oddList[oddList_wIndex] = streamingChunk;
-
-                        if (oddList_wIndex == cConfig.ChunkCapacity)
-                            oddList_wIndex = 0;
-                        else
-                            oddList_wIndex += 1;
-
-                        currentOddNo = streamingChunk.seq;  
-
-                    }
-                    else
-                    {
-                        if (evenList.Count() <= cConfig.ChunkCapacity)
-                            evenList.Add(streamingChunk);
-                        else
-                            evenList[evenList_wIndex] = streamingChunk;
-
-                        if (evenList_wIndex == cConfig.ChunkCapacity)
-                            evenList_wIndex = 0;
-                        else
-                            evenList_wIndex += 1;
-
-                        currentEvenNo = streamingChunk.seq;
-                    }
-
-                    mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { chunkList_wIndex.ToString() + ":" + streamingChunk.seq });
-
-                    Thread.Sleep(3);
-                }
+                 
+                } //end while loop
                 stream.Close();
                 clientD.Close();
             }
@@ -301,6 +313,7 @@ namespace Client
                 clientD.Close();
                 MessageBox.Show(ex.ToString());
             }
+        
         }
 
         private void broadcastVlcStreaming()
