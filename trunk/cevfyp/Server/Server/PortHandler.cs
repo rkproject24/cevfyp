@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using ClassLibrary;
 
 namespace Server
-{   //test1
+{  
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct cPort
     {
