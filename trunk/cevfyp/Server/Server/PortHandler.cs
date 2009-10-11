@@ -57,12 +57,10 @@ namespace Server
         int oddList_rIndex = 0;
         int evenList_wIndex = 0;
         int evenList_rIndex = 0;
-        int tempSeq = 0;
         ChunkHandler ch;
         ServerConfig sConfig;
-        TcpClient D1PortClient = null; 
-        TcpClient D2PortClient = null; 
-
+        int lb, ub, mid, tempResult;
+       
 
 
         //TcpListener listenD1port = null;
@@ -72,11 +70,13 @@ namespace Server
 
        // Thread PortThread_Dport = null;
         TcpClient CPortClient = null;
-      
-        
 
-        public PortHandler(int maxClient,string serverip)
+        private ServerFrm mainFm;
+        private delegate void UpdateTextCallback(string message);
+
+        public PortHandler(int maxClient, string serverip, ServerFrm mainFm)
         {
+            this.mainFm = mainFm;
             this.max_client = maxClient;
             localAddr = IPAddress.Parse(serverip);
             CPortList = new List<cPort>(max_client);
@@ -193,16 +193,8 @@ namespace Server
 
         public void startPort()
         {
-            /*
-            PortThread_Dport = new Thread(new ThreadStart(PortHandle_Dport));
-            PortThread_Dport.IsBackground = true;
-            PortThread_Dport.Name = " port_handle_dport";
-            PortThread_Dport.Start();
-            */
-
- 
-            for (int i = 0; i < max_client; i++)
-            {
+          
+           
 //yam:10-10-09 
                 /*
                 Thread PortThread = new Thread(delegate() { PortHandle_Dport(i,1); });
@@ -220,25 +212,6 @@ namespace Server
                 D2ThreadList.Add(PortThread);
                 */
 
-//yam:11-10-09
-                
-                Thread d1PortThread = new Thread(delegate() { PortHandle_D1port(i); });
-                d1PortThread.IsBackground = true;
-                d1PortThread.Name = " D1port_handle_" + i;
-                d1PortThread.Start();
-                Thread.Sleep(100);
-                D1ThreadList.Add(d1PortThread);
-
-                Thread d2PortThread = new Thread(delegate() { PortHandle_D2port(i); });
-                d2PortThread.IsBackground = true;
-                d2PortThread.Name = " D2port_handle_" + i;
-                d2PortThread.Start();
-                Thread.Sleep(100);
-                D2ThreadList.Add(d2PortThread);
-                
-
-            }
-
             for (int j = 0; j < max_client; j++)
             {
                
@@ -249,18 +222,36 @@ namespace Server
                 Thread.Sleep(100);
                 CThreadList.Add(PortThread);
 
+//yam:11-10-09
+                Thread d1PortThread = new Thread(delegate() { PortHandle_D1port(j); });
+                d1PortThread.IsBackground = true;
+                d1PortThread.Name = " D1port_handle_" + j;
+                d1PortThread.Start();
+                Thread.Sleep(100);
+                D1ThreadList.Add(d1PortThread);
+
+                Thread d2PortThread = new Thread(delegate() { PortHandle_D2port(j); });
+                d2PortThread.IsBackground = true;
+                d2PortThread.Name = " D2port_handle_" + j;
+                d2PortThread.Start();
+                Thread.Sleep(100);
+                D2ThreadList.Add(d2PortThread);
               
             }
 
         }
 //yam:11-10-09
-        
         private void PortHandle_D1port(int clientNo)
         {
-            int tempListIndex = 0;
+            //int tempListIndex = 0;
             NetworkStream stream;
             byte[] sendMessage = new byte[sConfig.ChunkSize];
-            byte[] responseMessage = new byte[4];
+            byte[] responseMessage = new byte[20];
+           
+            bool firstRun = true;
+            int tempSeq = 0;
+            int resultIndex = 0; 
+            TcpClient D1PortClient;
 
             TcpListener listenD1port = new TcpListener(localAddr, (NUM_D1PORT_BASE + clientNo));
             listenD1port.Start(1);
@@ -271,8 +262,9 @@ namespace Server
                     dPort d1 = new dPort();
                     d1.clientD = D1PortClient;
                     d1.PortD = (NUM_D1PORT_BASE + clientNo);
+                    stream = D1PortClient.GetStream();
 
-                    for (int i = 0; i < max_client; i++)
+                  /*  for (int i = 0; i < max_client; i++)
                     {
                         if (D1PortList[i].clientD == null)
                         {
@@ -281,24 +273,48 @@ namespace Server
                             break;
                         }
                     }
+                    */
+                    D1PortList[clientNo]=d1;
 
                     try
                     {
                         while (true)
                         {
-                            //stream = D1PortClient.GetStream();
-                            //stream.Write(sendMessage, 0, sendMessage.Length);
+                           if (oddList.Count > 1 && tempSeq<=currentOddNo)
+                            {
+                                if (firstRun == true)
+                                {
+                                    tempSeq = currentOddNo;
+                                    firstRun = false;
+                                }
 
-                            stream = D1PortClient.GetStream();
-                            int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                                resultIndex = search(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
 
-                            Thread.Sleep(20);
+                                if (resultIndex != -1)
+                                {
+                                   
+                                    sendMessage = ch.chunkToByte(oddList[resultIndex], sConfig.ChunkSize);
+                                    stream.Write(sendMessage, 0, sendMessage.Length);
+
+                                    oddList_rIndex = resultIndex;
+
+                                    if (tempSeq == 2147483647)
+                                        tempSeq = 1;
+                                    else
+                                        tempSeq += 2;
+                                
+                                }
+                            }
+                            Thread.Sleep((20+clientNo));
                         }
                     }
                     catch
                     {
-                        delClientFromDList(tempListIndex, 1, NUM_D1PORT_BASE + clientNo);
+                        delClientFromDList(clientNo, 1, NUM_D1PORT_BASE + clientNo);
                         stream = null;
+                       //  startSendstate = false;
+                         firstRun = true;
+                        tempSeq = 0;
                     }
                 }
          
@@ -307,10 +323,15 @@ namespace Server
 
         private void PortHandle_D2port(int clientNo)
         {
-            int tempListIndex = 0;
+            //int tempListIndex = 0;
             NetworkStream stream;
             byte[] sendMessage = new byte[sConfig.ChunkSize];
-            byte[] responseMessage = new byte[4];
+            byte[] responseMessage = new byte[20];
+          
+            bool firstRun = true;
+            int tempSeq = 0;
+            int resultIndex = 0; 
+            TcpClient D2PortClient;
 
             TcpListener listenD2port = new TcpListener(localAddr, (NUM_D2PORT_BASE + clientNo));
             listenD2port.Start(1);
@@ -321,8 +342,9 @@ namespace Server
                     dPort d2 = new dPort();
                     d2.clientD = D2PortClient;
                     d2.PortD = (NUM_D2PORT_BASE + clientNo);
+                    stream = D2PortClient.GetStream();
 
-                    for (int i = 0; i < max_client; i++)
+                   /* for (int i = 0; i < max_client; i++)
                     {
                         if (D2PortList[i].clientD == null)
                         {
@@ -331,32 +353,95 @@ namespace Server
                             break;
                         }
                     }
+                */
+                    D2PortList[clientNo] = d2;
 
-                
                     try
                     {
                         while (true)
                         {
-                            //stream = D2PortClient.GetStream();
-                            //stream.Write(sendMessage, 0, sendMessage.Length);
+                         
+                            if (evenList.Count > 1 && tempSeq <= currentEvenNo)
+                            {
+                                if (firstRun == true)
+                                {
+                                    tempSeq = currentEvenNo;
+                                    firstRun = false;
+                                }
 
-                            stream = D2PortClient.GetStream();
-                            int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                                resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
 
-                            Thread.Sleep(20);
+                                if (resultIndex != -1)
+                                {
+                                 
+                                    sendMessage = ch.chunkToByte(evenList[resultIndex], sConfig.ChunkSize);
+                                    stream.Write(sendMessage, 0, sendMessage.Length);
+
+                                    evenList_rIndex = resultIndex;
+
+                                    if (tempSeq == 2147483647)
+                                        tempSeq = 2;
+                                    else
+                                        tempSeq += 2;
+                                }
+                            }
+                            Thread.Sleep((20 + clientNo));
                         }
                     }
                     catch
                     {
-                        delClientFromDList(tempListIndex, 2, NUM_D2PORT_BASE + clientNo);
+                        delClientFromDList(clientNo, 2, NUM_D2PORT_BASE + clientNo);
                         stream = null;
+                        //startSendstate = false;
+                         firstRun = true;
+                        tempSeq = 0;
                     }
                 }
-           
-          
-
         }
-        
+
+        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        {
+            if (wIndex < rIndex)
+            {
+                lb = rIndex;
+                ub = CHUNKLIST_CAPACITY;
+                tempResult = binarySearch(list, lb, ub, target);
+                if (tempResult != -1)
+                    return tempResult;
+                else
+                {
+                    lb = 0;
+                    ub = wIndex - 1;
+                    tempResult = binarySearch(list, lb, ub, target);
+                    return tempResult;
+                }
+            }
+            else
+            {
+                lb = rIndex;
+                ub = wIndex - 1;
+
+                tempResult = binarySearch(list, lb, ub, target);
+                return tempResult;
+            }
+        }
+
+        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        {
+            for (; lb <= ub; )
+            {
+                mid = (lb + ub) / 2;
+
+                if (list[mid].seq == target)
+                    return mid;
+                else if (target > list[mid].seq)
+                    lb = mid + 1;
+                else
+                    ub = mid - 1;
+            }
+            return -1;
+        }
+
 
  //yam:10-10-09 
        /* 
@@ -477,148 +562,9 @@ namespace Server
         */
 
 
-        /*
-        private void PortHandle_Dport()
-        {
-            listenD1port = new TcpListener(localAddr, D1PORT_BASE);
-            listenD2port = new TcpListener(localAddr, D2PORT_BASE);
+       
 
-            listenD1port.Start(max_client);
-            listenD2port.Start(max_client);
-
-            while (true)
-            {
-                TcpClient D1PortClient = listenD1port.AcceptTcpClient();
-                dPort d1 = new dPort();
-                d1.clientD = D1PortClient;
-
-                for (int i = 0; i < max_client; i++)
-                {
-                    if (D1PortList[i].clientD == null)
-                    {
-                        D1PortList[i] = d1;
-                        break;
-                    }
-                }
-
-//by vinci
-                TcpClient D2PortClient = listenD2port.AcceptTcpClient();
-                dPort d2 = new dPort();
-                d2.clientD = D2PortClient;
-
-                for (int i = 0; i < max_client; i++)
-                {
-                    if (D2PortList[i].clientD == null)
-                    {
-                        D2PortList[i] = d2;
-                        break;
-                    }
-                }
-            }
-
-        }
-        */
-
-        //yam:11-10-09 -->ok check disconnect directly
-        /*
-        private void PortHandle_D1port(int clientNo)
-        {
-            TcpListener listenD1port = new TcpListener(localAddr, (NUM_D1PORT_BASE + clientNo));
-
-            while (true)
-            {
-                listenD1port.Start(1);
-                D1PortClient = listenD1port.AcceptTcpClient();
-                sendChunkD1(D1PortClient, (NUM_D1PORT_BASE + clientNo), clientNo);
-                D1PortClient = null;
-                listenD1port.Stop();
-            }
-        }
-
-        private void PortHandle_D2port(int clientNo)
-        {
-            TcpListener listenD2port = new TcpListener(localAddr, (NUM_D2PORT_BASE + clientNo));
-
-            while (true)
-            {
-                listenD2port.Start(1);
-                D2PortClient = listenD2port.AcceptTcpClient();
-                sendChunkD2(D2PortClient, (NUM_D2PORT_BASE + clientNo), clientNo);
-                D2PortClient = null;
-                listenD2port.Stop();
-            }
-        }
-
-        private void sendChunkD1(TcpClient client, int portNo, int listNo)
-        {
-            byte[] responseMessage = new byte[256];
-            byte[] sendMessage = new byte[sConfig.ChunkSize];
-            NetworkStream stream = client.GetStream();
-            dPort d1 = new dPort();
-            d1.PortD = portNo;
-
-            try
-            {
-                d1.clientD = client;
-                D1PortList[listNo] = d1;
-
-                while (true)
-                {
-                    //d1.clientD = client;
-                    //D1PortList[listNo] = d1;
-
-                    stream = D1PortClient.GetStream();
-                    int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-
-                    Thread.Sleep(20);
-
-                }
-            }
-            catch
-            {
-
-                d1.clientD = null;
-                D1PortList[listNo] = d1;
-            }
-            stream = null;
-
-        }
-
-        private void sendChunkD2(TcpClient client, int portNo, int listNo)
-        {
-            byte[] responseMessage = new byte[256];
-            byte[] sendMessage = new byte[sConfig.ChunkSize];
-            NetworkStream stream = client.GetStream();
-            dPort d2 = new dPort();
-            d2.PortD = portNo;
-
-            try
-            {
-                d2.clientD = client;
-                D2PortList[listNo] = d2;
-
-                while (true)
-                {
-
-                    stream = D2PortClient.GetStream();
-                    int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-
-                    Thread.Sleep(20);
-
-                }
-            }
-            catch
-            {
-
-                d2.clientD = null;
-                D2PortList[listNo] = d2;
-            }
-            stream = null;
-
-        }
-        */
+       
         private void PortHandle_Cport(int clientNo)
         {
             TcpListener listenPort = new TcpListener(localAddr, (NUM_CPORT_BASE + clientNo));
@@ -636,17 +582,19 @@ namespace Server
 
         private void checkDisconnect(TcpClient client, int portNo, int listNo)
         {
+            int tempListIndex = 0;
             NetworkStream stream = client.GetStream();
             Byte[] responseMessage = new Byte[256];
             cPort c = new cPort();
             c.PortC = portNo;
-
+           
             try
             {
                 while (true)
                 {
                     c.clientC = client;
                     CPortList[listNo] = c;
+                  
 
                     int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
                     string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
@@ -655,7 +603,7 @@ namespace Server
                     {
                //         MessageBox.Show("Client[" + listNo + "] disconected");
                        c.clientC = null;
-                        CPortList[listNo] = c;
+                       CPortList[listNo] = c;
                         break;
                     }
                 }

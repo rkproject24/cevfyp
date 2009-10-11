@@ -103,7 +103,7 @@ namespace Server
             mainFm.tbServerIp.Text = sConfig.Serverip;
 
             this.max_client = sConfig.MaxClient;
-            ph = new PortHandler(max_client,sConfig.Serverip);
+            ph = new PortHandler(max_client,sConfig.Serverip,mainFm);
             ph.startPort();
 
             localAddr = IPAddress.Parse(sConfig.Serverip);
