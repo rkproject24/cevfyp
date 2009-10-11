@@ -1,0 +1,278 @@
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\bin\Debug\Server.exe
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\Server.exe
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\Server\Server\obj\Debug\Server.Form1.resources
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\Server.exe
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\bin\Debug\Server.exe
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\Server.Form1.resources
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Documents\Visual Studio 2008\Projects\C#_project\823_test\new\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\new\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_ver\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to1)OK\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1to2)_OK\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\My Documents\Visual Studio 2008\Projects\823_test\CO_To_CL_To_BC_(1toM)\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\My Documents\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Form1.resources
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\CO_To_CL_To_BC_(1to2)\Server\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\Server(w port class)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\桌面\onePort_3C\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\桌面\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\bin\Debug\ClassLibrary.dll
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\bin\Debug\ClassLibrary.pdb
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\905\1port3C_classVer\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\fyp\Server(w port class)2\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\Server.Form1.resources
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(w port class)2\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\vinci\桌面\fyp\Server(MVC)\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\908\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Users\Yam\Desktop\909\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+D:\909\Server(MVC)\Server\obj\Debug\Server.exe
+D:\909\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\fyp\911\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\vinci\Desktop\911\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\913\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Yam\Desktop\914\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Yam\Desktop\新增資料夾\915\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Users\Yam\Desktop\新增資料夾\915\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.PreferenceFm.resources
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\vinci\桌面\915\915\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.PreferenceFm.resources
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\eeuser.EEA050\Desktop\918vinci\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.PreferenceFm.resources
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\桌面\918vinci\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.PreferenceFm.resources
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\bin\Debug\Server.exe
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\bin\Debug\Server.pdb
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\KY\桌面\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.exe
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.pdb
+D:\FYP\1010\Server(MVC)\Server\bin\Debug\Server.exe
+D:\FYP\1010\Server(MVC)\Server\bin\Debug\Server.pdb
+D:\FYP\1010\Server(MVC)\Server\bin\Debug\ClassLibrary.dll
+D:\FYP\1010\Server(MVC)\Server\bin\Debug\ClassLibrary.pdb
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\ResolveAssemblyReference.cache
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.PreferenceFm.resources
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.ServerFrm.resources
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.Properties.Resources.resources
+D:\FYP\1010\Server(MVC)\Server\obj\Debug\Server.csproj.GenerateResource.Cache
