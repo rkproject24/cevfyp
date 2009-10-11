@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="ClassLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\p2pLib\p2pLib\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
+      <HintPath>..\..\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
