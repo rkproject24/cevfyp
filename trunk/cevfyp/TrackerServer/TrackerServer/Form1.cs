@@ -43,7 +43,7 @@ namespace TrackerServer
 
         private void btnOn_Click(object sender, EventArgs e)
         {
-            this.max_client = sConfig.MaxClient;
+            //this.max_client = sConfig.MaxClient;
 
             localAddr = IPAddress.Parse(sConfig.Serverip);
             //localAddr= new  IPAddress.Parse("")
