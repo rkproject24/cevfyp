@@ -62,8 +62,8 @@ namespace ClassLibrary
                 }
                 catch
                 {
-                    MessageBox.Show("Reading Error! Please input both group and type!");
-                    return null;
+                    //MessageBox.Show("Reading Error! Please input both group and type!");
+                    return "";
                 }
          }
 

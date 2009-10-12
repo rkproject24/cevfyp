@@ -18,6 +18,7 @@ namespace ClassLibrary
         private int ConportBase;
         private int TreeSizes;
         private string serverip;
+        private string trackerip;
 
 
         private string videoDir;
@@ -36,11 +37,12 @@ namespace ClassLibrary
             ConportBase = 0;
             TreeSize = 0;
             serverip = "";
+            trackerip = "";
             receiveStreamSize = 0;
             chunkSize = 0;
         }
 
-        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int Dataport, int ConportBase, int TreeSizes, string serverip, int receiveStreamSize, int chunkSize)
+        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int Dataport, int ConportBase, int TreeSizes, string serverip, int receiveStreamSize, int chunkSize, string trackerip)
         {
             this.pluginPath = pluginPath;
             this.streamType = streamType;
@@ -54,6 +56,7 @@ namespace ClassLibrary
             this.serverip = serverip;
             this.chunkSize = chunkSize;
             this.receiveStreamSize = receiveStreamSize;
+            this.trackerip = trackerip;
         }
 
         public string PluginPath
@@ -118,6 +121,11 @@ namespace ClassLibrary
             get { return chunkSize; }
             set { chunkSize = value; }
         }
+        public string Trackerip
+        {
+            get { return trackerip; }
+            set { trackerip = value; }
+        }
 
         public void save(string fileName)
         {
@@ -136,6 +144,7 @@ namespace ClassLibrary
             store.Add("server", "ConportBase", this.ConportBase.ToString());
             store.Add("server", "TreeSize", this.TreeSize.ToString());
             store.Add("server", "serverip", this.serverip);
+            store.Add("server", "trackerip", this.trackerip);
             store.Add("server", "chunkSize", this.chunkSize.ToString());
             store.Add("server", "receiveStreamSize", this.receiveStreamSize.ToString());
         }
@@ -154,6 +163,7 @@ namespace ClassLibrary
             this.ConportBase = Convert.ToInt32(load.Read("server", "ConportBase"));
             this.TreeSize = Convert.ToInt32(load.Read("server", "TreeSize"));
             this.serverip = load.Read("server", "serverip");
+            this.trackerip = load.Read("server", "trackerip");
             this.receiveStreamSize = Convert.ToInt32(load.Read("server", "receiveStreamSize"));
             this.chunkSize = Convert.ToInt32(load.Read("server", "chunkSize"));
         }
