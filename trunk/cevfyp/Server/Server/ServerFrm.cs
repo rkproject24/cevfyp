@@ -33,7 +33,7 @@ namespace Server
 
         public void UpdateTextBox3(string message)
         {
-            textBox3.Text = message;
+            tbTracker.Text = message;
         }
 
         public void UpdateRichTextBox1(string message)
@@ -78,8 +78,10 @@ namespace Server
 
         private void button4_Click(object sender, EventArgs e) //Start
         {
-            sevhandle.start();
-            button4.Enabled = false;
+            if (sevhandle.start())
+            {
+                button4.Enabled = false;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)  //Mute

@@ -56,6 +56,8 @@
             this.tbSLPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbTracker = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudMaxClient)).BeginInit();
@@ -226,6 +228,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.tbTracker);
+            this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.tbDefaultIp);
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.NudMaxClient);
@@ -238,9 +242,9 @@
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(285, 12);
+            this.groupBox2.Location = new System.Drawing.Point(279, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(151, 181);
+            this.groupBox2.Size = new System.Drawing.Size(157, 202);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "P2P server";
@@ -249,7 +253,7 @@
             // 
             this.tbDefaultIp.Location = new System.Drawing.Point(64, 144);
             this.tbDefaultIp.Name = "tbDefaultIp";
-            this.tbDefaultIp.Size = new System.Drawing.Size(77, 22);
+            this.tbDefaultIp.Size = new System.Drawing.Size(87, 22);
             this.tbDefaultIp.TabIndex = 16;
             // 
             // label10
@@ -263,7 +267,7 @@
             // 
             // NudMaxClient
             // 
-            this.NudMaxClient.Location = new System.Drawing.Point(100, 89);
+            this.NudMaxClient.Location = new System.Drawing.Point(110, 89);
             this.NudMaxClient.Minimum = new decimal(new int[] {
             1,
             0,
@@ -280,7 +284,7 @@
             // 
             // NudTreeSize
             // 
-            this.NudTreeSize.Location = new System.Drawing.Point(100, 117);
+            this.NudTreeSize.Location = new System.Drawing.Point(110, 117);
             this.NudTreeSize.Minimum = new decimal(new int[] {
             1,
             0,
@@ -297,21 +301,21 @@
             // 
             // tbConport
             // 
-            this.tbConport.Location = new System.Drawing.Point(100, 62);
+            this.tbConport.Location = new System.Drawing.Point(110, 62);
             this.tbConport.Name = "tbConport";
             this.tbConport.Size = new System.Drawing.Size(41, 22);
             this.tbConport.TabIndex = 11;
             // 
             // tbDataport
             // 
-            this.tbDataport.Location = new System.Drawing.Point(100, 34);
+            this.tbDataport.Location = new System.Drawing.Point(110, 34);
             this.tbDataport.Name = "tbDataport";
             this.tbDataport.Size = new System.Drawing.Size(41, 22);
             this.tbDataport.TabIndex = 10;
             // 
             // tbSLPort
             // 
-            this.tbSLPort.Location = new System.Drawing.Point(100, 8);
+            this.tbSLPort.Location = new System.Drawing.Point(110, 8);
             this.tbSLPort.Name = "tbSLPort";
             this.tbSLPort.Size = new System.Drawing.Size(41, 22);
             this.tbSLPort.TabIndex = 9;
@@ -336,11 +340,27 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 169);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(51, 12);
+            this.label13.TabIndex = 17;
+            this.label13.Text = "TrackerIP";
+            // 
+            // tbTracker
+            // 
+            this.tbTracker.Location = new System.Drawing.Point(64, 169);
+            this.tbTracker.Name = "tbTracker";
+            this.tbTracker.Size = new System.Drawing.Size(87, 22);
+            this.tbTracker.TabIndex = 18;
+            // 
             // PreferenceFm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 205);
+            this.ClientSize = new System.Drawing.Size(445, 217);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox2);
@@ -387,5 +407,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox tbChunkSize;
+        private System.Windows.Forms.TextBox tbTracker;
+        private System.Windows.Forms.Label label13;
     }
 }

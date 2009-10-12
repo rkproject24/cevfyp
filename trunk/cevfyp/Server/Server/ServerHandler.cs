@@ -21,6 +21,7 @@ namespace Server
         //static int SEND_CHUNK_SIZE = 3182;      //send chunk packet to client
         //static int TREE_NO = 2;             //number of tree
 
+        static int TrackerSLPort = 1500;
  //yam:10-10-09
        
         // static int CHUNKLIST_CAPACITY = 200;
@@ -58,13 +59,21 @@ namespace Server
 
             sConfig = new ServerConfig();
             sConfig.load("C:\\ServerConfig.xml");
-            mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
-            mainFm.tbServerIp.Text = sConfig.Serverip;
-            mainFm.tbfilesrc.Text = sConfig.VideoDir;
+            reloadUI();
 
             //oddList = new List<Chunk>(CHUNKLIST_CAPACITY);
            // evenList = new List<Chunk>(CHUNKLIST_CAPACITY);
         }
+
+        //By Vinci
+        public void reloadUI()
+        {
+            mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
+            mainFm.tbServerIp.Text = sConfig.Serverip;
+            mainFm.tbfilesrc.Text = sConfig.VideoDir;
+            mainFm.tbTracker.Text = sConfig.Trackerip;
+        }
+
 
         private delegate void UpdateTextCallback(string message);
 
@@ -97,20 +106,32 @@ namespace Server
             getStreamingThread.Abort(); //by vinci
         }
 
-        public void start()
+        public bool start()
         {
-            mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
-            mainFm.tbServerIp.Text = sConfig.Serverip;
+            //by vinci: update the online status to Tracker
+            if (!UpdateTracker())
+            {
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Tracker unreachable!\n" });
+            }
+            else
+            {
+                //mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
+                //mainFm.tbServerIp.Text = sConfig.Serverip;
+                sConfig.load("C:\\ServerConfig.xml");
+                reloadUI();
 
-            this.max_client = sConfig.MaxClient;
-            ph = new PortHandler(max_client,sConfig.Serverip,mainFm);
-            ph.startPort();
+                this.max_client = sConfig.MaxClient;
+                ph = new PortHandler(max_client, sConfig.Serverip, mainFm);
+                ph.startPort();
 
-            localAddr = IPAddress.Parse(sConfig.Serverip);
-            listenerThread = new Thread(new ThreadStart(listenForClients));
-            listenerThread.IsBackground = true;
-            listenerThread.Name = " listen_for_clients";
-            listenerThread.Start();
+                localAddr = IPAddress.Parse(sConfig.Serverip);
+                listenerThread = new Thread(new ThreadStart(listenForClients));
+                listenerThread.IsBackground = true;
+                listenerThread.Name = " listen_for_clients";
+                listenerThread.Start();
+                return true;
+            }
+            return false;
         }
 
         public void mute()
@@ -128,6 +149,45 @@ namespace Server
             Int32 responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
             return System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
         }
+
+        private bool UpdateTracker()
+        {
+            TcpClient trackerTcp;
+            NetworkStream trackerStream;
+
+            try
+            {
+                trackerTcp = new TcpClient(mainFm.tbTracker.Text, TrackerSLPort);
+                trackerStream = trackerTcp.GetStream();
+
+                //define server type
+                byte[] clienttype = StrToByteArray("<server>");
+                trackerStream.Write(clienttype, 0, clienttype.Length);
+
+
+                //byte[] cmdbyte = StrToByteArray("start");
+                //trackerStream.Write(cmdbyte, 0, cmdbyte.Length);
+
+                byte[] maxcbyte = BitConverter.GetBytes(sConfig.MaxClient);
+                trackerStream.Write(maxcbyte, 0, maxcbyte.Length);
+
+                trackerTcp.Close();
+                trackerStream.Close();
+
+                return true;
+            }
+            catch
+            {
+            }
+            return false;
+
+        }
+        private static byte[] StrToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            return encoding.GetBytes(str);
+        }
+
 
         private void listenForClients()
         {

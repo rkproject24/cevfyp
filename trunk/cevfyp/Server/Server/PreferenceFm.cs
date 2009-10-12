@@ -36,6 +36,7 @@ namespace Server
             tbDefaultIp.Text = sConfig.Serverip;
             tbRecStream.Text = sConfig.ReceiveStreamSize.ToString();
             tbChunkSize.Text = sConfig.ChunkSize.ToString();
+            tbTracker.Text = sConfig.Trackerip;
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -57,6 +58,7 @@ namespace Server
             sConfig.Serverip = tbDefaultIp.Text;
             sConfig.ReceiveStreamSize = Convert.ToInt32(tbRecStream.Text);
             sConfig.ChunkSize = Convert.ToInt32(tbChunkSize.Text);
+            sConfig.Trackerip = tbTracker.Text;
 
             sConfig.save("C:\\ServerConfig.xml");
 
