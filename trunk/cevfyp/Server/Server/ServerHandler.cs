@@ -23,16 +23,16 @@ namespace Server
 
  //yam:10-10-09
        
-         static int CHUNKLIST_CAPACITY = 200;
-        List<Chunk> oddList;
-        List<Chunk> evenList;
-        int currentOddNo = 0;
-        int currentEvenNo = 0;
-        int oddList_wIndex = 0;
-        int oddList_rIndex = 0;
-        int evenList_wIndex = 0;
-        int evenList_rIndex = 0;
-        int tempSeq = 0;
+        // static int CHUNKLIST_CAPACITY = 200;
+       // List<Chunk> oddList;
+       // List<Chunk> evenList;
+       // int currentOddNo = 0;
+      //  int currentEvenNo = 0;
+       // int oddList_wIndex = 0;
+        //int oddList_rIndex = 0;
+        //int evenList_wIndex = 0;
+        //int evenList_rIndex = 0;
+        //int tempSeq = 0;
         
         int max_client;
         int seqNumber = 1;
@@ -62,7 +62,7 @@ namespace Server
             mainFm.tbServerIp.Text = sConfig.Serverip;
             mainFm.tbfilesrc.Text = sConfig.VideoDir;
 
-            oddList = new List<Chunk>(CHUNKLIST_CAPACITY);
+            //oddList = new List<Chunk>(CHUNKLIST_CAPACITY);
            // evenList = new List<Chunk>(CHUNKLIST_CAPACITY);
         }
 
