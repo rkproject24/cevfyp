@@ -37,7 +37,7 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.tbTracker = new System.Windows.Forms.TextBox();
             this.button6 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.tbfilesrc = new System.Windows.Forms.TextBox();
@@ -48,6 +48,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tbMaxClient = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -134,12 +135,12 @@
             this.textBox2.Size = new System.Drawing.Size(100, 22);
             this.textBox2.TabIndex = 10;
             // 
-            // textBox3
+            // tbTracker
             // 
-            this.textBox3.Location = new System.Drawing.Point(162, 206);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 22);
-            this.textBox3.TabIndex = 11;
+            this.tbTracker.Location = new System.Drawing.Point(217, 206);
+            this.tbTracker.Name = "tbTracker";
+            this.tbTracker.Size = new System.Drawing.Size(100, 22);
+            this.tbTracker.TabIndex = 11;
             // 
             // button6
             // 
@@ -227,6 +228,15 @@
             this.label4.TabIndex = 19;
             this.label4.Text = "MaxClient";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(160, 210);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(47, 12);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "trackerIP";
+            // 
             // ServerFrm
             // 
             this.AllowDrop = true;
@@ -235,6 +245,7 @@
             this.AutoSize = true;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.ClientSize = new System.Drawing.Size(322, 287);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.tbMaxClient);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -242,7 +253,7 @@
             this.Controls.Add(this.tbfilesrc);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.tbTracker);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.richTextBox1);
@@ -275,7 +286,7 @@
         public System.Windows.Forms.RichTextBox richTextBox1;
         public System.Windows.Forms.RichTextBox richTextBox2;
         public System.Windows.Forms.TextBox textBox2;
-        public System.Windows.Forms.TextBox textBox3;
+        public System.Windows.Forms.TextBox tbTracker;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox tbfilesrc;
@@ -286,6 +297,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         public System.Windows.Forms.TextBox tbMaxClient;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
     }
 }
 
