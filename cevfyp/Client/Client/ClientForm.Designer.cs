@@ -105,9 +105,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(141, 355);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 12);
+            this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 8;
-            this.label1.Text = "server ip";
+            this.label1.Text = "Tracker ip";
             // 
             // btnDisconnect
             // 
@@ -134,13 +134,13 @@
             this.preferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem1});
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.preferenceToolStripMenuItem.Text = "Tools";
             // 
             // preferenceToolStripMenuItem1
             // 
             this.preferenceToolStripMenuItem1.Name = "preferenceToolStripMenuItem1";
-            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
+            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 

@@ -49,6 +49,10 @@ namespace Client
                 trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
                 trackerStream = trackerTcpClient.GetStream();
 
+                //define client type
+                Byte[] clienttype = StrToByteArray("<client>");
+                trackerStream.Write(clienttype, 0, clienttype.Length);
+
 
                 byte[] responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -72,6 +76,11 @@ namespace Client
             return false;
         }
 
+        public static byte[] StrToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            return encoding.GetBytes(str);
+        }
         public static string ByteArrayToString(byte[] bytes)
         {
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
