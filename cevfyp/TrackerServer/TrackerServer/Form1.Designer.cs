@@ -36,8 +36,6 @@
             this.btnOn = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.preferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tbsendIp = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,30 +99,12 @@
             this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.preferenceToolStripMenuItem.Text = "Preference";
             // 
-            // tbsendIp
-            // 
-            this.tbsendIp.Location = new System.Drawing.Point(177, 21);
-            this.tbsendIp.Name = "tbsendIp";
-            this.tbsendIp.Size = new System.Drawing.Size(100, 22);
-            this.tbsendIp.TabIndex = 5;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(125, 29);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 12);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Reply Ip";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 274);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.btnOn);
-            this.Controls.Add(this.tbsendIp);
             this.Controls.Add(this.cbbTree);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -146,8 +126,6 @@
         private System.Windows.Forms.Button btnOn;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem;
-        private System.Windows.Forms.TextBox tbsendIp;
-        private System.Windows.Forms.Label label3;
     }
 }
 
