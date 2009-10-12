@@ -374,7 +374,7 @@ namespace Client
                         addTempSeq();
                     }
                     else
-                        Thread.Sleep(20);
+                        Thread.Sleep(40);
 
                 }
                 else
@@ -391,7 +391,7 @@ namespace Client
                         addTempSeq();
                     }
                     else
-                        Thread.Sleep(20);
+                        Thread.Sleep(40);
 
                 }
                 Thread.Sleep(2);
