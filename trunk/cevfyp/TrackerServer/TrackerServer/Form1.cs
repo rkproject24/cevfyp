@@ -27,10 +27,14 @@ namespace TrackerServer
         Thread listenerThread;
         int max_client;
 
+        List<PeerNode> peerList; //store all the Peer include server in a list
+
         public Form1()
         {
             sConfig = new ServerConfig();
             sConfig.load("C:\\ServerConfig.xml");
+            peerList = new List<PeerNode>();
+
             //localAddr= new  IPAddress.Parse(
             InitializeComponent();
         }
@@ -63,20 +67,45 @@ namespace TrackerServer
                 NetworkStream cstream = client.GetStream();
                 //TcpClient.Client.RemoteEndPoint.   
 
-                EndPoint clientendpt = client.Client.RemoteEndPoint; 
+                IPAddress clientendpt = ((IPEndPoint)client.Client.RemoteEndPoint).Address; 
 
                 try
                 {
+                    //Get the Peer type- server/client
+                    byte[] responsePeerMsg = new byte[8];
+                    cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+
+                    string peertype = ByteArrayToString(responsePeerMsg);
                     //int temp = Int32.Parse(tbsendIp.Text);
-                    Byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
-
-                    Byte[] ipsize = BitConverter.GetBytes( peeripMsg.Length);
-                    cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
-
-                    cstream.Write(peeripMsg, 0, peeripMsg.Length);
+                    if (peertype.Contains("<client>"))
+                    {
+                        //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
+                        byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary)
 
 
-                    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client " +clientendpt.ToString() + " connected\n" });
+                        byte[] ipsize = BitConverter.GetBytes(peeripMsg.Length);
+                        cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
+                        cstream.Write(peeripMsg, 0, peeripMsg.Length);
+
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientendpt.ToString() + " connected to " + peerList[0].Ip + "\n" });
+                    }
+                    else if (peertype.Contains("<server>"))
+                    {
+                        responsePeerMsg = new byte[4];
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+
+                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
+
+                        int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
+
+                        PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
+                        peerList.Add(serverNode);
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
+
+                    }
+
+
+                    
                     //break;
                 }
                 catch
@@ -93,7 +122,11 @@ namespace TrackerServer
             System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
             return encoding.GetBytes(str);
         }
-
+        private static string ByteArrayToString(byte[] bytes)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(bytes);
+        }
 
         private delegate void UpdateTextCallback(string message);
         public void UpdatertbClientlist(string message)
