@@ -9,7 +9,8 @@ namespace TrackerServer
         private string ip;
         private int maxClient;
         private List<string> childPeer;
-        private List<string> parentPeer;
+
+
 
         public PeerNode(string ip, int maxParent, int maxClient)
         {
@@ -32,6 +33,18 @@ namespace TrackerServer
         {
             get { return ip; }
             set { ip = value; }
+        }
+        public List<string> ChildPeer
+        {
+            get { return childPeer; }
+            set { childPeer = value; }
+        }
+        private List<string> parentPeer;
+
+        public List<string> ParentPeer
+        {
+            get { return parentPeer; }
+            set { parentPeer = value; }
         }
     }
 }

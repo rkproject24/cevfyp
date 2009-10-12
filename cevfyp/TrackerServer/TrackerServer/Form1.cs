@@ -80,14 +80,19 @@ namespace TrackerServer
                     if (peertype.Contains("<client>"))
                     {
                         //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
-                        byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary)
+                        byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
 
 
                         byte[] ipsize = BitConverter.GetBytes(peeripMsg.Length);
                         cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
                         cstream.Write(peeripMsg, 0, peeripMsg.Length);
 
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientendpt.ToString() + " connected to " + peerList[0].Ip + "\n" });
+
+                        PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
+                        clientNode.addParent(peerList[0].Ip);
+                        peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
+
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
                     }
                     else if (peertype.Contains("<server>"))
                     {
