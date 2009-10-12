@@ -40,6 +40,8 @@
             this.tbChunkLenght = new System.Windows.Forms.TextBox();
             this.tbServerSLPort = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NudChunkBuf = new System.Windows.Forms.NumericUpDown();
+            this.NudStartBuf = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -53,14 +55,12 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.NudStartBuf = new System.Windows.Forms.NumericUpDown();
-            this.NudChunkBuf = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -168,6 +168,30 @@
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Local Play";
+            // 
+            // NudChunkBuf
+            // 
+            this.NudChunkBuf.Location = new System.Drawing.Point(85, 97);
+            this.NudChunkBuf.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NudChunkBuf.Name = "NudChunkBuf";
+            this.NudChunkBuf.Size = new System.Drawing.Size(100, 22);
+            this.NudChunkBuf.TabIndex = 11;
+            this.NudChunkBuf.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // NudStartBuf
+            // 
+            this.NudStartBuf.Location = new System.Drawing.Point(85, 69);
+            this.NudStartBuf.Name = "NudStartBuf";
+            this.NudStartBuf.Size = new System.Drawing.Size(100, 22);
+            this.NudStartBuf.TabIndex = 10;
             // 
             // label13
             // 
@@ -304,35 +328,11 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // NudStartBuf
-            // 
-            this.NudStartBuf.Location = new System.Drawing.Point(85, 69);
-            this.NudStartBuf.Name = "NudStartBuf";
-            this.NudStartBuf.Size = new System.Drawing.Size(100, 22);
-            this.NudStartBuf.TabIndex = 10;
-            // 
-            // NudChunkBuf
-            // 
-            this.NudChunkBuf.Location = new System.Drawing.Point(85, 97);
-            this.NudChunkBuf.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.NudChunkBuf.Name = "NudChunkBuf";
-            this.NudChunkBuf.Size = new System.Drawing.Size(100, 22);
-            this.NudChunkBuf.TabIndex = 11;
-            this.NudChunkBuf.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // Preference
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(429, 256);
+            this.ClientSize = new System.Drawing.Size(429, 255);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox3);
@@ -342,13 +342,13 @@
             this.Text = "Preference";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).EndInit();
             this.ResumeLayout(false);
 
         }
