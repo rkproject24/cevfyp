@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -178,7 +178,7 @@ namespace Server
         {
             Chunk streamingChunkOdd = Chunk.Copy(streamingChunk);
 
-                if (oddList.Count() <= CHUNKLIST_CAPACITY)
+                if (oddList.Count <= CHUNKLIST_CAPACITY)
                     oddList.Add(streamingChunkOdd);
                 else
                     oddList[oddList_wIndex] = streamingChunkOdd;
@@ -196,7 +196,7 @@ namespace Server
         {
             Chunk streamingChunkEven = Chunk.Copy(streamingChunk);
             
-            if (evenList.Count() <= CHUNKLIST_CAPACITY)
+            if (evenList.Count <= CHUNKLIST_CAPACITY)
                 evenList.Add(streamingChunkEven);
             else
                 evenList[evenList_wIndex] = streamingChunkEven;
