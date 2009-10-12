@@ -50,16 +50,21 @@ namespace Server
         List<Thread> D2ThreadList;
         static int CHUNKLIST_CAPACITY = 200;
         List<Chunk> oddList;
+        
         List<Chunk> evenList;
-        int currentOddNo = 0;
+      
+       int currentOddNo = 0;
         int currentEvenNo = 0;
         int oddList_wIndex = 0;
         int oddList_rIndex = 0;
         int evenList_wIndex = 0;
         int evenList_rIndex = 0;
-        ChunkHandler ch;
+
+     
+       
+       ChunkHandler ch;
         ServerConfig sConfig;
-        int lb, ub, mid, tempResult;
+        //int lb, ub, mid, tempResult;
        
 
 
@@ -87,8 +92,21 @@ namespace Server
  //yam:10-10-09
             D1ThreadList = new List<Thread>(max_client);
             D2ThreadList = new List<Thread>(max_client);
+
             oddList = new List<Chunk>(CHUNKLIST_CAPACITY);
             evenList = new List<Chunk>(CHUNKLIST_CAPACITY);
+          
+
+            //for (int ii = 0; ii < max_client; ii++)
+            //{
+                
+                //List<Chunk> aa = new List<Chunk>(CHUNKLIST_CAPACITY);
+                //List<Chunk> evenList  =new List<Chunk>(CHUNKLIST_CAPACITY);
+
+
+            //}
+
+
             ch = new ChunkHandler();
             sConfig = new ServerConfig();
 
@@ -159,18 +177,18 @@ namespace Server
         public void setOddListChunk(Chunk streamingChunk)
         {
             Chunk streamingChunkOdd = Chunk.Copy(streamingChunk);
-         
-            if (oddList.Count() <= CHUNKLIST_CAPACITY)
-                oddList.Add(streamingChunkOdd);
-            else
-                oddList[oddList_wIndex] = streamingChunkOdd;
 
-            if (oddList_wIndex == CHUNKLIST_CAPACITY)
-                oddList_wIndex = 0;
-            else
-                oddList_wIndex += 1;
+                if (oddList.Count() <= CHUNKLIST_CAPACITY)
+                    oddList.Add(streamingChunkOdd);
+                else
+                    oddList[oddList_wIndex] = streamingChunkOdd;
 
-            currentOddNo = streamingChunkOdd.seq;
+                if (oddList_wIndex == CHUNKLIST_CAPACITY)
+                    oddList_wIndex = 0;
+                else
+                    oddList_wIndex += 1;
+
+                currentOddNo = streamingChunkOdd.seq;
             
         }
 
@@ -243,6 +261,8 @@ namespace Server
 //yam:11-10-09
         private void PortHandle_D1port(int clientNo)
         {
+        
+            
             //int tempListIndex = 0;
             NetworkStream stream;
             byte[] sendMessage = new byte[sConfig.ChunkSize];
@@ -280,32 +300,36 @@ namespace Server
                     {
                         while (true)
                         {
-                           if (oddList.Count > 1 && tempSeq<=currentOddNo)
+                            lock (this)
                             {
-                                if (firstRun == true)
+                                if (oddList.Count > 10 && tempSeq <= currentOddNo)
                                 {
-                                    tempSeq = currentOddNo;
-                                    firstRun = false;
-                                }
+                                    if (firstRun == true)
+                                    {
+                                        tempSeq = currentOddNo;
+                                        firstRun = false;
+                                    }
 
-                                resultIndex = search(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
+                                    resultIndex = search(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
 
-                                if (resultIndex != -1)
-                                {
-                                   
-                                    sendMessage = ch.chunkToByte(oddList[resultIndex], sConfig.ChunkSize);
-                                    stream.Write(sendMessage, 0, sendMessage.Length);
+                                    if (resultIndex != -1)
+                                    {
 
-                                    oddList_rIndex = resultIndex;
-
+                                        sendMessage = ch.chunkToByte(oddList[resultIndex], sConfig.ChunkSize);
+                                        stream.Write(sendMessage, 0, sendMessage.Length);
+                                        oddList_rIndex = resultIndex;
+                                    }
+                                    
+                                    
                                     if (tempSeq == 2147483647)
                                         tempSeq = 1;
                                     else
                                         tempSeq += 2;
-                                
                                 }
+                                //else
+                                  // Thread.Sleep((10 + clientNo));
                             }
-                            Thread.Sleep((20+clientNo));
+                            Thread.Sleep((5));
                         }
                     }
                     catch
@@ -323,6 +347,8 @@ namespace Server
 
         private void PortHandle_D2port(int clientNo)
         {
+            
+         
             //int tempListIndex = 0;
             NetworkStream stream;
             byte[] sendMessage = new byte[sConfig.ChunkSize];
@@ -360,32 +386,34 @@ namespace Server
                     {
                         while (true)
                         {
-                         
-                            if (evenList.Count > 1 && tempSeq <= currentEvenNo)
+                            lock (this)
                             {
-                                if (firstRun == true)
+                                if (evenList.Count > 10 && tempSeq <= currentEvenNo)
                                 {
-                                    tempSeq = currentEvenNo;
-                                    firstRun = false;
-                                }
+                                    if (firstRun == true)
+                                    {
+                                        tempSeq = currentEvenNo;
+                                        firstRun = false;
+                                    }
 
-                                resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
+                                    resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
 
-                                if (resultIndex != -1)
-                                {
-                                 
-                                    sendMessage = ch.chunkToByte(evenList[resultIndex], sConfig.ChunkSize);
-                                    stream.Write(sendMessage, 0, sendMessage.Length);
-
-                                    evenList_rIndex = resultIndex;
-
+                                    if (resultIndex != -1)
+                                    {
+                                        sendMessage = ch.chunkToByte(evenList[resultIndex], sConfig.ChunkSize);
+                                        stream.Write(sendMessage, 0, sendMessage.Length);
+                                        evenList_rIndex = resultIndex;
+                                    }
+                                  
                                     if (tempSeq == 2147483647)
                                         tempSeq = 2;
                                     else
                                         tempSeq += 2;
                                 }
+                                //else
+                                   // Thread.Sleep((10 + clientNo));
                             }
-                            Thread.Sleep((20 + clientNo));
+                            Thread.Sleep((5));
                         }
                     }
                     catch
@@ -401,6 +429,7 @@ namespace Server
 
         private int search(List<Chunk> list, int rIndex, int wIndex, int target)
         {
+            int lb, ub, tempResult;
             if (wIndex < rIndex)
             {
                 lb = rIndex;
@@ -428,6 +457,7 @@ namespace Server
 
         private int binarySearch(List<Chunk> list, int lb, int ub, int target)
         {
+            int mid;
             for (; lb <= ub; )
             {
                 mid = (lb + ub) / 2;
