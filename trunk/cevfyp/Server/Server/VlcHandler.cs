@@ -25,7 +25,7 @@ namespace Server
                 MessageBox.Show(LibVlc.libvlc_exception_get_message(ref ex));
         }
 
-        public void streaming(Panel p, string filesrc, string libsrc)
+        public void streaming(Panel p, string filesrc)//, string libsrc)
         {
             LibVlc.libvlc_exception_init(ref ex);
 

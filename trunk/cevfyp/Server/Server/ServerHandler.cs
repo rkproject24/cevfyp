@@ -71,7 +71,7 @@ namespace Server
         public void play()
         {
 
-            vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text, sConfig.PluginPath);
+            vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text);//, sConfig.PluginPath);
             if (getStreamingThread != null) getStreamingThread.Abort(); //by vinci
 
             ch = new ChunkHandler();
