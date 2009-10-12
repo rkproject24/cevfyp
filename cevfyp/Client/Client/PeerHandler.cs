@@ -39,7 +39,7 @@ namespace Client
                 Dport[i] = 0;
             }
         }
-//by Vinci
+//by Vinci: coonect to Tracker for peer ip 
         public bool findPeer()
         {
             TcpClient trackerTcpClient;
