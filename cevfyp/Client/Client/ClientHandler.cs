@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 //using System.Text;
 using System.Windows.Forms;
 
@@ -270,7 +270,7 @@ namespace Client
                         //by yam
                         if (treeIndex == 0 && streamingChunk.seq % 2 != 0)
                         {
-                            if (oddList.Count() <= cConfig.ChunkCapacity)
+                            if (oddList.Count <= cConfig.ChunkCapacity)
                                 oddList.Add(streamingChunk);
                             else
                                 oddList[oddList_wIndex] = streamingChunk;
@@ -285,7 +285,7 @@ namespace Client
                         }
                         else
                         {
-                            if (evenList.Count() <= cConfig.ChunkCapacity)
+                            if (evenList.Count <= cConfig.ChunkCapacity)
                                 evenList.Add(streamingChunk);
                             else
                                 evenList[evenList_wIndex] = streamingChunk;
@@ -468,7 +468,7 @@ namespace Client
 
         private void addToChunkList(List<Chunk> list, ref int rIndex, int targetIndex)
         {
-            if (chunkList.Count() <= cConfig.ChunkCapacity)
+            if (chunkList.Count <= cConfig.ChunkCapacity)
                 chunkList.Add(list[targetIndex]);
             else
                 chunkList[chunkList_wIndex] = list[targetIndex];
