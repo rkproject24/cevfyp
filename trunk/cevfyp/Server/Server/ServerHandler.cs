@@ -22,18 +22,7 @@ namespace Server
         //static int TREE_NO = 2;             //number of tree
 
         static int TrackerSLPort = 1500;
- //yam:10-10-09
-       
-        // static int CHUNKLIST_CAPACITY = 200;
-       // List<Chunk> oddList;
-       // List<Chunk> evenList;
-       // int currentOddNo = 0;
-      //  int currentEvenNo = 0;
-       // int oddList_wIndex = 0;
-        //int oddList_rIndex = 0;
-        //int evenList_wIndex = 0;
-        //int evenList_rIndex = 0;
-        //int tempSeq = 0;
+
         
         int max_client;
         int seqNumber = 1;
@@ -50,7 +39,7 @@ namespace Server
         IPAddress localAddr;
 
         private ServerFrm mainFm;
-        //test
+       
         public ServerHandler(ServerFrm mainFm)
         {
             this.mainFm = mainFm;
@@ -61,8 +50,7 @@ namespace Server
             sConfig.load("C:\\ServerConfig.xml");
             reloadUI();
 
-            //oddList = new List<Chunk>(CHUNKLIST_CAPACITY);
-           // evenList = new List<Chunk>(CHUNKLIST_CAPACITY);
+          
         }
 
         //By Vinci
@@ -102,7 +90,7 @@ namespace Server
             vlc.stop();
             seqNumber = 1;
             mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
-            mainFm.richTextBox1.Clear();
+            //mainFm.richTextBox1.Clear();
             getStreamingThread.Abort(); //by vinci
         }
 
@@ -286,15 +274,12 @@ namespace Server
             String responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes1);
            // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { responseString });
 
-            NetworkStream stream; 
-
             Chunk streamingChunk = new Chunk();
            // byte[] responseData = new byte[sConfig.ReceiveStreamSize];
             int responseMessageBytes;
 
             byte[] sendMessage = new byte[sConfig.ChunkSize];
 
-            bool oddChunk = true;
 
             while (responseMessageBytes1 != 0)
             {
@@ -302,6 +287,7 @@ namespace Server
                 responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
                 if (responseMessageBytes == 0)
                 {
+                    Thread.Sleep(5);
                     continue;
                 }
 
