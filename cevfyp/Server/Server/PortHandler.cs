@@ -300,8 +300,6 @@ namespace Server
                     {
                         while (true)
                         {
-                            lock (this)
-                            {
                                 if (oddList.Count > 10 && tempSeq <= currentOddNo)
                                 {
                                     if (firstRun == true)
@@ -326,10 +324,8 @@ namespace Server
                                     else
                                         tempSeq += 2;
                                 }
-                                //else
-                                  // Thread.Sleep((10 + clientNo));
-                            }
-                            Thread.Sleep((5));
+                            
+                            Thread.Sleep(5);
                         }
                     }
                     catch
@@ -386,34 +382,31 @@ namespace Server
                     {
                         while (true)
                         {
-                            lock (this)
+
+                            if (evenList.Count > 10 && tempSeq <= currentEvenNo)
                             {
-                                if (evenList.Count > 10 && tempSeq <= currentEvenNo)
+                                if (firstRun == true)
                                 {
-                                    if (firstRun == true)
-                                    {
-                                        tempSeq = currentEvenNo;
-                                        firstRun = false;
-                                    }
-
-                                    resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
-
-                                    if (resultIndex != -1)
-                                    {
-                                        sendMessage = ch.chunkToByte(evenList[resultIndex], sConfig.ChunkSize);
-                                        stream.Write(sendMessage, 0, sendMessage.Length);
-                                        evenList_rIndex = resultIndex;
-                                    }
-                                  
-                                    if (tempSeq == 2147483647)
-                                        tempSeq = 2;
-                                    else
-                                        tempSeq += 2;
+                                    tempSeq = currentEvenNo;
+                                    firstRun = false;
                                 }
-                                //else
-                                   // Thread.Sleep((10 + clientNo));
+
+                                resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
+
+                                if (resultIndex != -1)
+                                {
+                                    sendMessage = ch.chunkToByte(evenList[resultIndex], sConfig.ChunkSize);
+                                    stream.Write(sendMessage, 0, sendMessage.Length);
+                                    evenList_rIndex = resultIndex;
+                                }
+
+                                if (tempSeq == 2147483647)
+                                    tempSeq = 2;
+                                else
+                                    tempSeq += 2;
                             }
-                            Thread.Sleep((5));
+
+                            Thread.Sleep(5);
                         }
                     }
                     catch
