@@ -1,0 +1,5 @@
+C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
