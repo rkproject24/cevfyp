@@ -24,6 +24,31 @@ namespace ClassLibrary
             return false;
         }
 
+        public int RanPort(int begin, int end)
+        {
+            IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
+            IPEndPoint[] endpoints = ipGP.GetActiveTcpListeners();
+
+            try
+            {
+
+                for (int port = begin; port <= end; port++)
+                {
+                    bool found = true;
+                    for (int i = 0; i < endpoints.Length; i++)
+                        if (endpoints[i].Port == port)
+                        {
+                            found = false;
+                            break;
+                        }
+                    if (found) return port;
+                }
+            }
+            catch { return -1; }
+            return -1;
+        }
+
+        /*
         public static int RanPort(int begin, int end)
         {
             IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
@@ -48,6 +73,6 @@ namespace ClassLibrary
             }
             catch { return -1; }
             return -1;
-        }
+        }*/
     }
 }
