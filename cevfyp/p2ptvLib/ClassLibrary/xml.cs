@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ClassLibrary
 {
-    class xml
+    public class xml
     {
         private string xmlFile;
         private string node;
