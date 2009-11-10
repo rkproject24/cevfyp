@@ -139,10 +139,9 @@ namespace Client
 
                 if (peerh.connectPeer())
                 {
-                    virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
-
-                    serverConnect = true;
-                    checkClose = false;
+                    //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+                    //serverConnect = true;
+                    //checkClose = false;
                     return "OK";
                 }
                 else
@@ -159,6 +158,9 @@ namespace Client
 
         public string connectToSource()
         {
+            virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+            serverConnect = true;
+            checkClose = false;
         //by Yam
             try
             {

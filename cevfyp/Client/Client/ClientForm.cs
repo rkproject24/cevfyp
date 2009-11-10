@@ -66,7 +66,7 @@ namespace Client
         private void button1_Click(object sender, EventArgs e)  //Connect
         {
             string response;
-            response = clientHandler.connectToServer(tbServerIp.Text);
+            response = clientHandler.connectToServer(tbServerIp.Text); //connect tracker
 
             if (response == "OK")
                 response = clientHandler.connectToSource();
