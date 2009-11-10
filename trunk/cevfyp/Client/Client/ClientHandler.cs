@@ -46,7 +46,7 @@ namespace Client
         bool oddListAvailable = false;
         bool evenListAvailable = false;
 
-        string sourceIp = null;
+        string trackerIp = null;
 
         VlcHandler vlc;
         ChunkHandler ch;
@@ -128,26 +128,52 @@ namespace Client
         }
         */
 
-        public string connectToServer(string serverIp)
+        public string establishConnect(string tackerIp)
         {
-            this.sourceIp = serverIp;
+            string response = "";
+
+            //connect tracker
+            response = connectToTracker(tackerIp);
+
+            if (response == "OK")
+                response = connectToPeer();
+            else
+                return response;
+            //=======================================
+
+            if (response == "OK2")
+                response = connectToSource();
+            else
+                return response;
+
+            if (response == "OK3")
+                return response = "";
+
+            return response;
+
+        }
+
+        private string connectToTracker(string serverIp)
+        {
+            this.trackerIp = serverIp;
             
             peerh = new PeerHandler(serverIp);
 
-            if (peerh.findPeer())
+            if (peerh.findTracker())
             {
+                return "OK";
 
-                if (peerh.connectPeer())
-                {
-                    //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
-                    //serverConnect = true;
-                    //checkClose = false;
-                    return "OK";
-                }
-                else
-                {
-                    return "Peer Unreachable!";
-                }
+                //if (peerh.connectPeer())
+                //{
+                //    //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+                //    //serverConnect = true;
+                //    //checkClose = false;
+                //    return "OK";
+                //}
+                //else
+                //{
+                //    return "Peer Unreachable!";
+                //}
             }
             else
             {
@@ -156,7 +182,22 @@ namespace Client
 
         }
 
-        public string connectToSource()
+        private string connectToPeer()
+        {
+            if (peerh.connectPeer())
+            {
+                //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+                //serverConnect = true;
+                //checkClose = false;
+                return "OK2";
+            }
+            else
+            {
+                return "Peer Unreachable!";
+            }
+        }
+
+        private string connectToSource()
         {
             virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
             serverConnect = true;
@@ -164,14 +205,15 @@ namespace Client
         //by Yam
             try
             {
-                ClientC = new TcpClient(sourceIp, peerh.Cport1);
+                //ClientC = new TcpClient(sourceIp, peerh.Cport1);
+                ClientC = new TcpClient(peerh.PeerIp, peerh.Cport1);
 
                 for (int i = 0; i < TREE_NO; i++)
                 {
                     ClientD.Add(peerh.getDataConnect(i));
                 }
 
-                return "OK2";
+                return "OK3";
             }
             catch
             {

@@ -65,21 +65,34 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)  //Connect
         {
-            string response;
-            response = clientHandler.connectToServer(tbServerIp.Text); //connect tracker
-
-            if (response == "OK")
-                response = clientHandler.connectToSource();
-            else
+            string response = clientHandler.establishConnect(tbServerIp.Text);
+            if (!response.Equals(""))
+            {
                 MessageBox.Show(response);
-
-            if (response == "OK2")
+            }
+            else
             {
                 btnDisconnect.Enabled = true;
                 clientHandler.startThread();
             }
-            else
-                MessageBox.Show(response);
+            //string response;
+
+            ////connect tracker
+            //response = clientHandler.connectToTracker(tbServerIp.Text);
+
+            //if (response == "OK")
+            //    response = clientHandler.connectToSource();
+            //else
+            //    MessageBox.Show(response);
+            ////=======================================
+
+            //if (response == "OK2")
+            //{
+            //    btnDisconnect.Enabled = true;
+            //    clientHandler.startThread();
+            //}
+            //else
+            //    MessageBox.Show(response);
         }
          
         private void button2_Click(object sender, EventArgs e)

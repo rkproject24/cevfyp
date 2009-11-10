@@ -18,6 +18,8 @@ namespace Client
         private string trackIp;
         private string peerIp;
 
+
+
         int Cport = 0;             //control message port number
         ClientConfig cConfig = new ClientConfig();
 
@@ -25,6 +27,11 @@ namespace Client
         {
             get { return Cport; }
             set { Cport = value; }
+        }
+        public string PeerIp
+        {
+            get { return peerIp; }
+            set { peerIp = value; }
         }
 
         //int D1port = 0;             //video data port number
@@ -40,7 +47,7 @@ namespace Client
             }
         }
 //by Vinci: coonect to Tracker for peer ip 
-        public bool findPeer()
+        public bool findTracker()
         {
             TcpClient trackerTcpClient;
             NetworkStream trackerStream;
@@ -87,7 +94,7 @@ namespace Client
             return enc.GetString(bytes);
         }
 
-        public bool connectPeer()
+        public bool connectPeer()  //connect to Peer to get the port no of Cport Dport
         {
             //peerIp = trackIp;
 
