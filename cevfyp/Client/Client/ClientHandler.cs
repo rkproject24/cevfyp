@@ -135,10 +135,10 @@ namespace Client
             //connect tracker
             //response = connectToTracker(tackerIp);
 
-            //if (response == "OK")
-            //    response = connectToPeer();
-            //else
-            //    return response;
+            if (response == "OK")
+                response = connectToPeer();
+            else
+                return response;
             //=======================================
 
             response = connectToPeer();
