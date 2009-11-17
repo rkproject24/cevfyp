@@ -133,7 +133,7 @@ namespace Client
             string response = "";
 
             //connect tracker
-            //response = connectToTracker(tackerIp);
+            response = connectToTracker(tackerIp);
 
             if (response == "OK")
                 response = connectToPeer();
