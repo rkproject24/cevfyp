@@ -40,6 +40,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.preferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferenceToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.rtbupload = new System.Windows.Forms.RichTextBox();
+            this.btnListenPeer = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -125,7 +127,7 @@
             this.preferenceToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(411, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(547, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -144,11 +146,31 @@
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 
+            // rtbupload
+            // 
+            this.rtbupload.Location = new System.Drawing.Point(405, 35);
+            this.rtbupload.Name = "rtbupload";
+            this.rtbupload.Size = new System.Drawing.Size(142, 258);
+            this.rtbupload.TabIndex = 11;
+            this.rtbupload.Text = "";
+            // 
+            // btnListenPeer
+            // 
+            this.btnListenPeer.Location = new System.Drawing.Point(423, 323);
+            this.btnListenPeer.Name = "btnListenPeer";
+            this.btnListenPeer.Size = new System.Drawing.Size(75, 23);
+            this.btnListenPeer.TabIndex = 12;
+            this.btnListenPeer.Text = "ListenPeer";
+            this.btnListenPeer.UseVisualStyleBackColor = true;
+            this.btnListenPeer.Click += new System.EventHandler(this.btnListenPeer_Click);
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(411, 381);
+            this.ClientSize = new System.Drawing.Size(547, 381);
+            this.Controls.Add(this.btnListenPeer);
+            this.Controls.Add(this.rtbupload);
             this.Controls.Add(this.btnDisconnect);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
@@ -186,6 +208,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem1;
+        public System.Windows.Forms.RichTextBox rtbupload;
+        private System.Windows.Forms.Button btnListenPeer;
     }
 }
 

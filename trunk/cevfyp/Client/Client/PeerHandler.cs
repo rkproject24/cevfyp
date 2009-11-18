@@ -164,7 +164,7 @@ namespace Client
             //{
             //    return "No source can join!";
             //}
-            TcpClient treeclient = new TcpClient(trackIp, Dport[tree]);
+            TcpClient treeclient = new TcpClient(peerIp, Dport[tree]);
             return treeclient;
         }
     }

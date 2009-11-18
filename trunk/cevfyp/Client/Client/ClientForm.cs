@@ -51,6 +51,10 @@ namespace Client
         {
             tbServerIp.Text = message;
         }
+        public void UpdateRtbUpload(string message)
+        {
+            rtbupload.AppendText(message);
+        }
 
         public ClientForm()
         {
@@ -120,6 +124,11 @@ namespace Client
         {
             Preference serverPre = new Preference();
             serverPre.Show();
+        }
+
+        private void btnListenPeer_Click(object sender, EventArgs e)
+        {
+            clientHandler.startUpload();
         }
 
      
