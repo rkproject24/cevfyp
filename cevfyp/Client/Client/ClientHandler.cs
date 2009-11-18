@@ -22,6 +22,18 @@ namespace Client
         //static int START_BUF = 2;
         static int TREE_NO = 2;
 
+        //===============upload variable=============
+        static string CLIENTIP = "127.0.0.1";
+        static int PeerListenPort = 1100;
+
+        int max_peer=0;
+        TcpListener listenPeer;
+        UploadPortHandler upPorth;
+
+        Thread listenerThread;
+
+        //===================================
+
         //int[] chunkList_wIndex = new int[TREE_NO]; 
         int chunkList_wIndex = 0;  //write index
         int chunkList_rIndex = 0;  //read index
@@ -251,6 +263,7 @@ namespace Client
             //{
             //    recciveChunkThread[i].Start();
             //}
+                //startUpload();
             
                 updateChunkListThread = new Thread(new ThreadStart(updateChunkList));
                 updateChunkListThread.IsBackground = true;
@@ -263,6 +276,21 @@ namespace Client
                 broadcastVlcStreamingThread.Start();
 
                 vlc.play(mainFm.panel1, virtualServerPort);
+        }
+
+        public void startUpload()
+        {
+                //start uploading thread
+                this.max_peer = cConfig.MaxPeer;
+                upPorth = new UploadPortHandler(cConfig.MaxPeer, CLIENTIP, mainFm);
+                upPorth.startPort();
+                mainFm.rtbupload.AppendText("upPorth.startPort()");
+
+                //localAddr = IPAddress.Parse(sConfig.Serverip);
+                listenerThread = new Thread(new ThreadStart(listenForClients));
+                listenerThread.IsBackground = true;
+                listenerThread.Name = " listen_for_clients";
+                listenerThread.Start();
         }
 
         public void sendMessage(object tcpClinet)
@@ -306,6 +334,9 @@ namespace Client
 
                         byte[] responseMessage = new byte[cConfig.ChunkSize];
                         responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                    //by vinci: send responseBytes directly to peer
+                        //this.uploadToPeer(responseMessageBytes);
+
                         streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
 
                         if (streamingChunk == null)
@@ -410,14 +441,14 @@ namespace Client
                 {
                     if (tempSeq <= currentOddNo)
                     {
-                        resultIndex = search(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
+                        resultIndex = searchChunk(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
 
                         if (resultIndex != -1)
                             addToChunkList(oddList, ref oddList_rIndex, resultIndex);
                        // else
                            // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { tempSeq.ToString() });
 
-                        addTempSeq();
+                        incrementTempSeq();
                     }
                     else
                         Thread.Sleep(40);
@@ -427,14 +458,14 @@ namespace Client
                 {
                     if (tempSeq <= currentEvenNo)
                     {
-                        resultIndex = search(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
+                        resultIndex = searchChunk(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
 
                         if (resultIndex != -1)
                             addToChunkList(evenList, ref evenList_rIndex, resultIndex);
                         //else
                           //  mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { tempSeq.ToString() });
 
-                        addTempSeq();
+                        incrementTempSeq();
                     }
                     else
                         Thread.Sleep(40);
@@ -460,7 +491,7 @@ namespace Client
             }
         }
 
-        private void addTempSeq()
+        private void incrementTempSeq()
         {
             if (tempSeq == 2147483647)
                 tempSeq = 1;
@@ -469,7 +500,7 @@ namespace Client
         }
 
         
-        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        private int searchChunk(List<Chunk> list, int rIndex, int wIndex, int target)
         {
             if (wIndex < rIndex)
             {
@@ -556,10 +587,7 @@ namespace Client
                     mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Playing" });
                 checkToBoardcast = true;
             }
-        }
-
-
-       
+        }       
 
         public void disconectall()
         {
@@ -615,6 +643,89 @@ namespace Client
                 oddList.Clear();
             }
         }
+
+        private void listenForClients()
+        {
+            listenPeer = new TcpListener(localAddr, PeerListenPort);
+            listenPeer.Start();
+
+            int temp;
+
+            while (true)
+            {
+                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:"+localAddr.ToString()+"\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
+                TcpClient client = listenPeer.AcceptTcpClient();
+                NetworkStream stream = client.GetStream();
+
+                //yam:10-10-09
+                bool sendCPort = false;
+                bool sendD1Port = false;
+                bool sendD2Port = false;
+
+                try
+                {
+                    for (int i = 0; i < max_peer; i++)
+                    {
+                        if (upPorth.getCListClient(i) == null)
+                        {
+                            temp = upPorth.getCListPort(i);
+                            Byte[] cMessage = BitConverter.GetBytes(temp);
+                            stream.Write(cMessage, 0, cMessage.Length);
+                            sendCPort = true;
+                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + temp.ToString() + "\n" });
+
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < max_peer; i++)
+                    {
+                        if (upPorth.getDListClient(i, 1) == null)
+                        {
+                            temp = upPorth.getDListPort(i, 1);
+                            Byte[] d1Message = BitConverter.GetBytes(temp);
+                            stream.Write(d1Message, 0, d1Message.Length);
+                            sendD1Port = true;
+                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "D1port:" + temp.ToString() + "\n" });
+
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < max_peer; i++)
+                    {
+                        if (upPorth.getDListClient(i, 2) == null)
+                        {
+                            temp = upPorth.getDListPort(i, 2);
+                            Byte[] d2Message = BitConverter.GetBytes(temp);
+                            stream.Write(d2Message, 0, d2Message.Length);
+                            sendD2Port = true;
+                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "D2port:" + temp.ToString() + "\n" });
+
+                            break;
+                        }
+                    }
+                }
+                catch
+                {
+                    mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
+                    break;
+                }
+
+                if (sendCPort == false || sendD1Port == false || sendD2Port == false)
+                {
+                    Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
+                    stream.Write(cMessage, 0, cMessage.Length);
+
+                    Byte[] dMessage = BitConverter.GetBytes(0000);
+                    stream.Write(dMessage, 0, dMessage.Length);     //d1
+
+                    stream.Write(dMessage, 0, dMessage.Length);     //d2
+                }
+
+            }//end while loop
+        }
+
 
     }// end class     
 }// end namespace
