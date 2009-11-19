@@ -35,7 +35,6 @@ namespace TrackerServer
             sConfig.load("C:\\ServerConfig.xml");
             peerList = new List<PeerNode>();
 
-            //localAddr= new  IPAddress.Parse(
             InitializeComponent();
         }
 
@@ -79,20 +78,32 @@ namespace TrackerServer
                     //int temp = Int32.Parse(tbsendIp.Text);
                     if (peertype.Contains("<client>"))
                     {
-                        //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
-                        byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
+                        byte[] peeripMsg;
+                        if (peerList.Count <= 0)
+                        {
+                            peeripMsg = StrToByteArray("NOPEER");
+                        }
+                        else
+                        {
+                            //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
+                            //byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
+                            peeripMsg = StrToByteArray(peerList[peerList.Count - 1].Ip);
 
 
-                        byte[] ipsize = BitConverter.GetBytes(peeripMsg.Length);
-                        cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
-                        cstream.Write(peeripMsg, 0, peeripMsg.Length);
+                            byte[] ipsize = BitConverter.GetBytes(peeripMsg.Length);
+                            cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
+                            cstream.Write(peeripMsg, 0, peeripMsg.Length);
 
+                            //PeerNode clientNode = new PeerNode("127.0.0.1", 2, 2); //testing code
+                            PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
 
-                        PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
-                        clientNode.addParent(peerList[0].Ip);
-                        peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
+                            clientNode.addParent(peerList[peerList.Count - 1].Ip);
+                            //clientNode.addParent(peerList[0].Ip); 
 
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
+                            peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
+
+                            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
+                        }
                     }
                     else if (peertype.Contains("<server>"))
                     {
