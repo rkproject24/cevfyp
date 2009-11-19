@@ -42,17 +42,16 @@ namespace TrackerServer
 
         private void btnOn_Click(object sender, EventArgs e)
         {
-            //this.max_client = sConfig.MaxClient;
+            start();
+            btnOn.Enabled = false;
+        }
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            rtbClientlist.Text = "";
+            listenerThread.Abort();
+            TrackerListen.Stop();
 
-            localAddr = IPAddress.Parse(sConfig.Serverip);
-            //localAddr= new  IPAddress.Parse("")
-
-            listenerThread = new Thread(new ThreadStart(listenForClients));
-            listenerThread.IsBackground = true;
-            listenerThread.Name = " listen_for_clients";
-            listenerThread.Start();
-
-            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "START@" + localAddr.ToString() + "\n" });
+            start();
         }
 
         private void listenForClients()
@@ -133,6 +132,21 @@ namespace TrackerServer
             }
         }
 
+        private void start()
+        {
+            //this.max_client = sConfig.MaxClient;
+
+            localAddr = IPAddress.Parse(sConfig.Serverip);
+            //localAddr= new  IPAddress.Parse("")
+
+            listenerThread = new Thread(new ThreadStart(listenForClients));
+            listenerThread.IsBackground = true;
+            listenerThread.Name = " listen_for_clients";
+            listenerThread.Start();
+
+            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "START@" + localAddr.ToString() + "\n" });
+        }
+
         public static byte[] StrToByteArray(string str)
         {
             System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
@@ -149,5 +163,6 @@ namespace TrackerServer
         {
             rtbClientlist.AppendText(message);
         }
+
     }
 }
