@@ -131,12 +131,12 @@ namespace Server
                 vlc.setMute(0);
         }
 
-        private String readStreamToString(NetworkStream stream, int size)
-        {
-            byte[] responseMessage = new byte[size];
-            Int32 responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-            return System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-        }
+        //private String readStreamToString(NetworkStream stream, int size)
+        //{
+        //    byte[] responseMessage = new byte[size];
+        //    Int32 responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+        //    return System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
+        //}
 
         private bool UpdateTracker()
         {
