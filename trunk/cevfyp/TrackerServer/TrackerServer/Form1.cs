@@ -50,6 +50,7 @@ namespace TrackerServer
             rtbClientlist.Text = "";
             listenerThread.Abort();
             TrackerListen.Stop();
+            peerList.Clear();
 
             start();
         }
