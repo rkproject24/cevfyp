@@ -36,6 +36,7 @@
             this.btnOn = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.preferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnReset = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,11 +100,22 @@
             this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.preferenceToolStripMenuItem.Text = "Preference";
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(94, 230);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 5;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 274);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnOn);
             this.Controls.Add(this.cbbTree);
             this.Controls.Add(this.label2);
@@ -126,6 +138,7 @@
         private System.Windows.Forms.Button btnOn;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 
