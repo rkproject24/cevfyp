@@ -42,22 +42,27 @@
             this.preferenceToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.rtbupload = new System.Windows.Forms.RichTextBox();
             this.btnListenPeer = new System.Windows.Forms.Button();
+            this.tbhostIP = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.rtbdownload = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(12, 35);
+            this.panel1.Location = new System.Drawing.Point(127, 52);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(387, 283);
+            this.panel1.Size = new System.Drawing.Size(322, 240);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(10, 323);
+            this.button1.Location = new System.Drawing.Point(5, 299);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(54, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Connect";
             this.button1.UseVisualStyleBackColor = true;
@@ -65,36 +70,36 @@
             // 
             // tbWriteStatus
             // 
-            this.tbWriteStatus.Location = new System.Drawing.Point(193, 324);
+            this.tbWriteStatus.Location = new System.Drawing.Point(137, 300);
             this.tbWriteStatus.Name = "tbWriteStatus";
-            this.tbWriteStatus.Size = new System.Drawing.Size(100, 22);
+            this.tbWriteStatus.Size = new System.Drawing.Size(83, 22);
             this.tbWriteStatus.TabIndex = 3;
             // 
             // tbReadStatus
             // 
-            this.tbReadStatus.Location = new System.Drawing.Point(299, 324);
+            this.tbReadStatus.Location = new System.Drawing.Point(226, 300);
             this.tbReadStatus.Name = "tbReadStatus";
             this.tbReadStatus.Size = new System.Drawing.Size(100, 22);
             this.tbReadStatus.TabIndex = 4;
             // 
             // tbStatus
             // 
-            this.tbStatus.Location = new System.Drawing.Point(299, 353);
+            this.tbStatus.Location = new System.Drawing.Point(226, 329);
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.Size = new System.Drawing.Size(100, 22);
             this.tbStatus.TabIndex = 5;
             // 
             // tbServerIp
             // 
-            this.tbServerIp.Location = new System.Drawing.Point(193, 352);
+            this.tbServerIp.Location = new System.Drawing.Point(137, 328);
             this.tbServerIp.Name = "tbServerIp";
-            this.tbServerIp.Size = new System.Drawing.Size(100, 22);
+            this.tbServerIp.Size = new System.Drawing.Size(83, 22);
             this.tbServerIp.TabIndex = 6;
             this.tbServerIp.Text = "127.0.0.1";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(11, 350);
+            this.button2.Location = new System.Drawing.Point(6, 326);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(43, 23);
             this.button2.TabIndex = 7;
@@ -105,7 +110,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(141, 355);
+            this.label1.Location = new System.Drawing.Point(78, 329);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 8;
@@ -113,9 +118,9 @@
             // 
             // btnDisconnect
             // 
-            this.btnDisconnect.Location = new System.Drawing.Point(91, 324);
+            this.btnDisconnect.Location = new System.Drawing.Point(65, 299);
             this.btnDisconnect.Name = "btnDisconnect";
-            this.btnDisconnect.Size = new System.Drawing.Size(80, 22);
+            this.btnDisconnect.Size = new System.Drawing.Size(66, 22);
             this.btnDisconnect.TabIndex = 9;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = true;
@@ -127,7 +132,7 @@
             this.preferenceToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(547, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(592, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,15 +153,15 @@
             // 
             // rtbupload
             // 
-            this.rtbupload.Location = new System.Drawing.Point(405, 35);
+            this.rtbupload.Location = new System.Drawing.Point(453, 51);
             this.rtbupload.Name = "rtbupload";
-            this.rtbupload.Size = new System.Drawing.Size(142, 258);
+            this.rtbupload.Size = new System.Drawing.Size(136, 241);
             this.rtbupload.TabIndex = 11;
             this.rtbupload.Text = "";
             // 
             // btnListenPeer
             // 
-            this.btnListenPeer.Location = new System.Drawing.Point(423, 323);
+            this.btnListenPeer.Location = new System.Drawing.Point(453, 326);
             this.btnListenPeer.Name = "btnListenPeer";
             this.btnListenPeer.Size = new System.Drawing.Size(75, 23);
             this.btnListenPeer.TabIndex = 12;
@@ -164,11 +169,59 @@
             this.btnListenPeer.UseVisualStyleBackColor = true;
             this.btnListenPeer.Click += new System.EventHandler(this.btnListenPeer_Click);
             // 
+            // tbhostIP
+            // 
+            this.tbhostIP.Location = new System.Drawing.Point(453, 300);
+            this.tbhostIP.Name = "tbhostIP";
+            this.tbhostIP.Size = new System.Drawing.Size(94, 22);
+            this.tbhostIP.TabIndex = 13;
+            this.tbhostIP.Text = "127.0.0.1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(396, 304);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(51, 12);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "HostingIP";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(454, 36);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(57, 12);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Upload log";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 36);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(71, 12);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Download log";
+            // 
+            // rtbdownload
+            // 
+            this.rtbdownload.Location = new System.Drawing.Point(5, 52);
+            this.rtbdownload.Name = "rtbdownload";
+            this.rtbdownload.Size = new System.Drawing.Size(118, 240);
+            this.rtbdownload.TabIndex = 17;
+            this.rtbdownload.Text = "";
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(547, 381);
+            this.ClientSize = new System.Drawing.Size(592, 352);
+            this.Controls.Add(this.rtbdownload);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.tbhostIP);
             this.Controls.Add(this.btnListenPeer);
             this.Controls.Add(this.rtbupload);
             this.Controls.Add(this.btnDisconnect);
@@ -210,6 +263,11 @@
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem1;
         public System.Windows.Forms.RichTextBox rtbupload;
         private System.Windows.Forms.Button btnListenPeer;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        public System.Windows.Forms.RichTextBox rtbdownload;
+        public System.Windows.Forms.TextBox tbhostIP;
     }
 }
 

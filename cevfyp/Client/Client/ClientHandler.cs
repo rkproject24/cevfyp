@@ -23,10 +23,11 @@ namespace Client
         static int TREE_NO = 2;
 
         //===============upload variable=============
-        static string CLIENTIP = "127.0.0.1";
+        string CLIENTIP = "127.0.0.1";
         static int PeerListenPort = 1100;
 
-        int max_peer=0;
+        int max_peer;
+        bool uploading = false; //indicate whether upload thread is started
         TcpListener listenPeer;
         UploadPortHandler upPorth;
 
@@ -171,7 +172,7 @@ namespace Client
         {
             this.trackerIp = serverIp;
             
-            peerh = new PeerHandler(serverIp);
+            peerh = new PeerHandler(serverIp, mainFm);
 
             if (peerh.findTracker())
             {
@@ -198,7 +199,9 @@ namespace Client
 
         private string connectToPeer()
         {
-            if (peerh.connectPeer())
+            if(peerh.PeerIp.Equals("NOPEER"))
+                return "NO Peer available in Peer list!";
+            else if (peerh.connectPeer())
             {
                 //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
                 //serverConnect = true;
@@ -231,7 +234,7 @@ namespace Client
             }
             catch
             {
-                return "No source can join!!!!";
+                return "One of Data Ports cannot join!!!!";
             }
 
         }
@@ -280,17 +283,26 @@ namespace Client
 
         public void startUpload()
         {
+            if (!uploading)
+            {
+                
+                CLIENTIP = mainFm.tbhostIP.Text.ToString();
+
+
                 //start uploading thread
                 this.max_peer = cConfig.MaxPeer;
-                upPorth = new UploadPortHandler(cConfig.MaxPeer, CLIENTIP, mainFm);
+                upPorth = new UploadPortHandler(cConfig, CLIENTIP, mainFm);
                 upPorth.startPort();
-                mainFm.rtbupload.AppendText("upPorth.startPort()");
+                //mainFm.rtbupload.AppendText("upPorth.startPort()");
 
                 //localAddr = IPAddress.Parse(sConfig.Serverip);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
                 listenerThread.IsBackground = true;
-                listenerThread.Name = " listen_for_clients";
+                listenerThread.Name = " listen_for_peers";
                 listenerThread.Start();
+
+                uploading = true;
+            }
         }
 
         public void sendMessage(object tcpClinet)
@@ -358,6 +370,9 @@ namespace Client
                                 oddList_wIndex += 1;
 
                             currentOddNo = streamingChunk.seq;
+//by vinci: add chunk to odd upload buffer
+                            if(uploading)
+                                    upPorth.setOddListChunk(streamingChunk);
 
                         }
                         else
@@ -373,6 +388,9 @@ namespace Client
                                 evenList_wIndex += 1;
 
                             currentEvenNo = streamingChunk.seq;
+//by vinci: add chunk to even upload buffer
+                            if(uploading)
+                                    upPorth.setEvenListChunk(streamingChunk);
                         }
 
                        // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { chunkList_wIndex.ToString() + ":" + streamingChunk.seq });
@@ -646,14 +664,15 @@ namespace Client
 
         private void listenForClients()
         {
-            listenPeer = new TcpListener(localAddr, PeerListenPort);
+            IPAddress uploadipAddr = IPAddress.Parse(CLIENTIP);
+            listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
             listenPeer.Start();
 
             int temp;
 
             while (true)
             {
-                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:"+localAddr.ToString()+"\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
+                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:" + uploadipAddr.ToString() + "\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
                 TcpClient client = listenPeer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
 
