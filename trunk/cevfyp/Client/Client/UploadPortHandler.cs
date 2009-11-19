@@ -28,15 +28,16 @@ namespace Client
 
     class UploadPortHandler
     {
-        IPAddress localAddr;
-    
-        int max_client;
-        
-        static int NUM_D1PORT_BASE = 3200;
-        static int NUM_D2PORT_BASE = 3250;
-
-        static int NUM_CPORT_BASE = 3301;
         static int TREE_NO = 2;             //number of tree
+
+        IPAddress localAddr;
+        ClientConfig cConfig;
+        int max_client;
+
+        int NUM_D1PORT_BASE;
+        int NUM_D2PORT_BASE;
+        int NUM_CPORT_BASE;
+        
       
         List<cPort> CPortList;
         List<Thread> CThreadList;
@@ -60,7 +61,6 @@ namespace Client
         int evenList_rIndex = 0;
        
        ChunkHandler ch;
-        ClientConfig cConfig;
         //int lb, ub, mid, tempResult;
        
         //TcpListener listenD1port = null;
@@ -72,10 +72,17 @@ namespace Client
         private ClientForm clientFm;
         private delegate void UpdateTextCallback(string message);
 
-        public UploadPortHandler(int maxClient, string serverip, ClientForm mainFm)
+        public UploadPortHandler(ClientConfig cConfig, string serverip, ClientForm mainFm)
         {
             this.clientFm = mainFm;
-            this.max_client = maxClient;
+            this.cConfig = cConfig;
+            this.max_client = cConfig.MaxPeer;
+
+            NUM_D1PORT_BASE = cConfig.Dport;//2200;
+            NUM_D2PORT_BASE = cConfig.Dport + 50;//2250
+            NUM_CPORT_BASE = cConfig.CportBase;//2301;
+
+            
             localAddr = IPAddress.Parse(serverip);
             CPortList = new List<cPort>(max_client);
 
