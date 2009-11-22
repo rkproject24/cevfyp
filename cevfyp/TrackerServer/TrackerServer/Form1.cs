@@ -20,7 +20,7 @@ namespace TrackerServer
     public partial class Form1 : Form
     {
         static int tlPort = 1500;
-
+        private xml PeerInfo;
         private ServerConfig sConfig;
         IPAddress localAddr;
         TcpListener TrackerListen;
@@ -76,36 +76,88 @@ namespace TrackerServer
 
                     string peertype = ByteArrayToString(responsePeerMsg);
                     //int temp = Int32.Parse(tbsendIp.Text);
-                    if (peertype.Contains("<client>"))
+
+
+                    if (peertype.Contains("<clientRequest>"))
                     {
                         byte[] peeripMsg;
-                        if (peerList.Count <= 0)
+                        if (File.Exists("PeerInfoT1.xml"))
                         {
-                            peeripMsg = StrToByteArray("NOPEER");
+                            FileStream file = new FileStream("PeerInfoT1.xml", FileMode.OpenOrCreate, FileAccess.Read);
+
+                            // Create a new stream to read from a file
+                            StreamReader sr = new StreamReader(file);
+
+                            // Read contents of file into a string
+                            string s = sr.ReadToEnd();
+
+                            // Close StreamReader
+                            sr.Close();
+
+                            // Close file
+                            file.Close();
+
+                            file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Read);
+
+                            // Create a new stream to read from a file
+                            sr = new StreamReader(file);
+
+                            // Read contents of file into a string
+                            s = sr.ReadToEnd();
+
+                            // Close StreamReader
+                            sr.Close();
+
+                            // Close file
+                            file.Close();
+
+
+                            //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
+                            //byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
+                            //peeripMsg = StrToByteArray(peerList[peerList.Count - 1].Ip);
+                            peeripMsg = StrToByteArray(s);
+
+                            byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
+                            cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                            cstream.Write(peeripMsg, 0, peeripMsg.Length);
+
                         }
                         else
                         {
-                            //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
-                            //byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
-                            peeripMsg = StrToByteArray(peerList[peerList.Count - 1].Ip);
-
-
-                            byte[] ipsize = BitConverter.GetBytes(peeripMsg.Length);
-                            cstream.Write(ipsize, 0, ipsize.Length); //send size of ip
-                            cstream.Write(peeripMsg, 0, peeripMsg.Length);
-
-                            //PeerNode clientNode = new PeerNode("127.0.0.1", 2, 2); //testing code
-                            PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
-
-                            clientNode.addParent(peerList[peerList.Count - 1].Ip);
-                            //clientNode.addParent(peerList[0].Ip); 
-
-                            peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
-
-                            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
+                            peeripMsg = StrToByteArray("NOPEER");
                         }
+
                     }
-                    else if (peertype.Contains("<server>"))
+                    else if (peertype.Contains("<clientReg>"))
+                    {
+                        //PeerNode clientNode = new PeerNode("127.0.0.1", 2, 2); //testing code
+                        //PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
+
+                        //clientNode.addParent(peerList[peerList.Count - 1].Ip);
+                        //clientNode.addParent(peerList[0].Ip); 
+
+                        //peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
+
+                        //this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
+
+
+                        responsePeerMsg = new byte[4];
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                        int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
+                        PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
+
+                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
+                        int DataNo = Convert.ToInt32(PeerInfo.Read("Info", "DataNo")) + 1;
+                        PeerInfo.modify("Info", "DataNo", DataNo.ToString());
+                        PeerInfo.Add("Info", "IP" + DataNo.ToString(), serverNode.Ip.ToString());
+                        PeerInfo.Add("Info", serverNode.Ip.ToString(), "0");
+                        
+
+
+                        peerList.Add(serverNode);
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
+                    }
+                    else if (peertype.Contains("<serverReg>"))
                     {
                         responsePeerMsg = new byte[4];
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -115,7 +167,26 @@ namespace TrackerServer
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
                         PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
-                        peerList.Add(serverNode);
+
+                        if (File.Exists("PeerInfoT1.xml"))
+                        {
+                            File.Delete("PeerInfoT1.xml");
+                        }
+                        //peerList.Add(serverNode);
+                        PeerInfo = new xml("PeerInfoT1.xml", "Info");
+                        PeerInfo.Add("Info", "DataNo","1");
+                        PeerInfo.Add("Info", "IP1", serverNode.Ip.ToString());
+                        PeerInfo.Add("Info", serverNode.Ip.ToString(), "0");
+
+                        if (File.Exists("PeerInfoT2.xml"))
+                        {
+                            File.Delete("PeerInfoT2.xml");
+                        }
+                        PeerInfo = new xml("PeerInfoT2.xml","Info");
+                        PeerInfo.Add("Info", "DataNo","1");
+                        PeerInfo.Add("Info", "IP1", serverNode.Ip.ToString());
+                        PeerInfo.Add("Info", serverNode.Ip.ToString(), "0");
+
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
                     }
