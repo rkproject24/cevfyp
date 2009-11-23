@@ -89,7 +89,7 @@ namespace TrackerServer
                             StreamReader sr = new StreamReader(file);
 
                             // Read contents of file into a string
-                            string s = sr.ReadToEnd();
+                            string s1 = sr.ReadToEnd();
 
                             // Close StreamReader
                             sr.Close();
@@ -103,7 +103,7 @@ namespace TrackerServer
                             sr = new StreamReader(file);
 
                             // Read contents of file into a string
-                            s = sr.ReadToEnd();
+                            string s2 = sr.ReadToEnd();
 
                             // Close StreamReader
                             sr.Close();
@@ -115,7 +115,7 @@ namespace TrackerServer
                             //byte[] peeripMsg = StrToByteArray(tbsendIp.Text);
                             //byte[] peeripMsg = StrToByteArray(peerList[0].Ip);         //get the server ip(temporary code)
                             //peeripMsg = StrToByteArray(peerList[peerList.Count - 1].Ip);
-                            peeripMsg = StrToByteArray(s);
+                            peeripMsg = StrToByteArray(s1+"@"+s2);
 
                             byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
                             cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
@@ -146,11 +146,17 @@ namespace TrackerServer
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
                         PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
 
+                        byte[] responsePeerMsg1 = new byte[4];
+                        cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
+
+                        int layer = BitConverter.ToInt16(responsePeerMsg, 0);
+
+
                         //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
                         int DataNo = Convert.ToInt32(PeerInfo.Read("Info", "DataNo")) + 1;
                         PeerInfo.modify("Info", "DataNo", DataNo.ToString());
                         PeerInfo.Add("Info", "IP" + DataNo.ToString(), serverNode.Ip.ToString());
-                        PeerInfo.Add("Info", serverNode.Ip.ToString(), "0");
+                        PeerInfo.Add("Info", serverNode.Ip.ToString(), layer.ToString());
                         
 
 
