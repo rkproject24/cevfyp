@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using ClassLibrary;
+using System.IO;
 
 namespace Client
 {
@@ -52,7 +53,7 @@ namespace Client
         {
             TcpClient trackerTcpClient;
             NetworkStream trackerStream;
-            try
+            /*try
             {
                 trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
                 trackerStream = trackerTcpClient.GetStream();
@@ -77,12 +78,86 @@ namespace Client
                 trackerStream.Close();
 
                 return true;
+            }*/
+            try
+            {
+                trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
+                trackerStream = trackerTcpClient.GetStream();
+
+                //define client type
+                Byte[] clienttype = StrToByteArray("<clientRequest>");
+                trackerStream.Write(clienttype, 0, clienttype.Length);
+
+
+                byte[] responsePeerMsg = new byte[4];
+                trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+
+                int xmlsize = BitConverter.ToInt16(responsePeerMsg, 0);
+
+                byte[] responsePeerMsg2 = new byte[xmlsize];
+                trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                //string peerip = BitConverter.ToString(responsePeerMsg2, 0);
+                //this.peerIp = ByteArrayToString(responsePeerMsg2);
+                //Cport = BitConverter.ToInt16(responseCMessage, 0);
+                string xmlContent = ByteArrayToString(responsePeerMsg2);
+
+                string[] xmlTrees = xmlContent.Split('@');
+
+                // Specify file, instructions, and privelegdes
+                FileStream file = new FileStream("PeerInfoT1.xml", FileMode.OpenOrCreate, FileAccess.Write);
+                StreamWriter sw = new StreamWriter(file);
+                sw.Write(xmlTrees[0]);
+                sw.Close();
+                file.Close();
+
+                file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Write);
+                sw = new StreamWriter(file);
+                sw.Write(xmlTrees[1]);
+                sw.Close();
+                file.Close();
+
+                trackerTcpClient.Close();
+                trackerStream.Close();
+
+                return true;
             }
             catch
             {
             }
             return false;
         }
+
+// Write for tracker registration.
+        public bool SendRespond(int layer)
+        {
+            TcpClient connectTracker;
+            NetworkStream connectTrackerStream;
+            try
+            {
+
+                connectTracker = new TcpClient(trackIp, TrackerSLPort);
+                connectTrackerStream = connectTracker.GetStream();
+
+                //define client type
+                Byte[] clienttype = StrToByteArray("<clientReg>");
+                Byte[] clientLayer = StrToByteArray(layer.ToString());
+                //byte[] MsgLength = BitConverter.GetBytes(clientLayer.Length);
+
+                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+                //connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
+                connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+
+                connectTracker.Close();
+                connectTrackerStream.Close();
+
+            }
+            catch
+            {
+            }
+
+            return true;
+        }
+
 
         public static byte[] StrToByteArray(string str)
         {
@@ -135,6 +210,9 @@ namespace Client
             //}
             return false;
         }
+
+
+
 
         public TcpClient getDataConnect(int tree)
         {
