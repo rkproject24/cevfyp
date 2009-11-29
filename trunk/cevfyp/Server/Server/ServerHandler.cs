@@ -149,7 +149,7 @@ namespace Server
                 trackerStream = trackerTcp.GetStream();
 
                 //define server type
-                byte[] clienttype = StrToByteArray("<server>");
+                byte[] clienttype = StrToByteArray("<serverReg>");
                 trackerStream.Write(clienttype, 0, clienttype.Length);
 
 
