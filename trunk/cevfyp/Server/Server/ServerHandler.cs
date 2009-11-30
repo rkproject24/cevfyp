@@ -80,6 +80,7 @@ namespace Server
             getStreamingThread.Start();
         }
 
+
         public void pause()
         {
             vlc.pause();
@@ -88,8 +89,8 @@ namespace Server
         public void stop()
         {
             vlc.stop();
-            seqNumber = 1;
-            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
+            //seqNumber = 1;
+           // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             //mainFm.richTextBox1.Clear();
             getStreamingThread.Abort(); //by vinci
         }
