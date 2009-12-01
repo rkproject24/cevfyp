@@ -149,7 +149,7 @@ namespace TrackerServer
                         byte[] responsePeerMsg1 = new byte[4];
                         cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
 
-                        int layer = BitConverter.ToInt16(responsePeerMsg1, 0);
+                        int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
                         
                         //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
                         int DataNo = Convert.ToInt32(PeerInfo.Read("Info", "DataNo"));
