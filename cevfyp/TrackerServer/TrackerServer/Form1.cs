@@ -45,6 +45,16 @@ namespace TrackerServer
         {
             start();
             btnOn.Enabled = false;
+            //xml test = new xml("text.xml", "test");
+
+            //string[] testT = {"a","b","c" };
+            //string[] testV = {"1","2","3" };
+            //test.Add("node1", testT, testV);
+            //test.Add("signleN", "Type", "Value");
+            //string a = test.Read("node1","a");
+            //string b = test.Read("signleN", "Type");
+            //MessageBox.Show("name =a :" + a + " " + b);
+
         }
         private void btnReset_Click(object sender, EventArgs e)
         {
@@ -131,16 +141,6 @@ namespace TrackerServer
                     }
                     else if (peertype.Contains("<clientReg>"))
                     {
-                        //PeerNode clientNode = new PeerNode("127.0.0.1", 2, 2); //testing code
-                        //PeerNode clientNode = new PeerNode(clientendpt.ToString(), 2, 2);
-
-                        //clientNode.addParent(peerList[peerList.Count - 1].Ip);
-                        //clientNode.addParent(peerList[0].Ip); 
-
-                        //peerList.Add(clientNode);                               //set the clientNode into peerlist(temporary code)
-
-                        //this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Client:" + clientNode.Ip + " connected to " + clientNode.ParentPeer[0] + "\n" });
-
                         responsePeerMsg = new byte[4];
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
@@ -152,15 +152,38 @@ namespace TrackerServer
                         int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
                         
                         //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
-                        int DataNo = Convert.ToInt32(PeerInfo.Read("Info", "DataNo"));
-                        DataNo++;
-                        MessageBox.Show(layer.ToString());
-                        layer++;
-                        MessageBox.Show(layer.ToString());
+                        
+
                         
                         //PeerInfo.modify("Info", "DataNo", DataNo.ToString());
 
-                        XmlDocument modify = new XmlDocument();
+                        PeerInfo = new xml("PeerInfoT1.xml", "Info");
+                        int DataNum = PeerInfo.GetElementNum();
+                        DataNum++;
+                        //MessageBox.Show(layer.ToString());
+                        layer++;
+                        //MessageBox.Show(layer.ToString());
+                        string[] InfoN1 = { "IP", "Layer" };
+                        string[] Value1 = { serverNode.Ip.ToString(), layer.ToString() };
+                        PeerInfo.Add(DataNum.ToString(), InfoN1, Value1);
+
+
+
+                        responsePeerMsg1 = new byte[4];
+                        cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
+
+                        layer = BitConverter.ToInt16(responsePeerMsg1, 0);
+                        PeerInfo = new xml("PeerInfoT2.xml", "Info");
+
+                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
+                        DataNum = PeerInfo.GetElementNum();
+                        DataNum++;
+                        layer++;
+                        string[] InfoN2 = { "IP", "Layer" };
+                        string[] Value2 = { serverNode.Ip.ToString(), layer.ToString() };
+                        PeerInfo.Add(DataNum.ToString(), InfoN2, Value2);
+
+                      /*  XmlDocument modify = new XmlDocument();
                         modify.Load("PeerInfoT1.xml");
                         XmlAttribute attribute = modify.SelectSingleNode("Info").Attributes["DataNo"];
                         attribute.Value = DataNo.ToString();
@@ -200,7 +223,7 @@ namespace TrackerServer
                         modify.SelectSingleNode("Info").Attributes.Append(xmlattribute_add1);
 
                         modify.Save("PeerInfoT2.xml");
-
+                        */
 
                         peerList.Add(serverNode);
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
@@ -216,28 +239,22 @@ namespace TrackerServer
 
                         PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
 
-                        //peerList.Add(serverNode);
-                        if (File.Exists("PeerInfoT1.xml"))
-                            File.Delete("PeerInfoT1.xml");
-                        if (File.Exists("PeerInfoT2.xml"))
-                            File.Delete("PeerInfoT2.xml");
+                        PeerInfo = new xml("PeerInfoT1.xml", "Info", true);
+
                         PeerInfo = new xml("PeerInfoT1.xml", "Info");
-                        PeerInfo.Add("Info", "DataNo","1");
-                        PeerInfo.Add("Info", "IP1", serverNode.Ip.ToString());
-                        PeerInfo.Add("Info", "Layer1", "1");
+                        string[] InfoN1 = {"IP", "Layer" };
+                        string[] Value1 = {serverNode.Ip.ToString(), "1" };
+                        PeerInfo.Add("1", InfoN1, Value1);
 
-                        PeerInfo = new xml("PeerInfoT2.xml","Info");
-                        PeerInfo.Add("Info", "DataNo","1");
-                        PeerInfo.Add("Info", "IP1", serverNode.Ip.ToString());
-                        PeerInfo.Add("Info", "Layer1", "1");
-
+                        PeerInfo = new xml("PeerInfoT2.xml","Info", true);
+                        string[] InfoN2 = {"IP", "Layer" };
+                        string[] Value2 = {serverNode.Ip.ToString(), "1" };
+                        PeerInfo.Add("1", InfoN2, Value2);
+                        
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
                     }
 
-
-                    
-                    //break;
                 }
                 catch
                 {
