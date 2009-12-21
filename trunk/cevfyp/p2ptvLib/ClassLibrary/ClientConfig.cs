@@ -132,7 +132,7 @@ namespace ClassLibrary
             set { startBuf = value; }
         }
 
-        public void save(string fileName)
+  /*      public void save_old(string fileName)
         {
             if (File.Exists(fileName))
             {
@@ -152,6 +152,23 @@ namespace ClassLibrary
             store.Add("client", "ConportBase", this.ConportBase.ToString());
             store.Add("client", "chunkBuf", this.chunkBuf.ToString());
             store.Add("client", "startBuf", this.startBuf.ToString());
+        }*/
+
+
+        public void save(string fileName)
+        {
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            xml store = new xml(fileName, "client",true);
+
+            string[] type = {"pluginPath", "maxPeer", "chunkSize", "chunkCapacity", "ServerSLPort", "LisPort", "Dataport", "vlcPortBase", "ConportBase", "chunkBuf", "startBuf" };
+
+            string[] value = {this.pluginPath, this.maxPeer.ToString(), this.chunkSize.ToString(), this.chunkCapacity.ToString(), this.ServerSLPort.ToString(), this.LisPort.ToString(), this.Dataport.ToString(), this.vlcPortBase.ToString(), this.ConportBase.ToString(), this.chunkBuf.ToString(), this.startBuf.ToString()};
+
+            store.Add(type, value);
         }
 
         public void load(string fileName)

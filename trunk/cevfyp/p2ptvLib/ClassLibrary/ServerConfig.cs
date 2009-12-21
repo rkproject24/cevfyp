@@ -133,20 +133,14 @@ namespace ClassLibrary
             {
                 File.Delete(fileName);
             }
-            xml store = new xml(fileName, "server");
-            store.Add("server", "pluginPath", this.pluginPath);
-            store.Add("server", "streamType", this.streamType);
-            store.Add("server", "videoDir", this.videoDir);
-            store.Add("server", "maxClient", this.maxClient.ToString());
-            store.Add("server", "vlcStreamPort", this.vlcStreamPort.ToString());
-            store.Add("server", "SLisPort", this.SLisPort.ToString());
-            store.Add("server", "Dataport", this.Dataport.ToString());
-            store.Add("server", "ConportBase", this.ConportBase.ToString());
-            store.Add("server", "TreeSize", this.TreeSize.ToString());
-            store.Add("server", "serverip", this.serverip);
-            store.Add("server", "trackerip", this.trackerip);
-            store.Add("server", "chunkSize", this.chunkSize.ToString());
-            store.Add("server", "receiveStreamSize", this.receiveStreamSize.ToString());
+            xml store = new xml(fileName, "server",true);
+
+            string[] type = { "pluginPath", "streamType", "videoDir", "maxClient", "vlcStreamPort", "SLisPort", "Dataport", "ConportBase", "TreeSize", "serverip", "trackerip", "chunkSize","receiveStreamSize"};
+            string[] value = {this.pluginPath, this.streamType, this.videoDir, this.maxClient.ToString(), this.vlcStreamPort.ToString(), this.SLisPort.ToString(), this.Dataport.ToString(), this.ConportBase.ToString(), this.TreeSize.ToString(), this.serverip, this.trackerip, this.chunkSize.ToString(), this.receiveStreamSize.ToString()};
+
+
+            store.Add(type, value);
+
         }
 
         public void load(string fileName)

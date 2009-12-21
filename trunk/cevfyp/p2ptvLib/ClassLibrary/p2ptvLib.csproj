@@ -50,6 +50,7 @@
     <Compile Include="ClientConfig.cs" />
     <Compile Include="LibVlc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadPeerInfo.cs" />
     <Compile Include="ServerConfig.cs" />
     <Compile Include="TcpApps.cs" />
     <Compile Include="xml.cs" />

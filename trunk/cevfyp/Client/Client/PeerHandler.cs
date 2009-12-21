@@ -139,23 +139,12 @@ namespace Client
         //For Testing Only
         public void virtualResponse()
         {
-            XmlDocument read = new XmlDocument();
-            read.Load("PeerInfoT1.xml");
-            string PeerNoT1 = read.SelectSingleNode("Info").Attributes["DataNo"].Value;
-
-            string IPT1 = read.SelectSingleNode("Info").Attributes["IP" + PeerNoT1].Value;
-            string Layer1 = read.SelectSingleNode("Info").Attributes["Layer" + PeerNoT1].Value;
-            //xml readT2 = new xml("G:\\PeerInfoT2.xml","Info");
-            //string PeerNoT1 =readT1.Read("Info","DataNo");
-            //string IPT1 = readT1.Read("Info", "IP" + PeerNoT1);
-            read.Load("PeerInfoT2.xml");
-            string PeerNoT2 = read.SelectSingleNode("Info").Attributes["DataNo"].Value;
-
-            string IPT2 = read.SelectSingleNode("Info").Attributes["IP" + PeerNoT2].Value;
-            string Layer2 = read.SelectSingleNode("Info").Attributes["Layer" + PeerNoT2].Value;
-            //string PeerNoT2 = readT2.Read("Info", "DataNo");
-            //string IPT2 = readT2.Read("Info", "IP"+ PeerNoT2);
-            System.Windows.Forms.MessageBox.Show(IPT1);
+            xml ResponseT1 = new xml("PeerInfoT1.xml","Info");
+            string IPT1 = ResponseT1.Read("1", "IP");
+            string Layer1 = ResponseT1.Read("1", "Layer");
+            xml ResponseT2 = new xml("PeerInfoT2.xml", "Info");
+            string IPT2 = ResponseT2.Read("1", "IP");
+            string Layer2 = ResponseT2.Read("1", "Layer");
             this.peerIp = IPT1;
             SendRespond(Layer1, Layer2);
             return;
