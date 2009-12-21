@@ -3,3 +3,13 @@ C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary
 C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
 C:\Users\eddy\Desktop\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
+G:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+G:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+G:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+G:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+G:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
+F:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+F:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+F:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+F:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+F:\cevfyp\cevfyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb

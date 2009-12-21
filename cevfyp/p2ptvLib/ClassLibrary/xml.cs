@@ -18,28 +18,69 @@ namespace ClassLibrary
         {
             this.xmlFile = fileName;
             this.node = group;
-            if (!(File.Exists(xmlFile)))
+
+            XmlDocument xmlDoc = new XmlDocument();
+            try
             {
-                XmlDocument setting = new XmlDocument();
-                setting.AppendChild(setting.CreateXmlDeclaration("1.0", "UTF-8", ""));
-                XmlNode xmlnode_core = setting.CreateNode(XmlNodeType.Element, group, "");
-                setting.AppendChild(xmlnode_core);
-                setting.Save(fileName);
+                try
+                {
+                    xmlDoc.Load(fileName);
+                }
+                catch
+                {
+                    XmlTextWriter xmlWrite = new XmlTextWriter(fileName, System.Text.Encoding.UTF8);
+                    xmlWrite.Formatting = Formatting.Indented;
+                    xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+                    xmlWrite.WriteStartElement(group);
+                    xmlWrite.Close();
+                    xmlDoc.Load(fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
-        public void Add(string group, string type, string value)
+
+        public xml(string fileName, string group, bool rebuild)
+        {
+            this.xmlFile = fileName;
+            this.node = group;
+
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            
+            XmlDocument xmlDoc = new XmlDocument();
+            try
+            {
+                try
+                {
+                    xmlDoc.Load(fileName);
+                }
+                catch
+                {
+                    XmlTextWriter xmlWrite = new XmlTextWriter(fileName, System.Text.Encoding.UTF8);
+                    xmlWrite.Formatting = Formatting.Indented;
+                    xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+                    xmlWrite.WriteStartElement(group);
+                    xmlWrite.Close();
+                    xmlDoc.Load(fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public void Add_old(string group, string type, string value)
         {
             XmlDocument setting = new XmlDocument();
             setting.Load(this.xmlFile);
 
-            /*
-            for (int i = 0; i < type.Length; i++)
-            {
-                XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
-                xmlattribute_add.Value = value[i];
-                xmlnode_add.Attributes.Append(xmlattribute_add);
-            }*/
 
             //XmlNode node = setting.SelectSingleNode(group);
             XmlAttribute xmlattribute_add = setting.CreateAttribute(type);
@@ -50,7 +91,103 @@ namespace ClassLibrary
         }
 
 
-        public string Read(string group, string type)
+        public void Add(string list, string type, string value)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlElement childNode;
+
+
+            XmlNode root = xmlDoc.DocumentElement;
+            if ((childNode = (XmlElement)xmlDoc.SelectSingleNode(list)) == null)
+            {
+                childNode = xmlDoc.CreateElement(list);
+            }
+           
+                XmlElement childNode2 = xmlDoc.CreateElement(type);
+                XmlText textNode = xmlDoc.CreateTextNode(value);
+                //textNode.Value = value;
+
+                root.AppendChild(childNode);
+                childNode.AppendChild(childNode2);
+                //childNode.SetAttribute("Name", type[i]);
+                childNode2.AppendChild(textNode);
+
+                //textNode.Value = "replacing hello world";
+
+                //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
+                //xmlattribute_add.Value = value[i];
+                //xmlnode_add.Attributes.Append(xmlattribute_add);
+            
+
+            xmlDoc.Save(this.xmlFile);
+
+        }
+
+        public void Add(string list, string []type, string []value)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlElement childNode;
+
+
+            XmlElement root = xmlDoc.DocumentElement;
+            try
+            {
+                //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
+                childNode = (XmlElement)root.SelectSingleNode(list);
+            }
+            catch
+            {
+                childNode = xmlDoc.CreateElement(list);
+            }
+            for (int i = 0; i < type.Length; i++)
+            {
+                XmlElement childNode2 = xmlDoc.CreateElement(type[i]);
+                XmlText textNode = xmlDoc.CreateTextNode(value[i]);
+                //textNode.Value = value;
+
+                root.AppendChild(childNode);
+                childNode.AppendChild(childNode2);
+                //childNode.SetAttribute("Name", type[i]);
+                childNode2.AppendChild(textNode);
+
+                //textNode.Value = "replacing hello world";
+
+                //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
+                //xmlattribute_add.Value = value[i];
+                //xmlnode_add.Attributes.Append(xmlattribute_add);
+            }
+            
+            xmlDoc.Save(this.xmlFile);
+        }
+
+
+        public void Add(string[] type, string[] value)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+
+
+            XmlNode childNode = xmlDoc.DocumentElement;
+
+            for (int i = 0; i < type.Length; i++)
+            {
+                XmlElement childNode2 = xmlDoc.CreateElement(type[i]);
+                XmlText textNode = xmlDoc.CreateTextNode(value[i]);
+                //textNode.Value = value;
+
+                childNode.AppendChild(childNode2);
+                //childNode.SetAttribute("Name", type[i]);
+                childNode2.AppendChild(textNode);
+            }
+
+            xmlDoc.Save(this.xmlFile);
+
+        }
+          
+
+        public string Read_old(string group, string type)
         {
                 string value;
                 XmlDocument read = new XmlDocument();
@@ -67,12 +204,115 @@ namespace ClassLibrary
                 }
          }
 
+
+
+         public string Read(string group, string type)
+         {
+             XmlDocument doc = new XmlDocument();
+             doc.Load(this.xmlFile);
+             XmlElement root = doc.DocumentElement;
+             //XmlNodeList nodes = root.SelectNodes("/"+group);
+             //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+                 string value=null;
+                 try
+                 {
+                     if (root.LocalName == group)
+                     {
+                        foreach (XmlElement G in root)
+                        {
+                             if ((G.LocalName) == type)
+                             {
+                                 value = G.InnerText;
+                                 return value;
+                             }
+                         }
+                     }
+                     else
+                     {
+                         foreach (XmlElement G in root)
+                         {
+                             if (G.LocalName == group)
+                             {
+                                 foreach (XmlElement T in G)
+                                 {
+                                     if ((T.LocalName) == type)
+                                     {
+                                         value = T.InnerText;
+                                         return value;
+                                     }
+                                 }
+                             }
+                         }
+                     }
+                 
+                 }
+                 catch
+                 {
+                     MessageBox.Show("Reading Error! Please input both group and type!");
+                     return "error";
+                 }
+                 return "";
+          }
+        /*
+         public string Read(string [] Location)
+         {
+             XmlDocument doc = new XmlDocument();
+             doc.Load(this.xmlFile);
+             XmlElement root = doc.DocumentElement;
+         
+             string value = null;
+             try
+             {
+                 value = XmlNavigator(root, Location);
+             }
+             catch
+             {
+                 MessageBox.Show("Reading Error! Please input both group and type!");
+                 return "error";
+             }
+             return "";
+         }
+
+         public string XmlNavigator(XmlElement element, string [] check)
+         {
+             if (location.GetLength == 1)
+             {
+                 if (element.LocalName == check[0])
+                     return element.InnerText;
+                 else
+                     return "";
+             }
+             else
+             {
+ 
+             }
+         }
+        */
+
+         public int GetElementNum()
+         {
+             XmlDocument GetELement = new XmlDocument();
+             GetELement.Load(this.xmlFile);
+             XmlElement root = GetELement.DocumentElement;
+
+             int EleNum = root.ChildNodes.Count;
+
+             return EleNum;
+         }
+
+
+
         public void modify(string group, string type, string newValue)
         {
             XmlDocument modify = new XmlDocument();
             modify.Load(this.xmlFile);
-            XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
-            attribute.Value = newValue;
+            //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
+            XmlElement root = modify.DocumentElement;
+
+           // foreach (XmlElement 
+            
+            //attribute.Value = newValue;
             modify.Save(this.xmlFile);
         }
 
