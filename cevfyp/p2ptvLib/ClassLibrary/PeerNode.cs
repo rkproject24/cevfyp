@@ -4,19 +4,26 @@ using System.Text;
 
 namespace ClassLibrary
 {
-    class PeerNode
+    public class PeerNode
     {
+        private string id;
         private string ip;
         private int maxClient;
+        
+
         private List<string> childPeer;
-        private int Layer;
+        private int layer;
 
 
-        public PeerNode(string ip, int maxParent, int maxClient)
+
+
+        public PeerNode(string id, string ip, int maxClient)
         {
-            parentPeer = new List<string>(maxParent);
-            childPeer = new List<string>(maxClient);
+           // parentPeer = new List<string>(maxParent);
+            this.id = id;
             this.ip = ip;
+            this.layer = 0;
+            childPeer = new List<string>(maxClient);
         }
 
         public void addChild(string ip)
@@ -24,35 +31,41 @@ namespace ClassLibrary
             childPeer.Add(ip);
         }
 
-        public void addParent(string ip)
+        //public void addParent(string ip)
+        //{
+        //    parentPeer.Add(ip);
+        //}
+        public string Id
         {
-            parentPeer.Add(ip);
+            get { return id; }
+            set { id = value; }
         }
-
         public string Ip
         {
             get { return ip; }
             set { ip = value; }
         }
-
-        public string layer
+        public int Layer
         {
             get { return layer; }
             set { layer = value; }
         }
-
-
+        public int MaxClient
+        {
+            get { return maxClient; }
+            set { maxClient = value; }
+        }
         public List<string> ChildPeer
         {
             get { return childPeer; }
             set { childPeer = value; }
         }
-        private List<string> parentPeer;
+        //private List<string> parentPeer;
 
-        public List<string> ParentPeer
-        {
-            get { return parentPeer; }
-            set { parentPeer = value; }
-        }
+        //public List<string> ParentPeer
+        //{
+        //    get { return parentPeer; }
+        //    set { parentPeer = value; }
+        //}
     }
 }
