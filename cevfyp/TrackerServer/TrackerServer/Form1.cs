@@ -128,128 +128,97 @@ namespace TrackerServer
                             //peeripMsg = StrToByteArray(peerList[peerList.Count - 1].Ip);
                             peeripMsg = StrToByteArray(s1+"@"+s2);
 
-                            byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
-                            cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                            cstream.Write(peeripMsg, 0, peeripMsg.Length);
-
                         }
                         else
                         {
                             peeripMsg = StrToByteArray("NOPEER");
                         }
+                        byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
+                        cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                        cstream.Write(peeripMsg, 0, peeripMsg.Length);
 
                     }
-                    else if (peertype.Contains("<clientReg>"))
-                    {
-                        responsePeerMsg = new byte[4];
-                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
-                        int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
-                        PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
+                    //else if (peertype.Contains("<clientReg>"))
+                    //{
+                    //    responsePeerMsg = new byte[4];
+                    //    cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                    //    int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
+                    //    PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
 
-                        byte[] responsePeerMsg1 = new byte[4];
-                        cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
+                    //    byte[] responsePeerMsg1 = new byte[4];
+                    //    cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
 
-                        int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
-                        
-                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
-                        
+                    //    int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
 
-                        
-                        //PeerInfo.modify("Info", "DataNo", DataNo.ToString());
-
-                        PeerInfo = new xml("PeerInfoT1.xml", "Info");
-                        int DataNum = PeerInfo.GetElementNum();
-                        DataNum++;
-                        //MessageBox.Show(layer.ToString());
-                        layer++;
-                        //MessageBox.Show(layer.ToString());
-                        string[] InfoN1 = { "IP", "Layer" };
-                        string[] Value1 = { serverNode.Ip.ToString(), layer.ToString() };
-                        PeerInfo.Add(DataNum.ToString(), InfoN1, Value1);
+                    //    //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
 
 
 
-                        responsePeerMsg1 = new byte[4];
-                        cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
+                    //    //PeerInfo.modify("Info", "DataNo", DataNo.ToString());
 
-                        layer = BitConverter.ToInt16(responsePeerMsg1, 0);
-                        PeerInfo = new xml("PeerInfoT2.xml", "Info");
+                    //    PeerInfo = new xml("PeerInfoT1.xml", "Info");
+                    //    int DataNum = PeerInfo.GetElementNum();
+                    //    DataNum++;
+                    //    //MessageBox.Show(layer.ToString());
+                    //    layer++;
+                    //    //MessageBox.Show(layer.ToString());
+                    //    string[] InfoN1 = { "IP", "Layer" };
+                    //    string[] Value1 = { serverNode.Ip.ToString(), layer.ToString() };
+                    //    PeerInfo.Add(DataNum.ToString(), InfoN1, Value1);
 
-                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
-                        DataNum = PeerInfo.GetElementNum();
-                        DataNum++;
-                        layer++;
-                        string[] InfoN2 = { "IP", "Layer" };
-                        string[] Value2 = { serverNode.Ip.ToString(), layer.ToString() };
-                        PeerInfo.Add(DataNum.ToString(), InfoN2, Value2);
 
-                      /*  XmlDocument modify = new XmlDocument();
-                        modify.Load("PeerInfoT1.xml");
-                        XmlAttribute attribute = modify.SelectSingleNode("Info").Attributes["DataNo"];
-                        attribute.Value = DataNo.ToString();
 
-                        XmlAttribute xmlattribute_add = modify.CreateAttribute("IP" + DataNo.ToString());
-                        xmlattribute_add.Value = serverNode.Ip.ToString();
-                        modify.SelectSingleNode("Info").Attributes.Append(xmlattribute_add);
+                    //    responsePeerMsg1 = new byte[4];
+                    //    cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
 
-                        XmlAttribute xmlattribute_add1 = modify.CreateAttribute("Layer" + DataNo.ToString());
-                        xmlattribute_add1.Value = layer.ToString();
-                        modify.SelectSingleNode("Info").Attributes.Append(xmlattribute_add1);
+                    //    layer = BitConverter.ToInt16(responsePeerMsg1, 0);
+                    //    PeerInfo = new xml("PeerInfoT2.xml", "Info");
 
-                        modify.Save("PeerInfoT1.xml");
+                    //    //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
+                    //    DataNum = PeerInfo.GetElementNum();
+                    //    DataNum++;
+                    //    layer++;
+                    //    string[] InfoN2 = { "IP", "Layer" };
+                    //    string[] Value2 = { serverNode.Ip.ToString(), layer.ToString() };
+                    //    PeerInfo.Add(DataNum.ToString(), InfoN2, Value2);
 
-                        responsePeerMsg1 = new byte[4];
-                        cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
 
-                        layer = BitConverter.ToInt16(responsePeerMsg1, 0);
-                        //PeerInfo = new xml("PeerInfoT2.xml", "Info");
-
-                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
-                        DataNo = Convert.ToInt32(PeerInfo.Read("Info", "DataNo")) + 1;
-                        DataNo++;
-                        layer++;
-
-                        modify = new XmlDocument();
-                        modify.Load("PeerInfoT2.xml");
-                        attribute = modify.SelectSingleNode("Info").Attributes["DataNo"];
-                        attribute.Value = DataNo.ToString();
-
-                        xmlattribute_add = modify.CreateAttribute("IP" + DataNo.ToString());
-                        xmlattribute_add.Value = serverNode.Ip.ToString();
-                        modify.SelectSingleNode("Info").Attributes.Append(xmlattribute_add);
-
-                        xmlattribute_add1 = modify.CreateAttribute("Layer" + DataNo.ToString());
-                        xmlattribute_add1.Value = layer.ToString();
-                        modify.SelectSingleNode("Info").Attributes.Append(xmlattribute_add1);
-
-                        modify.Save("PeerInfoT2.xml");
-                        */
-
-                        peerList.Add(serverNode);
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
-                    }
+                    //    peerList.Add(serverNode);
+                    //    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
+                    //}
                     else if (peertype.Contains("<serverReg>"))
                     {
                         responsePeerMsg = new byte[4];
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
 
-                        //int cmdsize = BitConverter.ToInt16(responsePeerMsg, 0);
-
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
-                        PeerNode serverNode = new PeerNode(clientendpt.ToString(), 0, MaxClient);
+                        PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient);
+                        serverNode.Layer = 0;
+                        //PeerInfo = new xml("PeerInfoT1.xml", "Info", true);
 
-                        PeerInfo = new xml("PeerInfoT1.xml", "Info", true);
+                        ////PeerInfo = new xml("PeerInfoT1.xml", "Info");
+                        //string[] InfoN1 = {"IP", "Layer" };
+                        //string[] Value1 = {serverNode.Ip.ToString(), "1" };
+                        //PeerInfo.Add("Peer", InfoN1, Value1);
 
-                        PeerInfo = new xml("PeerInfoT1.xml", "Info");
-                        string[] InfoN1 = {"IP", "Layer" };
-                        string[] Value1 = {serverNode.Ip.ToString(), "1" };
-                        PeerInfo.Add("1", InfoN1, Value1);
 
-                        PeerInfo = new xml("PeerInfoT2.xml","Info", true);
-                        string[] InfoN2 = {"IP", "Layer" };
-                        string[] Value2 = {serverNode.Ip.ToString(), "1" };
-                        PeerInfo.Add("1", InfoN2, Value2);
+                        //PeerInfo = new xml("PeerInfoT2.xml","Info", true);
+                        //string[] InfoN2 = {"IP", "Layer" };
+                        //string[] Value2 = {serverNode.Ip.ToString(), "1" };
+                        //PeerInfo.Add("Peer", InfoN2, Value2);
+
+//by vinci:
+                        if (File.Exists("PeerInfoT1.xml"))
+                            File.Delete("PeerInfoT1.xml");
+                        PeerInfoAccessor TreeAccess1 = new PeerInfoAccessor("PeerInfoT1.xml");
+                        TreeAccess1.addPeer(serverNode);
+
+
+                        if (File.Exists("PeerInfoT2.xml"))
+                            File.Delete("PeerInfoT2.xml");
+                        PeerInfoAccessor TreeAccess2 = new PeerInfoAccessor("PeerInfoT2.xml");
+                        TreeAccess2.addPeer(serverNode);
                         
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
