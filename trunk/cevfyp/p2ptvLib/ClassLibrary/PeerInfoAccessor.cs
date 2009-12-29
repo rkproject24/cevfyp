@@ -27,12 +27,12 @@ namespace ClassLibrary
 
         private string getIP(string index)
         {
-            return RPI.Read(index, "IP");
+            return RPI.Read("Peer", "ID", index, "IP");
         }
 
         private string getLayer(string index)
         {
-            return RPI.Read(index, "Layer");
+            return RPI.Read("Peer", "ID", index, "Layer");
         }
 
         public string getLayerWithIP(string IP)
@@ -72,7 +72,18 @@ namespace ClassLibrary
         {
             string ip = getIP(id);
             string layer = getLayer(id);
-            return new PeerNode(ip, Int32.Parse(layer));
+            return new PeerNode(id, ip, Int32.Parse(layer));
+        }
+
+        public void addPeer(PeerNode peer)
+        {
+            string[] attributes = {"ID"};
+            string[] attributesValue = {peer.Id};
+
+            string[] Info = {"IP", "Layer" };
+            string[] Value = { peer.Ip.ToString(), peer.Layer.ToString() };
+            RPI.Add("Peer", Info, Value, attributes, attributesValue);
+            
         }
     }
 }

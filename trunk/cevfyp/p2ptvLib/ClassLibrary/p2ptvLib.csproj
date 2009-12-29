@@ -48,7 +48,7 @@
     <Compile Include="LibVlc.cs" />
     <Compile Include="PeerNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadPeerInfo.cs" />
+    <Compile Include="PeerInfoAccessor.cs" />
     <Compile Include="ServerConfig.cs" />
     <Compile Include="TcpApps.cs" />
     <Compile Include="xml.cs" />

@@ -17,6 +17,7 @@ namespace ClassLibrary
         {
             this.xmlFile = fileName;
             this.node = group;
+            //this.node = "Info";
 
             XmlDocument xmlDoc = new XmlDocument();
             try
@@ -30,7 +31,7 @@ namespace ClassLibrary
                     XmlTextWriter xmlWrite = new XmlTextWriter(fileName, System.Text.Encoding.UTF8);
                     xmlWrite.Formatting = Formatting.Indented;
                     xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-                    xmlWrite.WriteStartElement(group);
+                    xmlWrite.WriteStartElement(node);
                     xmlWrite.Close();
                     xmlDoc.Load(fileName);
                 }
@@ -90,72 +91,85 @@ namespace ClassLibrary
         }
 
 
-        public void Add(string list, string type, string value)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            XmlElement childNode;
+        //public void Add(string list, string type, string value)
+        //{
+        //    XmlDocument xmlDoc = new XmlDocument();
+        //    xmlDoc.Load(this.xmlFile);
+        //    XmlElement childNode;
 
 
-            XmlNode root = xmlDoc.DocumentElement;
-            if ((childNode = (XmlElement)xmlDoc.SelectSingleNode(list)) == null)
-            {
-                childNode = xmlDoc.CreateElement(list);
-            }
+        //    XmlNode root = xmlDoc.DocumentElement;
+        //    if ((childNode = (XmlElement)xmlDoc.SelectSingleNode(list)) == null)
+        //    {
+        //        childNode = xmlDoc.CreateElement(list);
+        //    }
            
-                XmlElement childNode2 = xmlDoc.CreateElement(type);
-                XmlText textNode = xmlDoc.CreateTextNode(value);
-                //textNode.Value = value;
+        //        XmlElement childNode2 = xmlDoc.CreateElement(type);
+        //        XmlText textNode = xmlDoc.CreateTextNode(value);
+        //        //textNode.Value = value;
 
-                root.AppendChild(childNode);
-                childNode.AppendChild(childNode2);
-                //childNode.SetAttribute("Name", type[i]);
-                childNode2.AppendChild(textNode);
+        //        root.AppendChild(childNode);
+        //        childNode.AppendChild(childNode2);
+        //        //childNode.SetAttribute("Name", type[i]);
+        //        childNode2.AppendChild(textNode);
 
-                //textNode.Value = "replacing hello world";
+        //        //textNode.Value = "replacing hello world";
 
-                //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
-                //xmlattribute_add.Value = value[i];
-                //xmlnode_add.Attributes.Append(xmlattribute_add);
+        //        //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
+        //        //xmlattribute_add.Value = value[i];
+        //        //xmlnode_add.Attributes.Append(xmlattribute_add);
             
 
-            xmlDoc.Save(this.xmlFile);
+        //    xmlDoc.Save(this.xmlFile);
 
-        }
+        //}
 
-        public void Add(string list, string []type, string []value)
+        //by vinci: attribute=NULL if there is no attributes in the node
+        public void Add(string list, string []type, string []value, string []attributeName, string[] attributevalues)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(this.xmlFile);
             XmlElement childNode;
-
-
             XmlElement root = xmlDoc.DocumentElement;
-            try
+
+            //try
+            //{
+            //    //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
+            //    childNode = (XmlElement)root.SelectSingleNode(list);
+            //}
+            //catch
+            //{
+            //    childNode = xmlDoc.CreateElement(list);
+            //}
+
+            childNode = xmlDoc.CreateElement(list);
+
+            //by vinci
+            for (int i = 0; i < attributeName.Length; i++)
             {
-                //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
-                childNode = (XmlElement)root.SelectSingleNode(list);
+                XmlAttribute attribute = xmlDoc.CreateAttribute(attributeName[i]);
+                attribute.Value = attributevalues[i];
+                childNode.SetAttributeNode(attribute);
             }
-            catch
-            {
-                childNode = xmlDoc.CreateElement(list);
-            }
+
             for (int i = 0; i < type.Length; i++)
             {
-                XmlElement childNode2 = xmlDoc.CreateElement(type[i]);
-                XmlText textNode = xmlDoc.CreateTextNode(value[i]);
-                //textNode.Value = value;
 
-                root.AppendChild(childNode);
-                childNode.AppendChild(childNode2);
-                //childNode.SetAttribute("Name", type[i]);
-                childNode2.AppendChild(textNode);
+                //by vinci:
+                try
+                {
+                    XmlElement subNode = xmlDoc.CreateElement(type[i]);
+                    subNode.InnerText = value[i];
 
-                //textNode.Value = "replacing hello world";
+                    root.AppendChild(childNode);
+                    childNode.AppendChild((XmlNode) subNode);
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
 
-                //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
-                //xmlattribute_add.Value = value[i];
-                //xmlnode_add.Attributes.Append(xmlattribute_add);
             }
             
             xmlDoc.Save(this.xmlFile);
@@ -213,7 +227,7 @@ namespace ClassLibrary
              //XmlNodeList nodes = root.SelectNodes("/"+group);
              //XmlNodeList nodes = root.GetElementsByTagName(group);
 
-                 string value=null;
+                 string value;
                  try
                  {
                      if (root.LocalName == group)
@@ -248,11 +262,73 @@ namespace ClassLibrary
                  }
                  catch
                  {
-                     MessageBox.Show("Reading Error! Please input both group and type!");
+                     //MessageBox.Show("Reading Error! Please input both group and type!");
                      return "error";
                  }
                  return "";
           }
+
+         public string Read(string nodeName, string attributeName, string attributeValue, string type)
+         {
+             XmlDocument doc = new XmlDocument();
+             doc.Load(this.xmlFile);
+             XmlElement root = doc.DocumentElement;
+             //XmlNodeList nodes = root.SelectNodes("/"+group);
+             //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+             string value;
+             try
+             {
+                 if (root.LocalName == nodeName)
+                 {
+                     foreach (XmlElement G in root)
+                     {
+                         if ((G.LocalName) == type)
+                         {
+                             value = G.InnerText;
+                             return value;
+                         }
+                     }
+                 }
+                 else
+                 {
+                     foreach (XmlElement G in root)
+                     {
+                         if (G.LocalName == nodeName)
+                         {
+                             bool matchNode = false;
+                             XmlAttributeCollection attributes = G.Attributes;
+                             foreach (XmlAttribute attri in attributes)
+                             {
+                                 if (attri.Name.Equals(attributeName) && attri.InnerText.Equals(attributeValue))
+                                     matchNode = true;
+                             }
+
+                             if (matchNode)
+                             {
+                                 foreach (XmlElement T in G)
+                                 {
+                                     if ((T.LocalName) == type)
+                                     {
+                                         value = T.InnerText;
+                                         return value;
+                                     }
+                                 }
+                             }
+
+                         }
+                     }
+                 }
+
+             }
+             catch(Exception ex)
+             {
+                 //MessageBox.Show("Reading Error! Please input both group and type!");
+                 //return "error";
+                 return ex.ToString();
+             }
+             return "";
+         }
         /*
          public string Read(string [] Location)
          {
