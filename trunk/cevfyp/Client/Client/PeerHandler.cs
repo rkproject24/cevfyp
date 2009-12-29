@@ -122,7 +122,7 @@ namespace Client
                 sw.Close();
                 file.Close();
 
-                virtualResponse();
+                //virtualResponse();
 
                 trackerTcpClient.Close();
                 trackerStream.Close();
@@ -137,18 +137,18 @@ namespace Client
         }
 
         //For Testing Only
-        public void virtualResponse()
-        {
-            xml ResponseT1 = new xml("PeerInfoT1.xml","Info");
-            string IPT1 = ResponseT1.Read("1", "IP");
-            string Layer1 = ResponseT1.Read("1", "Layer");
-            xml ResponseT2 = new xml("PeerInfoT2.xml", "Info");
-            string IPT2 = ResponseT2.Read("1", "IP");
-            string Layer2 = ResponseT2.Read("1", "Layer");
-            this.peerIp = IPT1;
-            SendRespond(Layer1, Layer2);
-            return;
-        }
+        //public void virtualResponse()
+        //{
+        //    xml ResponseT1 = new xml("PeerInfoT1.xml");
+        //    string IPT1 = ResponseT1.Read("1", "IP");
+        //    string Layer1 = ResponseT1.Read("1", "Layer");
+        //    xml ResponseT2 = new xml("PeerInfoT2.xml");
+        //    string IPT2 = ResponseT2.Read("1", "IP");
+        //    string Layer2 = ResponseT2.Read("1", "Layer");
+        //    this.peerIp = IPT1;
+        //    SendRespond(Layer1, Layer2);
+        //    return;
+        //}
 
         // Write for tracker registration.
         public bool SendRespond(string layerT1, string layerT2)
@@ -206,11 +206,18 @@ namespace Client
             //peerIp = trackIp;
             //if (peerIp.Equals("NOPEER")) //check peer IP message from Tracker, if Tracker give "NOPEER" means no parent to join
             //{
+
+            //select a peer to connect
+            PeerNode conNode = selectPeer();
+            peerIp = conNode.Ip;
+
+
             TcpClient connectServerClient;
             NetworkStream connectServerStream;
             try
             {
-                connectServerClient = new TcpClient(peerIp, cConfig.ServerSLPort1);
+                int temp = cConfig.SLPort;
+                connectServerClient = new TcpClient(peerIp, temp);
                 connectServerStream = connectServerClient.GetStream();
 
 
@@ -243,6 +250,13 @@ namespace Client
         }
 
 
+        //selecting Peer for conection
+        private PeerNode selectPeer()
+        {
+            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT1.xml");
+            return peerAccess.getPeer("0"); //select the server ip as default
+
+        }
 
 
         public TcpClient getDataConnect(int tree)

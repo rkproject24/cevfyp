@@ -199,9 +199,9 @@ namespace Client
 
         private string connectToPeer()
         {
-            if(peerh.PeerIp.Equals("NOPEER"))
-                return "NO Peer available in Peer list!";
-            else if (peerh.connectPeer())
+            //if(peerh.PeerIp.Equals("NOPEER"))
+            //    return "NO Peer available in Peer list!";
+            if (peerh.connectPeer())
             {
                 //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
                 //serverConnect = true;
