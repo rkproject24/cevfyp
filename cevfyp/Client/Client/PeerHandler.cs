@@ -19,23 +19,27 @@ namespace Client
         static int TrackerSLPort = 1500;
 
         private string trackIp;
-        private string peerIp;
-        private ClientForm clientFrm;
+        private PeerNode joinPeer;
 
+        private ClientForm clientFrm;
+        private string selfid = "";
 
         int Cport = 0;             //control message port number
         ClientConfig cConfig = new ClientConfig();
+
+        PeerInfoAccessor treeAccessor1, treeAccessor2;
 
         public int Cport1
         {
             get { return Cport; }
             set { Cport = value; }
         }
-        public string PeerIp
+        public PeerNode PeerIp
         {
-            get { return peerIp; }
-            set { peerIp = value; }
+            get { return joinPeer; }
+            set { joinPeer = value; }
         }
+
 
         //int D1port = 0;             //video data port number
         int[] Dport = new int[TREE_NO];
@@ -43,7 +47,7 @@ namespace Client
         public PeerHandler(string trackerIp, ClientForm clientFrm)
         {
             this.clientFrm = clientFrm;
-            cConfig.load("C:\\ClientConfig.xml");
+            cConfig.load("C:\\ClientConfig");
             this.trackIp = trackerIp;
             for (int i = 0; i < TREE_NO; i++)
             {
@@ -122,6 +126,10 @@ namespace Client
                 sw.Close();
                 file.Close();
 
+                treeAccessor1 = new PeerInfoAccessor("PeerInfoT1");
+                this.selfid = (treeAccessor1.getMaxId()+1).ToString();
+                
+                //selfid = xmlTrees[2];
                 //virtualResponse();
 
                 trackerTcpClient.Close();
@@ -142,9 +150,11 @@ namespace Client
         //    xml ResponseT1 = new xml("PeerInfoT1.xml");
         //    string IPT1 = ResponseT1.Read("1", "IP");
         //    string Layer1 = ResponseT1.Read("1", "Layer");
+
         //    xml ResponseT2 = new xml("PeerInfoT2.xml");
         //    string IPT2 = ResponseT2.Read("1", "IP");
         //    string Layer2 = ResponseT2.Read("1", "Layer");
+
         //    this.peerIp = IPT1;
         //    SendRespond(Layer1, Layer2);
         //    return;
@@ -161,22 +171,31 @@ namespace Client
                 connectTracker = new TcpClient(trackIp, TrackerSLPort);
                 connectTrackerStream = connectTracker.GetStream();
 
-                //define client type
+                //define client message type
                 Byte[] clienttype = StrToByteArray("<clientReg>");
-
-                //byte[] MsgLength = BitConverter.GetBytes(clientLayer.Length);
-
                 connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+                
+                ////send id
+                //Byte[] idbyte = StrToByteArray(selfid);
+                //connectTrackerStream.Write(idbyte, 0, idbyte.Length);
 
-                Byte[] maxClient = StrToByteArray(this.cConfig.MaxPeer.ToString());
-                connectTrackerStream.Write(maxClient, 0, maxClient.Length);
+                //Byte[] maxClient = StrToByteArray(this.cConfig.MaxPeer.ToString());
+                //connectTrackerStream.Write(maxClient, 0, maxClient.Length);
 
-                //connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
-                Byte[] clientLayer = StrToByteArray(layerT1);
-                connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+                ////connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
+                //Byte[] clientLayer = StrToByteArray(layerT1);
+                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                clientLayer = StrToByteArray(layerT2);
-                connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+                //clientLayer = StrToByteArray(layerT2);
+                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+
+                string sendstr = selfid + "@" + this.cConfig.MaxPeer + "@" + layerT1 + "@" + layerT2;
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
                 connectTracker.Close();
                 connectTrackerStream.Close();
@@ -209,7 +228,7 @@ namespace Client
 
             //select a peer to connect
             PeerNode conNode = selectPeer();
-            peerIp = conNode.Ip;
+            joinPeer = conNode;
 
 
             TcpClient connectServerClient;
@@ -217,7 +236,7 @@ namespace Client
             try
             {
                 int temp = cConfig.SLPort;
-                connectServerClient = new TcpClient(peerIp, temp);
+                connectServerClient = new TcpClient(joinPeer.Ip, temp);
                 connectServerStream = connectServerClient.GetStream();
 
 
@@ -253,7 +272,7 @@ namespace Client
         //selecting Peer for conection
         private PeerNode selectPeer()
         {
-            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT1.xml");
+            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT1");
             return peerAccess.getPeer("0"); //select the server ip as default
 
         }
@@ -290,8 +309,8 @@ namespace Client
             //{
             //    return "No source can join!";
             //}
-            TcpClient treeclient = new TcpClient(peerIp, Dport[tree]);
-            clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + peerIp + ":" + Dport[tree] + "\n");
+            TcpClient treeclient = new TcpClient(joinPeer.Ip, Dport[tree]);
+            clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Dport[tree] + "\n");
             return treeclient;
         }
     }

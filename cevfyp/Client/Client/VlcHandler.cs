@@ -19,7 +19,7 @@ namespace Client
 
         public VlcHandler()
         {
-            cConfig.load("C:\\ClientConfig.xml");
+            cConfig.load("C:\\ClientConfig");
             args = new string[]
             {
             "-I", "dummy", "--ignore-config",
