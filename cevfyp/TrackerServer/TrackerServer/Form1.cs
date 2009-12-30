@@ -161,11 +161,13 @@ namespace TrackerServer
                         clientNodeA.Layer = layerA;
                         PeerInfoAccessor TreeAccess1 = new PeerInfoAccessor(Peerlist_name + "1");
                         TreeAccess1.addPeer(clientNodeA);
+                        TreeAccess1.setMaxId(Int32.Parse(clientid));
 
                         PeerNode clientNodeB = new PeerNode(clientid, clientendpt.ToString(), MaxClient);
                         clientNodeB.Layer = layerB;
                         PeerInfoAccessor TreeAccess2 = new PeerInfoAccessor(Peerlist_name + "2");
                         TreeAccess2.addPeer(clientNodeB);
+                        TreeAccess2.setMaxId(Int32.Parse(clientid));
 
                         ////PeerInfo.modify("Info", "DataNo", DataNo.ToString());
 
@@ -224,9 +226,11 @@ namespace TrackerServer
 //by vinci:
                         PeerInfoAccessor TreeAccess1 = new PeerInfoAccessor(Peerlist_name + "1");
                         TreeAccess1.addPeer(serverNode);
+                        TreeAccess1.NewMaxId();
 
                         PeerInfoAccessor TreeAccess2 = new PeerInfoAccessor(Peerlist_name + "2");
                         TreeAccess2.addPeer(serverNode);
+                        TreeAccess2.NewMaxId();
                         
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
