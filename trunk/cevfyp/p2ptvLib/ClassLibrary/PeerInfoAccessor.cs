@@ -16,7 +16,8 @@ namespace ClassLibrary
 
         public PeerInfoAccessor(string fileName)
         {
-            this.RPI = new xml(fileName, "Info");
+            this.RPI = new xml(fileName, "Info", false);
+            RPI.AddAttribute("Info", "MaxId", "0");
             this.xmlFile = fileName;
         }
 
@@ -84,6 +85,17 @@ namespace ClassLibrary
             string[] Value = { peer.Ip.ToString(), peer.Layer.ToString() };
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
+        }
+
+        public void setMaxId(int MaxId)
+        {
+            RPI.modifyAttribute("Info", "MaxId", MaxId.ToString());
+        }
+
+        public int getMaxId()
+        {
+
+            return Int32.Parse(RPI.ReadAttribute("Info", "MaxId"));
         }
     }
 }
