@@ -47,7 +47,7 @@ namespace Server
             //sConfig.save("tempconfig.xml");
 
             sConfig = new ServerConfig();
-            sConfig.load("C:\\ServerConfig.xml");
+            sConfig.load("C:\\ServerConfig");
             reloadUI();
 
           
@@ -106,7 +106,7 @@ namespace Server
             {
                 //mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
                 //mainFm.tbServerIp.Text = sConfig.Serverip;
-                sConfig.load("C:\\ServerConfig.xml");
+                sConfig.load("C:\\ServerConfig");
                 reloadUI();
 
                 this.max_client = sConfig.MaxClient;
