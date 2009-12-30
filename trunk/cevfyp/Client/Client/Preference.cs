@@ -56,7 +56,7 @@ namespace Client
             cConfig.ChunkBuf = Convert.ToInt32(NudChunkBuf.Value);
             cConfig.MaxPeer = Convert.ToInt32(NudPeers.Value);
 
-            cConfig.save("C:\\ClientConfig.xml");
+            cConfig.save("C:\\ClientConfig");
             this.Close();
         }
     }
