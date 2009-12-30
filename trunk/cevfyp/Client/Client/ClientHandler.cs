@@ -93,7 +93,7 @@ namespace Client
             vlc = new VlcHandler();
             ch = new ChunkHandler();
 
-            cConfig.load("C:\\ClientConfig.xml");
+            cConfig.load("C:\\ClientConfig");
 
             chunkList = new List<Chunk>(cConfig.ChunkCapacity);
             oddList = new List<Chunk>(cConfig.ChunkCapacity);
@@ -223,12 +223,14 @@ namespace Client
             try
             {
                 //ClientC = new TcpClient(sourceIp, peerh.Cport1);
-                ClientC = new TcpClient(peerh.PeerIp, peerh.Cport1);
+                ClientC = new TcpClient(peerh.PeerIp.Ip, peerh.Cport1);
 
                 for (int i = 0; i < TREE_NO; i++)
                 {
                     ClientD.Add(peerh.getDataConnect(i));
                 }
+
+                peerh.SendRespond(peerh.PeerIp.Layer.ToString(), peerh.PeerIp.Layer.ToString());
 
                 return "OK3";
             }
