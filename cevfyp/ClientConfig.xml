@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<client>
+  <pluginPath>C:\vlc-0.9.9</pluginPath>
+  <maxPeer>12</maxPeer>
+  <chunkSize>3942</chunkSize>
+  <chunkCapacity>112</chunkCapacity>
+  <ServerSLPort>1234</ServerSLPort>
+  <LisPort>1100</LisPort>
+  <Dataport>1200</Dataport>
+  <vlcPortBase>1000</vlcPortBase>
+  <ConportBase>1301</ConportBase>
+  <chunkBuf>50</chunkBuf>
+  <startBuf>11</startBuf>
+</client>
