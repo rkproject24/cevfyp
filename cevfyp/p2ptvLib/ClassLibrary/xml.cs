@@ -367,10 +367,10 @@ namespace ClassLibrary
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(this.xmlFile);
             XmlAttribute attribute = xmlDoc.SelectSingleNode(node).Attributes[attributeName];
-
+            //xmlDoc.SelectSingleNode(node).Attributes[attributeName] = newValue;
             attribute.Value = newValue;
-            attribute.ParentNode.RemoveChild(attribute);
-            attribute.ParentNode.AppendChild(attribute);
+            //xmlDoc.RemoveChild(attribute);
+            //xmlDoc.AppendChild(attribute);
             xmlDoc.Save(this.xmlFile);
         }
 
