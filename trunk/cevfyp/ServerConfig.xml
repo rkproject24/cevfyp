@@ -11,6 +11,6 @@
   <TreeSize>2</TreeSize>
   <serverip>192.168.1.3</serverip>
   <trackerip>192.168.1.3</trackerip>
-  <chunkSize>3182</chunkSize>
+  <chunkSize>3942</chunkSize>
   <receiveStreamSize>3760</receiveStreamSize>
 </server>
