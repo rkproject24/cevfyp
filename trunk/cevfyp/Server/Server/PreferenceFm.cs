@@ -22,7 +22,7 @@ namespace Server
 
         private void loadConfig()
         {
-            sConfig.load("C:\\ServerConfig.xml");
+            sConfig.load("C:\\ServerConfig");
 
             tbConport.Text = sConfig.CportBase.ToString();
             tbDataport.Text = sConfig.Dport.ToString();
