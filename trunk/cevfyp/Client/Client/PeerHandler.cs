@@ -273,7 +273,8 @@ namespace Client
         private PeerNode selectPeer()
         {
             PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT1");
-            return peerAccess.getPeer("0"); //select the server ip as default
+            //return peerAccess.getPeer("0"); //select the server ip as default
+            return peerAccess.getPeer(peerAccess.getMaxId().ToString());
 
         }
 
