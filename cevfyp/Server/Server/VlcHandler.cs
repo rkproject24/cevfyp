@@ -16,7 +16,7 @@ namespace Server
 
         public VlcHandler()
         {
-            sConfig.load("C:\\ServerConfig.xml");
+            sConfig.load("C:\\ServerConfig");
         }
 
         static void Raise(ref libvlc_exception_t ex)
