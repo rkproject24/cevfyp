@@ -22,7 +22,7 @@ namespace Client
 
         private void loadConfig()
         {
-            cConfig.load("C:\\ClientConfig.xml");
+            cConfig.load("C:\\ClientConfig");
 
             tbChunkLenght.Text = cConfig.ChunkCapacity.ToString();
             tbPlugin.Text = cConfig.PluginPath;
