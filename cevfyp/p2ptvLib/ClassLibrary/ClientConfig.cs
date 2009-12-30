@@ -172,7 +172,7 @@ namespace ClassLibrary
 
         public void load(string fileName)
         {
-            xml load = new xml(fileName, "client");
+            xml load = new xml(fileName, "client", false);
        
             this.pluginPath = load.Read("client", "pluginPath");
             this.maxPeer = Convert.ToInt32(load.Read("client", "maxPeer"));

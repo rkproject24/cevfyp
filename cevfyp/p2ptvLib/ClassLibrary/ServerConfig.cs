@@ -144,7 +144,7 @@ namespace ClassLibrary
 
         public void load(string fileName)
         {
-            xml load = new xml(fileName, "server");
+            xml load = new xml(fileName, "server", false);
 
             this.pluginPath = load.Read("server", "pluginPath");
             this.streamType = load.Read("server", "streamType");

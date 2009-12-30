@@ -13,44 +13,14 @@ namespace ClassLibrary
         private string xmlFile;
         private string node;
 
-        public xml(string fileName, string group)
-        {
-            this.xmlFile = fileName;
-            this.node = group;
-            //this.node = "Info";
-
-            XmlDocument xmlDoc = new XmlDocument();
-            try
-            {
-                try
-                {
-                    xmlDoc.Load(fileName);
-                }
-                catch
-                {
-                    XmlTextWriter xmlWrite = new XmlTextWriter(fileName, System.Text.Encoding.UTF8);
-                    xmlWrite.Formatting = Formatting.Indented;
-                    xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-                    xmlWrite.WriteStartElement(node);
-                    xmlWrite.Close();
-                    xmlDoc.Load(fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-
         public xml(string fileName, string group, bool rebuild)
         {
-            this.xmlFile = fileName;
+            this.xmlFile = fileName + ".xml";
             this.node = group;
 
-            if (File.Exists(fileName))
+            if (File.Exists(xmlFile) && rebuild)
             {
-                File.Delete(fileName);
+                File.Delete(xmlFile);
             }
             
             XmlDocument xmlDoc = new XmlDocument();
@@ -58,16 +28,16 @@ namespace ClassLibrary
             {
                 try
                 {
-                    xmlDoc.Load(fileName);
+                    xmlDoc.Load(xmlFile);
                 }
                 catch
                 {
-                    XmlTextWriter xmlWrite = new XmlTextWriter(fileName, System.Text.Encoding.UTF8);
+                    XmlTextWriter xmlWrite = new XmlTextWriter(xmlFile, System.Text.Encoding.UTF8);
                     xmlWrite.Formatting = Formatting.Indented;
                     xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-                    xmlWrite.WriteStartElement(group);
+                    xmlWrite.WriteStartElement(node);
                     xmlWrite.Close();
-                    xmlDoc.Load(fileName);
+                    xmlDoc.Load(xmlFile);
                 }
             }
             catch (Exception ex)
@@ -76,7 +46,7 @@ namespace ClassLibrary
             }
         }
 
-        public void Add_old(string group, string type, string value)
+        public void AddAttribute(string group, string type, string value)
         {
             XmlDocument setting = new XmlDocument();
             setting.Load(this.xmlFile);
@@ -200,7 +170,7 @@ namespace ClassLibrary
         }
           
 
-        public string Read_old(string group, string type)
+        public string ReadAttribute(string group, string type)
         {
                 string value;
                 XmlDocument read = new XmlDocument();
@@ -389,6 +359,19 @@ namespace ClassLibrary
             
             //attribute.Value = newValue;
             modify.Save(this.xmlFile);
+        }
+
+        //by vinci
+        public void modifyAttribute(string node, string attributeName, string newValue)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlAttribute attribute = xmlDoc.SelectSingleNode(node).Attributes[attributeName];
+
+            attribute.Value = newValue;
+            attribute.ParentNode.RemoveChild(attribute);
+            attribute.ParentNode.AppendChild(attribute);
+            xmlDoc.Save(this.xmlFile);
         }
 
         public void deleteAttribute(string group, string type)
