@@ -60,7 +60,7 @@ namespace Server
             sConfig.ChunkSize = Convert.ToInt32(tbChunkSize.Text);
             sConfig.Trackerip = tbTracker.Text;
 
-            sConfig.save("C:\\ServerConfig.xml");
+            sConfig.save("C:\\ServerConfig");
 
             this.Close();
         }
