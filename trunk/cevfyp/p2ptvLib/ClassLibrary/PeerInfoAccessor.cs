@@ -17,7 +17,7 @@ namespace ClassLibrary
         public PeerInfoAccessor(string fileName)
         {
             this.RPI = new xml(fileName, "Info", false);
-            RPI.AddAttribute("Info", "MaxId", "0");
+            //RPI.AddAttribute("Info", "MaxId", "0");
             this.xmlFile = fileName;
         }
 
@@ -86,6 +86,12 @@ namespace ClassLibrary
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
         }
+
+        public void NewMaxId()
+        {
+            RPI.AddAttribute("Info", "MaxId", "0");
+        }
+
 
         public void setMaxId(int MaxId)
         {
