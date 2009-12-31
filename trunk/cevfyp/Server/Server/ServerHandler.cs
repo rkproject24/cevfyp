@@ -157,6 +157,9 @@ namespace Server
                 //byte[] cmdbyte = StrToByteArray("start");
                 //trackerStream.Write(cmdbyte, 0, cmdbyte.Length);
 
+                byte[] treeSizebyte = BitConverter.GetBytes(sConfig.TreeSize); //register the number of tree in tracker
+                trackerStream.Write(treeSizebyte, 0, treeSizebyte.Length);
+
                 byte[] maxcbyte = BitConverter.GetBytes(sConfig.MaxClient);
                 trackerStream.Write(maxcbyte, 0, maxcbyte.Length);
 
