@@ -15,6 +15,7 @@ namespace Client
     class PeerHandler
     {
         //static int TRACKER_PORT = 1100;  //server listen port
+        const string Peerlist_name = "PeerInfoT";
         static int TREE_NO = 2;
         static int TrackerSLPort = 1500;
 
@@ -22,12 +23,12 @@ namespace Client
         private PeerNode joinPeer;
 
         private ClientForm clientFrm;
-        private string selfid = "";
+        private string[] selfid = new string[TREE_NO];
 
         int Cport = 0;             //control message port number
         ClientConfig cConfig = new ClientConfig();
 
-        PeerInfoAccessor treeAccessor1, treeAccessor2;
+        PeerInfoAccessor treeAccessor;
 
         public int Cport1
         {
@@ -57,34 +58,79 @@ namespace Client
         //by Vinci: coonect to Tracker for peer ip 
         public bool findTracker()
         {
+            for (int i = 0; i < TREE_NO; i++)
+            {
+                downloadPeerlist(i);
+            }
+            //TcpClient trackerTcpClient;
+            //NetworkStream trackerStream;
+            //try
+            //{
+            //    trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
+            //    trackerStream = trackerTcpClient.GetStream();
+
+            //    //define client type
+            //    Byte[] clienttype = StrToByteArray("<clientReq>");
+            //    trackerStream.Write(clienttype, 0, clienttype.Length);
+
+
+            //    byte[] responsePeerMsg = new byte[4];
+            //    trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+
+            //    int xmlsize = BitConverter.ToInt16(responsePeerMsg, 0);
+
+            //    byte[] responsePeerMsg2 = new byte[xmlsize];
+            //    trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+            //    //string peerip = BitConverter.ToString(responsePeerMsg2, 0);
+            //    //this.peerIp = ByteArrayToString(responsePeerMsg2);
+            //    //Cport = BitConverter.ToInt16(responseCMessage, 0);
+            //    string xmlContent = ByteArrayToString(responsePeerMsg2);
+
+            //    string[] xmlTrees = xmlContent.Split('@');
+
+            //    if (File.Exists("PeerInfoT1.xml"))
+            //        File.Delete("PeerInfoT1.xml");
+            //    // Specify file, instructions, and privelegdes
+            //    FileStream file = new FileStream("PeerInfoT1.xml", FileMode.OpenOrCreate, FileAccess.Write);
+            //    StreamWriter sw = new StreamWriter(file);
+            //    sw.Write(xmlTrees[0]);
+            //    sw.Close();
+            //    file.Close();
+
+            //    if (File.Exists("PeerInfoT2.xml"))
+            //        File.Delete("PeerInfoT2.xml");
+            //    file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Write);
+            //    sw = new StreamWriter(file);
+            //    sw.Write(xmlTrees[1]);
+            //    sw.Close();
+            //    file.Close();
+
+            //    treeAccessor1 = new PeerInfoAccessor("PeerInfoT1");
+            //    this.selfid[0] = (treeAccessor1.getMaxId()+1).ToString();
+
+            //    treeAccessor2 = new PeerInfoAccessor("PeerInfoT2");
+            //    this.selfid[1] = (treeAccessor2.getMaxId() + 1).ToString();
+
+            //    //selfid = xmlTrees[2];
+            //    //virtualResponse();
+
+            //    trackerTcpClient.Close();
+            //    trackerStream.Close();
+
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    //System.Windows.Forms.MessageBox.Show(ex.ToString());
+            //}
+            return true;
+        }
+
+        public bool downloadPeerlist(int tree)
+        {
             TcpClient trackerTcpClient;
             NetworkStream trackerStream;
-            /*try
-            {
-                trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
-                trackerStream = trackerTcpClient.GetStream();
-
-                //define client type
-                Byte[] clienttype = StrToByteArray("<client>");
-                trackerStream.Write(clienttype, 0, clienttype.Length);
-
-
-                byte[] responsePeerMsg = new byte[4];
-                trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
-
-                int ipsize = BitConverter.ToInt16(responsePeerMsg, 0);
-
-                byte[] responsePeerMsg2 = new byte[ipsize];
-                trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-                //string peerip = BitConverter.ToString(responsePeerMsg2, 0);
-                this.peerIp = ByteArrayToString(responsePeerMsg2);
-                //Cport = BitConverter.ToInt16(responseCMessage, 0);
-
-                trackerTcpClient.Close();
-                trackerStream.Close();
-
-                return true;
-            }*/
+            string PeerFileName = Peerlist_name + tree + ".xml";
             try
             {
                 trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
@@ -94,6 +140,8 @@ namespace Client
                 Byte[] clienttype = StrToByteArray("<clientReq>");
                 trackerStream.Write(clienttype, 0, clienttype.Length);
 
+                byte[] treeNo = BitConverter.GetBytes(tree);
+                trackerStream.Write(treeNo, 0, treeNo.Length);
 
                 byte[] responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -102,33 +150,34 @@ namespace Client
 
                 byte[] responsePeerMsg2 = new byte[xmlsize];
                 trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-                //string peerip = BitConverter.ToString(responsePeerMsg2, 0);
-                //this.peerIp = ByteArrayToString(responsePeerMsg2);
-                //Cport = BitConverter.ToInt16(responseCMessage, 0);
+
                 string xmlContent = ByteArrayToString(responsePeerMsg2);
 
-                string[] xmlTrees = xmlContent.Split('@');
+                //string[] xmlTrees = xmlContent.Split('@');
 
-                if (File.Exists("PeerInfoT1.xml"))
-                    File.Delete("PeerInfoT1.xml");
+                if (File.Exists(PeerFileName))
+                    File.Delete(PeerFileName);
                 // Specify file, instructions, and privelegdes
-                FileStream file = new FileStream("PeerInfoT1.xml", FileMode.OpenOrCreate, FileAccess.Write);
+                FileStream file = new FileStream(PeerFileName, FileMode.OpenOrCreate, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(file);
-                sw.Write(xmlTrees[0]);
+                sw.Write(xmlContent);
                 sw.Close();
                 file.Close();
 
-                if (File.Exists("PeerInfoT2.xml"))
-                    File.Delete("PeerInfoT2.xml");
-                file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Write);
-                sw = new StreamWriter(file);
-                sw.Write(xmlTrees[1]);
-                sw.Close();
-                file.Close();
+                //if (File.Exists("PeerInfoT2.xml"))
+                //    File.Delete("PeerInfoT2.xml");
+                //file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Write);
+                //sw = new StreamWriter(file);
+                //sw.Write(xmlTrees[1]);
+                //sw.Close();
+                //file.Close();
 
-                treeAccessor1 = new PeerInfoAccessor("PeerInfoT1");
-                this.selfid = (treeAccessor1.getMaxId()+1).ToString();
-                
+                treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+                this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
+
+                //treeAccessor2 = new PeerInfoAccessor("PeerInfoT2");
+                //this.selfid[1] = (treeAccessor2.getMaxId() + 1).ToString();
+
                 //selfid = xmlTrees[2];
                 //virtualResponse();
 
@@ -139,29 +188,14 @@ namespace Client
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                System.Windows.Forms.MessageBox.Show("Tree:" +tree + "\n" +ex.ToString());
             }
             return false;
         }
 
-        //For Testing Only
-        //public void virtualResponse()
-        //{
-        //    xml ResponseT1 = new xml("PeerInfoT1.xml");
-        //    string IPT1 = ResponseT1.Read("1", "IP");
-        //    string Layer1 = ResponseT1.Read("1", "Layer");
-
-        //    xml ResponseT2 = new xml("PeerInfoT2.xml");
-        //    string IPT2 = ResponseT2.Read("1", "IP");
-        //    string Layer2 = ResponseT2.Read("1", "Layer");
-
-        //    this.peerIp = IPT1;
-        //    SendRespond(Layer1, Layer2);
-        //    return;
-        //}
 
         // Write for tracker registration.
-        public bool SendRespond(string layerT1, string layerT2)
+        public bool registerToTracker(int tree, string layer)
         {
             TcpClient connectTracker;
             NetworkStream connectTrackerStream;
@@ -189,7 +223,7 @@ namespace Client
                 //clientLayer = StrToByteArray(layerT2);
                 //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                string sendstr = selfid + "@" + this.cConfig.MaxPeer + "@" + layerT1 + "@" + layerT2;
+                string sendstr = tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer;
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -272,7 +306,7 @@ namespace Client
         //selecting Peer for conection
         private PeerNode selectPeer()
         {
-            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT1");
+            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
             //return peerAccess.getPeer("0"); //select the server ip as default
             return peerAccess.getPeer(peerAccess.getMaxId().ToString());
 

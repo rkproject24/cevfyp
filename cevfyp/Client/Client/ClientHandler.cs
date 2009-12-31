@@ -228,9 +228,11 @@ namespace Client
                 for (int i = 0; i < TREE_NO; i++)
                 {
                     ClientD.Add(peerh.getDataConnect(i));
+
+                    peerh.registerToTracker(i, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
                 }
 
-                peerh.SendRespond(peerh.PeerIp.Layer.ToString(), peerh.PeerIp.Layer.ToString());
+                
 
                 return "OK3";
             }
