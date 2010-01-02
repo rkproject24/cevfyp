@@ -25,6 +25,7 @@ namespace Server
 
         
         int max_client;
+        int max_tree;
         int seqNumber = 1;
 
         TcpListener listenServer;
@@ -110,8 +111,10 @@ namespace Server
                 reloadUI();
 
                 this.max_client = sConfig.MaxClient;
-                ph = new PortHandler(max_client, sConfig.Serverip, mainFm);
-                ph.startPort();
+                this.max_tree = sConfig.TreeSize;
+                ph = new PortHandler(max_client,max_tree, sConfig.Serverip, mainFm);
+                ph.startTreePort();//ph.startPort();
+
 
                 localAddr = IPAddress.Parse(sConfig.Serverip);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
@@ -198,14 +201,19 @@ namespace Server
                 bool sendCPort = false;
                 bool sendD1Port = false;
                 bool sendD2Port = false;
-                
+
+                bool sendCPortState = false;
+                bool sendDPortState = false;
+
+
+
                 try
                 {
-                    for (int i = 0; i < max_client; i++)
+                  /*  for (int i = 0; i < max_client; i++)
                     {
-                        if (ph.getCListClient(i) == null)
+                        if (ph.getTreeCListClient(1, i) == null) //ph.getCListClient(i) == null
                         {
-                            temp = ph.getCListPort(i);
+                            temp = ph.getTreeCListPort(1, i);//temp = ph.getCListPort(i);
                             Byte[] cMessage = BitConverter.GetBytes(temp);
                             stream.Write(cMessage, 0, cMessage.Length);
                             sendCPort = true;
@@ -213,13 +221,14 @@ namespace Server
 
                             break;
                         }
+
                     }
 
                     for (int i = 0; i < max_client; i++)
                     {
-                        if (ph.getDListClient(i, 1) == null)
+                        if (ph.getTreeDListClient(1, i) == null) //ph.getDListClient(i) == null
                         {
-                            temp = ph.getDListPort(i, 1);
+                            temp=ph.getTreeDListPort(1,i);//temp = ph.getDListPort(i, 1);
                             Byte[] d1Message = BitConverter.GetBytes(temp);
                             stream.Write(d1Message, 0, d1Message.Length);
                             sendD1Port = true;
@@ -231,9 +240,9 @@ namespace Server
 
                     for (int i = 0; i < max_client; i++)
                     {
-                        if (ph.getDListClient(i, 2) == null)
+                        if (ph.getTreeDListClient(2, i) == null) //ph.getDListClient(i) == null
                         {
-                            temp = ph.getDListPort(i, 2);
+                            temp = ph.getTreeDListPort(2, i);//temp = ph.getDListPort(i, 2);
                             Byte[] d2Message = BitConverter.GetBytes(temp);
                             stream.Write(d2Message, 0, d2Message.Length);
                             sendD2Port = true;
@@ -242,6 +251,52 @@ namespace Server
                             break;
                         }
                     }
+                   */
+
+                    for (int i = 1; i <= max_tree; i++)
+                    {
+                        for (int j = 0; i < max_client; j++)
+                        {
+                            Byte[] cMessage;
+                            Byte[] dMessage;
+                            sendCPortState = false;
+                            sendDPortState = false;
+
+                            if (ph.getTreeCListClient(i, j) == null)
+                                sendCPortState = true;
+                              
+                            if (ph.getTreeDListClient(i, j) == null)
+                                sendDPortState = true;
+                              
+
+                            if (sendCPortState == true && sendDPortState == true)
+                            {
+                                temp = ph.getTreeCListPort(i, j);
+                                cMessage = BitConverter.GetBytes(temp);
+                                stream.Write(cMessage, 0, cMessage.Length);
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + temp.ToString() + "\n" });
+
+                                temp = ph.getTreeDListPort(i, j);
+                                dMessage = BitConverter.GetBytes(temp);
+                                stream.Write(dMessage, 0, dMessage.Length);
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + temp.ToString() + "\n" });
+
+                                break;
+                            }
+                        }
+
+
+                        if (sendCPortState != true && sendDPortState != true)
+                        {
+                            Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
+                            stream.Write(cMessage, 0, cMessage.Length);
+
+                            Byte[] dMessage = BitConverter.GetBytes(0000);
+                            stream.Write(dMessage, 0, dMessage.Length); 
+                        }
+                    }
+
+
                 }
                 catch
                 {
@@ -249,6 +304,7 @@ namespace Server
                     break;
                 }
 
+                /*
                 if (sendCPort == false || sendD1Port==false || sendD2Port==false)
                 {
                     Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
@@ -259,6 +315,7 @@ namespace Server
 
                     stream.Write(dMessage, 0, dMessage.Length);     //d2
                 }
+                */
 
             }//end while loop
         }
@@ -297,54 +354,21 @@ namespace Server
 
                 streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
                
-                /*//handle multiple tree
-                if (streamingChunk.seq % 2 != 0)
-                    oddChunk = true;
+                //yam:10-10-09
+              //  if (streamingChunk.seq % 2 != 0)
+               //     ph.setOddListChunk(streamingChunk);
+              //  else
+               //     ph.setEvenListChunk(streamingChunk);
+
+
+                //yam:01-01-10
+                int remainder_number = streamingChunk.seq % max_tree;
+
+                if (remainder_number == 0)
+                    ph.setChunkList(streamingChunk, max_tree - 1);
                 else
-                    oddChunk = false;
-                */
-
-//yam:10-10-09
-                if (streamingChunk.seq % 2 != 0)
-                    ph.setOddListChunk(streamingChunk);
-                else
-                    ph.setEvenListChunk(streamingChunk);
-
-
-
-                    /*
-                     for (int i = 0; i < max_client; i++)
-                     {
-                         try
-                         {
-
-                             if (oddChunk==true)
-                             {
-                                 if (ph.getDListClient(i,1) == null)
-                                   continue;
-                                 stream = ph.getDListClient(i,1).GetStream();
-                                 sendMessage = ch.chunkToByte(streamingChunk, sConfig.ChunkSize);
-                                 stream.Write(sendMessage, 0, sendMessage.Length);
-                        
-                             }
-                             else
-                             {
-                                 if (ph.getDListClient(i, 2) == null)
-                                     continue;
-                                 stream = ph.getDListClient(i,2).GetStream();
-                                 sendMessage = ch.chunkToByte(streamingChunk, sConfig.ChunkSize);
-                                 stream.Write(sendMessage, 0, sendMessage.Length);
-                           
-                             }
-                             stream.Flush();
-
-                         }
-                         catch
-                         {
-                             //ph.delClientFromDList(i);
-                         }
-                     }
-                     */
+                    ph.setChunkList(streamingChunk, remainder_number - 1);
+                   
 
                     mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { seqNumber.ToString() });
 
