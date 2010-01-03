@@ -15,26 +15,33 @@ namespace Client
     class PeerHandler
     {
         //static int TRACKER_PORT = 1100;  //server listen port
-        const string Peerlist_name = "PeerInfoT";
-        static int TREE_NO = 2;
+        const string Peerlist_name = "PeerInfoT"; 
+        //static int TREE_NO = 2;
+        public int tree_num=2;
+
         static int TrackerSLPort = 1500;
 
         private string trackIp;
         private PeerNode joinPeer;
 
         private ClientForm clientFrm;
-        private string[] selfid = new string[TREE_NO];
-
-        int Cport = 0;             //control message port number
+       private string[] selfid;// = new string[TREE_NO];
+       
+        //int Cport = 0;             
         ClientConfig cConfig = new ClientConfig();
-
+        ServerConfig sConfig = new ServerConfig();
         PeerInfoAccessor treeAccessor;
 
-        public int Cport1
+        
+
+
+        /*public int Cport11
         {
             get { return Cport; }
             set { Cport = value; }
         }
+         */
+         
         public PeerNode PeerIp
         {
             get { return joinPeer; }
@@ -43,25 +50,50 @@ namespace Client
 
 
         //int D1port = 0;             //video data port number
-        int[] Dport = new int[TREE_NO];
+        int[] Dport ;//= new int[TREE_NO];
+        int[] Cport;//= new int[TREE_NO];
+
+        public int Cport11 = 0;
+
 
         public PeerHandler(string trackerIp, ClientForm clientFrm)
         {
+           
             this.clientFrm = clientFrm;
             cConfig.load("C:\\ClientConfig");
+           
+            selfid = new string[tree_num];
+            Dport = new int[tree_num];
+            Cport = new int[tree_num];
+
+            
+            
             this.trackIp = trackerIp;
-            for (int i = 0; i < TREE_NO; i++)
+            //for (int i = 0; i < TREE_NO; i++)
+           // {
+           //     Dport[i] = 0;
+           // }
+
+            for (int i = 0; i < tree_num; i++)
             {
                 Dport[i] = 0;
+                Cport[i] = 0;
             }
         }
         //by Vinci: coonect to Tracker for peer ip 
         public bool findTracker()
         {
-            for (int i = 0; i < TREE_NO; i++)
+          /*  for (int i = 0; i < TREE_NO; i++)
             {
                 downloadPeerlist(i);
             }
+            */
+
+            for (int i = 0; i < tree_num; i++)
+            {
+                downloadPeerlist(i);
+            }
+
             //TcpClient trackerTcpClient;
             //NetworkStream trackerStream;
             //try
@@ -273,13 +305,27 @@ namespace Client
                 connectServerClient = new TcpClient(joinPeer.Ip, temp);
                 connectServerStream = connectServerClient.GetStream();
 
-
+                /*
                 Byte[] responseCMessage = new Byte[4];
                 connectServerStream.Read(responseCMessage, 0, responseCMessage.Length);
                 Cport = BitConverter.ToInt16(responseCMessage, 0);
 
                 for (int i = 0; i < TREE_NO; i++)
                 {
+                    Byte[] responseDMessage = new Byte[4];
+                    connectServerStream.Read(responseDMessage, 0, responseDMessage.Length);
+                    Dport[i] = BitConverter.ToInt16(responseDMessage, 0);
+                }
+                */
+
+                for (int i = 0; i < tree_num; i++)
+                {
+                    Byte[] responseCMessage = new Byte[4];
+                    connectServerStream.Read(responseCMessage, 0, responseCMessage.Length);
+                    Cport[i] = BitConverter.ToInt16(responseCMessage, 0);
+                    
+                    Cport11 = Cport[i];
+                    
                     Byte[] responseDMessage = new Byte[4];
                     connectServerStream.Read(responseDMessage, 0, responseDMessage.Length);
                     Dport[i] = BitConverter.ToInt16(responseDMessage, 0);
@@ -348,5 +394,15 @@ namespace Client
             clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Dport[tree] + "\n");
             return treeclient;
         }
+
+        public TcpClient getControlConnect(int tree)
+        {
+
+
+            TcpClient treeclient = new TcpClient(joinPeer.Ip, Cport[tree]);
+          //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
+            return treeclient;
+        }
+
     }
 }

@@ -131,6 +131,12 @@ namespace Client
             clientHandler.startUpload();
         }
 
+        private void tbServerIp_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+    
      
 
       

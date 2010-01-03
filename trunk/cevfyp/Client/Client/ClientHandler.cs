@@ -75,8 +75,11 @@ namespace Client
 
         NetworkStream localvlcstream;
 
-        TcpClient ClientC;
+        //TcpClient ClientC;
+        List<TcpClient> ClientC;
+        
         List<TcpClient> ClientD;// = new List<TcpClient>(TREE_NO); //Tree list of data TCP
+
         TcpListener server;
 
         private ClientForm mainFm;
@@ -100,6 +103,9 @@ namespace Client
             evenList = new List<Chunk>(cConfig.ChunkCapacity);
 
             recciveChunkThread = new List<Thread>(TREE_NO);
+
+            ClientC = new List<TcpClient>(TREE_NO);
+            
             ClientD = new List<TcpClient>(TREE_NO); //Tree list of data TCP
             //load config
             //cConfig = new ClientConfig("C:\\vlc-0.9.9", 1100, 2100, 2200, 2301, 200, 3, RECV_CHUNK_SIZE, CHUNKLIST_CAPACITY, CHUNK_BUF, START_BUF);
@@ -216,17 +222,28 @@ namespace Client
 
         private string connectToSource()
         {
-            virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+            //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
+            virtualServerPort = peerh.Cport11+ cConfig.VlcPortBase;
             serverConnect = true;
             checkClose = false;
         //by Yam
             try
             {
-                //ClientC = new TcpClient(sourceIp, peerh.Cport1);
+                    //ClientC = new TcpClient(sourceIp, peerh.Cport1);
+               /*
                 ClientC = new TcpClient(peerh.PeerIp.Ip, peerh.Cport1);
-
+              
                 for (int i = 0; i < TREE_NO; i++)
                 {
+                    ClientD.Add(peerh.getDataConnect(i));
+
+                    peerh.registerToTracker(i, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
+                }
+                */
+
+                for (int i = 0; i <TREE_NO; i++)
+                {
+                    ClientC.Add(peerh.getControlConnect(i));
                     ClientD.Add(peerh.getDataConnect(i));
 
                     peerh.registerToTracker(i, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
@@ -247,14 +264,8 @@ namespace Client
         {
             tempSeq = 0;
 
-            //sendMessageThread_1 = new Thread(delegate() { sendMessage(ClientC); });
-            //sendMessageThread_1.IsBackground = true;
-            //sendMessageThread_1.Name = "send_Message1";
-            //sendMessageThread_1.Start();
-            
-           // for (int k = 0; k < TREE_NO; k++)
-           // {
-                //Thread tempT= new Thread(delegate() { receiveChunk(ClientD[i]); });
+          
+            /* 
                 recciveChunkThread.Add(new Thread(delegate() { receiveChunk(ClientD[0], 0); }));
                 recciveChunkThread[0].IsBackground = true;
                 recciveChunkThread[0].Name = "receive_Chunk" + 0;
@@ -265,11 +276,25 @@ namespace Client
 
                 recciveChunkThread[0].Start();
                 recciveChunkThread[1].Start();
-           // }
-            //for (int i = 0; i < TREE_NO; i++)
-            //{
-            //    recciveChunkThread[i].Start();
-            //}
+            */
+
+            for (int i = 0; i < TREE_NO; i++)
+            {
+
+
+                Thread DRecvThread = new Thread(delegate() { receiveChunk(ClientD[i], i); });
+                DRecvThread.IsBackground = true;
+                DRecvThread.Name = " DRecv_handle_" + i;
+                DRecvThread.Start();
+                Thread.Sleep(100);
+                recciveChunkThread.Add(DRecvThread);
+               
+
+            }
+
+
+
+         
                 //startUpload();
             
                 updateChunkListThread = new Thread(new ThreadStart(updateChunkList));
@@ -312,7 +337,7 @@ namespace Client
         public void sendMessage(object tcpClinet)
         {
             TcpClient clientC = (TcpClient)tcpClinet;
-            NetworkStream stream = ClientC.GetStream();
+            NetworkStream stream = clientC.GetStream();
             try
             {
                     if (checkClose == true)
@@ -330,6 +355,7 @@ namespace Client
                 clientC.Close();
             }
         }
+
 
         public void receiveChunk(TcpClient tcpClient, int treeIndex)
         {
@@ -619,7 +645,13 @@ namespace Client
                 vlcConnect = false;
                 checkClose = true;
 
-                this.sendMessage(ClientC);
+                //this.sendMessage(ClientC);
+                for (int i = 0; i < TREE_NO; i++)
+                {
+                    this.sendMessage(ClientC[i]);
+                }
+
+
 
                 broadcastVlcStreamingThread.Join(1000);
                 vlc.stop();
@@ -635,6 +667,7 @@ namespace Client
 
                 recciveChunkThread.Clear();
                 ClientD.Clear();
+                ClientC.Clear();
 
 
                 chunkList_wIndex = 0;
