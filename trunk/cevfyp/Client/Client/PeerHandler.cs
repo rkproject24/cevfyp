@@ -16,8 +16,8 @@ namespace Client
     {
         //static int TRACKER_PORT = 1100;  //server listen port
         const string Peerlist_name = "PeerInfoT"; 
-        //static int TREE_NO = 2;
-        public int tree_num=2;
+        static int TREE_NO = 4;
+   
 
         static int TrackerSLPort = 1500;
 
@@ -25,11 +25,11 @@ namespace Client
         private PeerNode joinPeer;
 
         private ClientForm clientFrm;
-       private string[] selfid;// = new string[TREE_NO];
+       private string[] selfid= new string[TREE_NO];
        
         //int Cport = 0;             
         ClientConfig cConfig = new ClientConfig();
-        ServerConfig sConfig = new ServerConfig();
+        //ServerConfig sConfig = new ServerConfig();
         PeerInfoAccessor treeAccessor;
 
         
@@ -50,8 +50,8 @@ namespace Client
 
 
         //int D1port = 0;             //video data port number
-        int[] Dport ;//= new int[TREE_NO];
-        int[] Cport;//= new int[TREE_NO];
+        int[] Dport = new int[TREE_NO];
+        int[] Cport = new int[TREE_NO];
 
         public int Cport11 = 0;
 
@@ -62,19 +62,12 @@ namespace Client
             this.clientFrm = clientFrm;
             cConfig.load("C:\\ClientConfig");
            
-            selfid = new string[tree_num];
-            Dport = new int[tree_num];
-            Cport = new int[tree_num];
-
+       
             
             
             this.trackIp = trackerIp;
-            //for (int i = 0; i < TREE_NO; i++)
-           // {
-           //     Dport[i] = 0;
-           // }
-
-            for (int i = 0; i < tree_num; i++)
+   
+            for (int i = 0; i < TREE_NO; i++)
             {
                 Dport[i] = 0;
                 Cport[i] = 0;
@@ -83,13 +76,8 @@ namespace Client
         //by Vinci: coonect to Tracker for peer ip 
         public bool findTracker()
         {
-          /*  for (int i = 0; i < TREE_NO; i++)
-            {
-                downloadPeerlist(i);
-            }
-            */
-
-            for (int i = 0; i < tree_num; i++)
+        
+            for (int i = 0; i < TREE_NO; i++)
             {
                 downloadPeerlist(i);
             }
@@ -318,7 +306,7 @@ namespace Client
                 }
                 */
 
-                for (int i = 0; i < tree_num; i++)
+               /* for (int i = 0; i < TREE_NO; i++)
                 {
                     Byte[] responseCMessage = new Byte[4];
                     connectServerStream.Read(responseCMessage, 0, responseCMessage.Length);
@@ -330,9 +318,39 @@ namespace Client
                     connectServerStream.Read(responseDMessage, 0, responseDMessage.Length);
                     Dport[i] = BitConverter.ToInt16(responseDMessage, 0);
                 }
+                */
 
-                connectServerStream.Close();
+                //require how many trees
+               // byte[] message = StrToByteArray(TREE_NO.ToString());
+
+                Byte[] message = BitConverter.GetBytes(TREE_NO);
+                connectServerStream.Write(message, 0, message.Length);
+
+
+                //require each tree at each round.
+                for (int i = 1; i <= TREE_NO; i++)
+                {
+                   // getTreePort(connectServerStream, i);
+
+                    byte[] amessage = BitConverter.GetBytes(i);
+                    connectServerStream.Write(amessage, 0, amessage.Length);
+
+                    byte[] responseMessage = new Byte[4];
+                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                    Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
+                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                    Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
+                    Cport11 = Cport[i - 1];
+                }
+
+                //connectServerStream.Close();
+                //connectServerClient.Close();
+
+                connectServerStream.Dispose();
                 connectServerClient.Close();
+                connectServerClient = null;
 
                 //vcport = Cport + 200;
 
@@ -347,6 +365,26 @@ namespace Client
             //}
             return false;
         }
+
+        private void getTreePort(NetworkStream stream,int tree_num)
+        {
+
+            byte[] message = BitConverter.GetBytes(tree_num);
+            stream.Write(message, 0, message.Length);
+
+            byte[] responseMessage = new Byte[4];
+            stream.Read(responseMessage, 0, responseMessage.Length);
+            Cport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
+
+            stream.Read(responseMessage, 0, responseMessage.Length);
+            Dport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
+
+            Cport11 = Cport[tree_num - 1];
+
+
+        }
+
+
 
 
         //selecting Peer for conection
