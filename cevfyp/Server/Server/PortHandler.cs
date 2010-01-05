@@ -74,8 +74,12 @@ namespace Server
         List<List<Chunk>> treeChunkList;
        // List<List<Thread>> treeCThreadList;
         //List<List<Thread>> treeDThreadList;
-        List<int> treeCLWriteIndex; //Each chunk list current write index
-        List<int> treeCLReadIndex;
+        //List<int> treeCLWriteIndex; //Each chunk list current write index
+        //List<int> treeCLReadIndex;
+        int[] treeCLWriteIndex;
+        int[] treeCLReadIndex;
+        int[] treeCLCurrentSeq;// = new int[TREE_NO];
+
         List<Thread> CThreadList = new List<Thread>();
         List<Thread> DThreadList = new List<Thread>();
 
@@ -133,8 +137,12 @@ namespace Server
             treeChunkList = new List<List<Chunk>>(maxTree);
             //treeCThreadList = new List<List<Thread>>(maxTree);
            // treeDThreadList = new List<List<Thread>>(maxTree);
-            treeCLWriteIndex = new List<int>(maxTree);
-            treeCLReadIndex = new List<int>(maxTree);
+            //treeCLWriteIndex = new List<int>(maxTree);
+            //treeCLReadIndex = new List<int>(maxTree);
+            treeCLWriteIndex = new int[maxTree];
+            treeCLReadIndex = new int[maxTree];
+            treeCLCurrentSeq = new int[maxTree];
+
 
             createTreeChunkList(maxTree,CHUNKLIST_CAPACITY);
             createTreePortList(maxTree, maxClient);
@@ -173,8 +181,8 @@ namespace Server
                 List<Chunk> chunkList = new List<Chunk>(chunkListCapacity);
                 treeChunkList.Add(chunkList);
 
-                treeCLWriteIndex.Add(0);
-                treeCLReadIndex.Add(0);
+                //treeCLWriteIndex.Add(0);
+               // treeCLReadIndex.Add(0);
             }
         }
 
@@ -194,6 +202,10 @@ namespace Server
             else
                 treeCLWriteIndex[tree_index] += 1;
 
+
+            treeCLCurrentSeq[tree_index] = sChunk.seq;
+
+            
             current_num = sChunk.seq;
         }
 
@@ -267,6 +279,7 @@ namespace Server
             byte[] responseMessage = new byte[20];
 
             int tempSeq = tree_index+1;
+            int tempRead_index = 0;
 
             int resultIndex = 0;
             TcpClient DPortClient;
@@ -294,9 +307,10 @@ namespace Server
                 try
                 {
                     while (true)
-                    {
-                        if (treeChunkList[tree_index].Count > 10 && tempSeq <= current_num)
+                    {  //by yam: using search method
+                        /*if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
+
                             resultIndex = search(treeChunkList[tree_index], treeCLReadIndex[tree_index], treeCLWriteIndex[tree_index], tempSeq);
 
                             if (resultIndex != -1)
@@ -311,8 +325,30 @@ namespace Server
                             else
                                 tempSeq += max_tree;
                         }
+                        */
 
-                        Thread.Sleep(5);
+                        //by yam: not seach method
+                        if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
+                        {
+                            
+                            sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], sConfig.ChunkSize);
+                            stream.Write(sendMessage, 0, sendMessage.Length);
+                            
+
+                            if (tempSeq == 2147483647)
+                                tempSeq = tree_index + 1;
+                            else
+                                tempSeq += max_tree;
+
+                            if (tempRead_index == CHUNKLIST_CAPACITY)
+                                tempRead_index = 0;
+                            else
+                                tempRead_index += 1;
+                        }
+                        
+
+
+                        Thread.Sleep(10);
                     }
                 }
                 catch(Exception ex)
@@ -379,21 +415,13 @@ namespace Server
                         int portD= treeDPortList[tree_index][CPortList_index].PortD;
                         delClientFromTreeDList(CPortList_index, tree_index, portD);
                         
-                        //test two tree use
-                       // int tempPortT1 = treeDPortList[0][CPortList_index].PortD;
-                           //int tempPortT2 = treeDPortList[1][CPortList_index].PortD;
-                      //  delClientFromTreeDList(CPortList_index, 0,tempPortT1);
-                          //delClientFromTreeDList(CPortList_index, 1, tempPortT2);
- 
-
-
                         break;
                     }
                 }
             }
             catch
             {
-                //   MessageBox.Show("~~Client["+listNo+"] disconected");
+                 //  MessageBox.Show("~~Client["+listNo+"] disconected");
                 cp.clientC = null;
                 treeCPortList[tree_index][CPortList_index] = cp;
             }
@@ -401,7 +429,7 @@ namespace Server
 
         }
       
-
+        
         //yam:10-10-09
         private int search(List<Chunk> list, int rIndex, int wIndex, int target)
         {
@@ -447,6 +475,8 @@ namespace Server
             }
             return -1;
         }
+        
+
 
        /*
         public TcpClient getCListClient(int listIndex)
