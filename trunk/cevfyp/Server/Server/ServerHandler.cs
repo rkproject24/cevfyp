@@ -187,25 +187,25 @@ namespace Server
         private void listenForClients()
         {
             listenServer = new TcpListener(localAddr, sConfig.SLPort);
-            listenServer.Start();
+           // listenServer.Start();
 
             int temp;
 
+
             while (true)
             {
+                listenServer.Start();
                 mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + sConfig.SLPort.ToString() + "]:Listening...\n" });
                 TcpClient client = listenServer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
                 
   //yam:10-10-09
-                bool sendCPort = false;
-                bool sendD1Port = false;
-                bool sendD2Port = false;
-
-                bool sendCPortState = false;
-                bool sendDPortState = false;
+               // bool sendCPort = false;
+              //  bool sendD1Port = false;
+              //  bool sendD2Port = false;
 
 
+               
 
                 try
                 {
@@ -251,60 +251,8 @@ namespace Server
                             break;
                         }
                     }
-                   */
-
-                    for (int i = 1; i <= max_tree; i++)
-                    {
-                        for (int j = 0; i < max_client; j++)
-                        {
-                            Byte[] cMessage;
-                            Byte[] dMessage;
-                            sendCPortState = false;
-                            sendDPortState = false;
-
-                            if (ph.getTreeCListClient(i, j) == null)
-                                sendCPortState = true;
-                              
-                            if (ph.getTreeDListClient(i, j) == null)
-                                sendDPortState = true;
-                              
-
-                            if (sendCPortState == true && sendDPortState == true)
-                            {
-                                temp = ph.getTreeCListPort(i, j);
-                                cMessage = BitConverter.GetBytes(temp);
-                                stream.Write(cMessage, 0, cMessage.Length);
-                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + temp.ToString() + "\n" });
-
-                                temp = ph.getTreeDListPort(i, j);
-                                dMessage = BitConverter.GetBytes(temp);
-                                stream.Write(dMessage, 0, dMessage.Length);
-                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + temp.ToString() + "\n" });
-
-                                break;
-                            }
-                        }
-
-
-                        if (sendCPortState != true && sendDPortState != true)
-                        {
-                            Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
-                            stream.Write(cMessage, 0, cMessage.Length);
-
-                            Byte[] dMessage = BitConverter.GetBytes(0000);
-                            stream.Write(dMessage, 0, dMessage.Length); 
-                        }
-                    }
-
-
-                }
-                catch
-                {
-                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "One client join fail...\n" });
-                    break;
-                }
-
-                /*
+                   
+                    
                 if (sendCPort == false || sendD1Port==false || sendD2Port==false)
                 {
                     Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
@@ -316,11 +264,130 @@ namespace Server
                     stream.Write(dMessage, 0, dMessage.Length);     //d2
                 }
                 */
+                   
 
+                    /* 
+                       bool sendCPortState = false;
+                       bool sendDPortState = false;
+                      
+                      for (int i = 1; i <= max_tree; i++)
+                     {
+                         for (int j = 0; i < max_client; j++)
+                         {
+                             Byte[] cMessage;
+                             Byte[] dMessage;
+                             sendCPortState = false;
+                             sendDPortState = false;
+
+                             if (ph.getTreeCListClient(i, j) == null)
+                                 sendCPortState = true;
+                              
+                             if (ph.getTreeDListClient(i, j) == null)
+                                 sendDPortState = true;
+                              
+
+                             if (sendCPortState == true && sendDPortState == true)
+                             {
+                                 temp = ph.getTreeCListPort(i, j);
+                                 cMessage = BitConverter.GetBytes(temp);
+                                 stream.Write(cMessage, 0, cMessage.Length);
+                                 mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + temp.ToString() + "\n" });
+
+                                 temp = ph.getTreeDListPort(i, j);
+                                 dMessage = BitConverter.GetBytes(temp);
+                                 stream.Write(dMessage, 0, dMessage.Length);
+                                 mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + temp.ToString() + "\n" });
+
+                                 break;
+                             }
+                         }
+
+
+                         if (sendCPortState != true && sendDPortState != true)
+                         {
+                             Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
+                             stream.Write(cMessage, 0, cMessage.Length);
+
+                             Byte[] dMessage = BitConverter.GetBytes(0000);
+                             stream.Write(dMessage, 0, dMessage.Length); 
+                         }
+                     }
+                     */
+
+                    int total_req_num = 0;
+                    int req_tree_num = 0;
+                    int tempC_num, tempD_num;
+                   
+                    Byte[] cMessage;
+                    Byte[] dMessage;
+
+                    //client require how many tree
+                    byte[] responseMessage = new Byte[4];
+                    stream.Read(responseMessage, 0, responseMessage.Length);
+                   total_req_num= BitConverter.ToInt16(responseMessage, 0);
+                 
+                    for (int i = 0; i < total_req_num; i++)
+                    {
+                        //which tree ,client want to join.
+                        bool sendPort = false;
+                        stream.Read(responseMessage, 0, responseMessage.Length);
+                        req_tree_num = BitConverter.ToInt16(responseMessage, 0);
+
+
+                        for (int j = 0; j < max_client; j++)
+                        {
+                            if (ph.getTreeCListClient(req_tree_num, j) == null && ph.getTreeDListClient(req_tree_num, j) == null)
+                            { 
+                                tempC_num = ph.getTreeCListPort(req_tree_num, j);
+                                cMessage = BitConverter.GetBytes(tempC_num);
+                                stream.Write(cMessage, 0, cMessage.Length);
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num.ToString() + "\n" });
+
+                                tempD_num = ph.getTreeDListPort(req_tree_num, j);
+                                dMessage = BitConverter.GetBytes(tempD_num);
+                                stream.Write(dMessage, 0, dMessage.Length);
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
+
+                                sendPort = true;
+                                break;
+                            }
+                        }
+
+                        if (sendPort != true)
+                        {   // required tree number cant join
+                            Byte[] cMessage2 = BitConverter.GetBytes(0000);   
+                            stream.Write(cMessage2, 0, cMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:no port" + "\n" });
+
+                            Byte[] dMessage2 = BitConverter.GetBytes(0000);
+                            stream.Write(dMessage2, 0, dMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:no port" + "\n" });
+                        }
+
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.ToString());
+
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "One client join fail...\n" });
+                    break;
+                }
+
+                stream.Dispose();
+                client = null;
+                listenServer.Stop();
+
+                Thread.Sleep(100);
             }//end while loop
         }
 
-   
+        public static string ByteArrayToString(byte[] bytes)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(bytes);
+        }
        
         private void getStreaming()
         {
