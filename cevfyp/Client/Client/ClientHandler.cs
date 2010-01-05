@@ -20,7 +20,7 @@ namespace Client
         //static int RECV_CHUNK_SIZE = 3182;
         //static int CHUNK_BUF = 1;
         //static int START_BUF = 2;
-        static int TREE_NO = 2;
+        static int TREE_NO = 4;
 
         //===============upload variable=============
         string CLIENTIP = "127.0.0.1";
@@ -69,18 +69,24 @@ namespace Client
         List<Chunk> oddList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
         List<Chunk> evenList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
 
-        List<Thread> recciveChunkThread;// = new List<Thread>(TREE_NO);
+        //yam:02-01-10
+        List<List<Chunk>> treeChunkList = new List<List<Chunk>>(TREE_NO);
+        int[] treeCLWriteIndex = new int[TREE_NO];
+        int[] treeCLReadIndex = new int[TREE_NO];
+        int[] treeCLCurrentSeq = new int[TREE_NO];
+       // int[] treeCLWaitRound = new int[TREE_NO];
+
+
+        List<Thread> recciveChunkThread = new List<Thread>(TREE_NO);
         Thread broadcastVlcStreamingThread;
         Thread updateChunkListThread;
 
-        NetworkStream localvlcstream;
-
         //TcpClient ClientC;
-        List<TcpClient> ClientC;
-        
-        List<TcpClient> ClientD;// = new List<TcpClient>(TREE_NO); //Tree list of data TCP
+        List<TcpClient> ClientC = new List<TcpClient>(TREE_NO);
+        List<TcpClient> ClientD = new List<TcpClient>(TREE_NO); //Tree list of data TCP
 
         TcpListener server;
+        NetworkStream localvlcstream;
 
         private ClientForm mainFm;
         public delegate void UpdateTextCallback(string message);
@@ -102,19 +108,9 @@ namespace Client
             oddList = new List<Chunk>(cConfig.ChunkCapacity);
             evenList = new List<Chunk>(cConfig.ChunkCapacity);
 
-            recciveChunkThread = new List<Thread>(TREE_NO);
-
-            ClientC = new List<TcpClient>(TREE_NO);
-            
-            ClientD = new List<TcpClient>(TREE_NO); //Tree list of data TCP
             //load config
             //cConfig = new ClientConfig("C:\\vlc-0.9.9", 1100, 2100, 2200, 2301, 200, 3, RECV_CHUNK_SIZE, CHUNKLIST_CAPACITY, CHUNK_BUF, START_BUF);
             //cConfig.save("C:\\ClientConfig.xml");
-
-            //for(int i=0; i < TREE_NO; i++)
-            //{
-            //    chunkList_wIndex[i] = 0;
-            //}
         }
 //yam:11-10-09
         public void setPlayState(bool state)
@@ -264,40 +260,23 @@ namespace Client
         {
             tempSeq = 0;
 
-          
-            /* 
-                recciveChunkThread.Add(new Thread(delegate() { receiveChunk(ClientD[0], 0); }));
-                recciveChunkThread[0].IsBackground = true;
-                recciveChunkThread[0].Name = "receive_Chunk" + 0;
-               
-                recciveChunkThread.Add(new Thread(delegate() { receiveChunk(ClientD[1], 1); }));
-                recciveChunkThread[1].IsBackground = true;
-                recciveChunkThread[1].Name = "receive_Chunk" + 1;
-
-                recciveChunkThread[0].Start();
-                recciveChunkThread[1].Start();
-            */
-
             for (int i = 0; i < TREE_NO; i++)
             {
+                List<Chunk> chunkLists = new List<Chunk>(cConfig.ChunkCapacity);
+                treeChunkList.Add(chunkLists);
 
-
-                Thread DRecvThread = new Thread(delegate() { receiveChunk(ClientD[i], i); });
+                Thread DRecvThread = new Thread(delegate() { receiveTreeChunk(ClientD[i], i); });
                 DRecvThread.IsBackground = true;
                 DRecvThread.Name = " DRecv_handle_" + i;
                 DRecvThread.Start();
-                Thread.Sleep(100);
+                Thread.Sleep(10);
                 recciveChunkThread.Add(DRecvThread);
-               
 
             }
 
-
-
-         
                 //startUpload();
             
-                updateChunkListThread = new Thread(new ThreadStart(updateChunkList));
+                updateChunkListThread = new Thread(new ThreadStart(updateTreeChunkList));
                 updateChunkListThread.IsBackground = true;
                 updateChunkListThread.Name = "update_ChunkList";
                 updateChunkListThread.Start();
@@ -356,6 +335,145 @@ namespace Client
             }
         }
 
+        public void receiveTreeChunk(TcpClient tcpClient, int tree_index)
+        {
+            TcpClient clientD = tcpClient;
+            NetworkStream stream = clientD.GetStream();
+            BinaryFormatter bf = new BinaryFormatter();
+
+
+            try
+            {
+                // byte[] responseMessage = new byte[cConfig.ChunkSize];
+                Chunk streamingChunk;
+                int responseMessageBytes;
+
+                while (serverConnect)
+                {
+                    byte[] responseMessage = new byte[cConfig.ChunkSize];
+                    responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                    //by vinci: send responseBytes directly to peer
+                    //this.uploadToPeer(responseMessageBytes);
+
+                    streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
+
+                    if (streamingChunk == null)
+                    {
+                        Thread.Sleep(10);
+                        continue;
+                    }
+
+                    //by yam:04-01-10
+                    int write_index = treeCLWriteIndex[tree_index];
+
+                    if (treeChunkList[tree_index].Count <= cConfig.ChunkCapacity)
+                        treeChunkList[tree_index].Add(streamingChunk);
+                    else
+                        treeChunkList[tree_index][write_index] = streamingChunk;
+
+                    if (write_index == cConfig.ChunkCapacity)
+                        treeCLWriteIndex[tree_index] = 0;
+                    else
+                        treeCLWriteIndex[tree_index] += 1;
+
+                    treeCLCurrentSeq[tree_index] = streamingChunk.seq;
+
+                  
+                  /*  if(tree_index==0)
+                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[0][write_index].seq.ToString()+" " });
+                        //mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { treeChunkList[0][write_index].seq.ToString() });
+
+                    if (tree_index == 1)
+                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[1][write_index].seq.ToString() + " " });
+                    if (tree_index == 2)
+                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
+                    */
+
+                      
+                    Thread.Sleep(20);
+
+                } //end while loop
+                stream.Close();
+                clientD.Close();
+            }
+            catch (Exception ex)
+            {
+                stream.Close();
+                clientD.Close();
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+        private void updateTreeChunkList()
+        {
+            while (true)
+            {
+                if (treeChunkList[0].Count > 5 && treeChunkList[1].Count > 5)
+                {
+                    tempSeq = treeChunkList[0][0].seq;
+                    break;
+                }
+                Thread.Sleep(30);
+            }
+
+            int remainder_num,check_num;
+
+            while (true)
+            {
+                for (int i = 0; i < TREE_NO; i++)
+                {
+                    
+                    //check the tagert seqnumber belong to which tree
+                    remainder_num = tempSeq % TREE_NO;
+                    if (remainder_num== 0)
+                       check_num=TREE_NO - 1;
+                    else
+                       check_num=remainder_num - 1;
+
+
+                   if (tempSeq <= treeCLCurrentSeq[i] && check_num==i)
+                    {
+                       //by yam : search method
+                        int r_index = searchChunk(treeChunkList[i],treeCLReadIndex[i],treeCLWriteIndex[i], tempSeq);
+                        if (r_index != -1)
+                        {
+                            //add to main chunk list
+                            if (chunkList.Count <= cConfig.ChunkCapacity)
+                                chunkList.Add(treeChunkList[i][r_index]);
+                            else
+                                chunkList[chunkList_wIndex] = treeChunkList[i][r_index];
+
+                            if (chunkList_wIndex == cConfig.ChunkCapacity)
+                                chunkList_wIndex = 0;
+                            else
+                                chunkList_wIndex += 1;
+
+                            if (r_index == cConfig.ChunkCapacity)
+                                treeCLReadIndex[i] = 0;
+                            else
+                                treeCLReadIndex[i] = r_index;
+
+                             mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
+
+                        }
+                 
+
+                        if (tempSeq == 2147483647)
+                            tempSeq = 1;
+                        else
+                            tempSeq += 1;
+                      
+                    }
+
+                }
+
+            
+                Thread.Sleep(30);
+            }
+        }
+       
+       
 
         public void receiveChunk(TcpClient tcpClient, int treeIndex)
         {
@@ -440,6 +558,7 @@ namespace Client
             }
         
         }
+
 
         private void broadcastVlcStreaming()
         {
@@ -696,6 +815,17 @@ namespace Client
                 chunkList.Clear();
                 evenList.Clear();
                 oddList.Clear();
+
+                for (int i = 0; i < TREE_NO; i++)
+                {
+                    treeChunkList[i].Clear();
+                    treeCLWriteIndex[i] = 0;
+                    treeCLReadIndex[i] = 0;
+                    treeCLCurrentSeq[i] = 0;
+                    
+                }
+
+                
             }
         }
 
