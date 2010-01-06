@@ -16,7 +16,7 @@ namespace Client
     {
         //static int TRACKER_PORT = 1100;  //server listen port
         const string Peerlist_name = "PeerInfoT"; 
-        static int TREE_NO = 4;
+        int TREE_NO;
    
 
         static int TrackerSLPort = 1500;
@@ -25,7 +25,7 @@ namespace Client
         private PeerNode joinPeer;
 
         private ClientForm clientFrm;
-       private string[] selfid= new string[TREE_NO];
+        private string[] selfid;//= new string[TREE_NO];
        
         //int Cport = 0;             
         ClientConfig cConfig = new ClientConfig();
@@ -50,8 +50,8 @@ namespace Client
 
 
         //int D1port = 0;             //video data port number
-        int[] Dport = new int[TREE_NO];
-        int[] Cport = new int[TREE_NO];
+        int[] Dport;// = new int[TREE_NO];
+        int[] Cport;// = new int[TREE_NO];
 
         public int Cport11 = 0;
 
@@ -61,26 +61,42 @@ namespace Client
            
             this.clientFrm = clientFrm;
             cConfig.load("C:\\ClientConfig");
-           
-       
-            
-            
+
+            TREE_NO = 0;
             this.trackIp = trackerIp;
-   
+
+            selfid = new string[1];
+        }
+
+        public void treeInitial()
+        {
+            selfid = new string[TREE_NO];
+            Dport = new int[TREE_NO];
+            Cport = new int[TREE_NO];
+
             for (int i = 0; i < TREE_NO; i++)
             {
                 Dport[i] = 0;
                 Cport[i] = 0;
             }
         }
+
         //by Vinci: coonect to Tracker for peer ip 
-        public bool findTracker()
+        public int findTracker()
         {
-        
+            downloadPeerlist(0);
+            treeAccessor = new PeerInfoAccessor(Peerlist_name + "0");
+            this.TREE_NO = treeAccessor.getTreeSize();
+            treeInitial();
+
             for (int i = 0; i < TREE_NO; i++)
             {
-                downloadPeerlist(i);
+                if (!downloadPeerlist(i))
+                {
+                    return -1;
+                }
             }
+            
 
             //TcpClient trackerTcpClient;
             //NetworkStream trackerStream;
@@ -143,7 +159,7 @@ namespace Client
             //{
             //    //System.Windows.Forms.MessageBox.Show(ex.ToString());
             //}
-            return true;
+            return TREE_NO;
         }
 
         public bool downloadPeerlist(int tree)
@@ -175,8 +191,8 @@ namespace Client
 
                 //string[] xmlTrees = xmlContent.Split('@');
 
-                if (File.Exists(PeerFileName))
-                    File.Delete(PeerFileName);
+                //if (File.Exists(PeerFileName))
+                //    File.Delete(PeerFileName);
                 // Specify file, instructions, and privelegdes
                 FileStream file = new FileStream(PeerFileName, FileMode.OpenOrCreate, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(file);
@@ -215,7 +231,7 @@ namespace Client
 
 
         // Write for tracker registration.
-        public bool registerToTracker(int tree, string layer)
+        public bool registerToTracker(int tree, int listenPort, string layer)
         {
             TcpClient connectTracker;
             NetworkStream connectTrackerStream;
@@ -243,7 +259,7 @@ namespace Client
                 //clientLayer = StrToByteArray(layerT2);
                 //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                string sendstr = tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer;
+                string sendstr = listenPort + "@" +tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer;
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -289,8 +305,9 @@ namespace Client
             NetworkStream connectServerStream;
             try
             {
-                int temp = cConfig.SLPort;
-                connectServerClient = new TcpClient(joinPeer.Ip, temp);
+                //int temp = cConfig.SLPort;
+
+                connectServerClient = new TcpClient(joinPeer.Ip, joinPeer.ListenPort);
                 connectServerStream = connectServerClient.GetStream();
 
                 /*
@@ -385,18 +402,6 @@ namespace Client
         }
 
 
-
-
-        //selecting Peer for conection
-        private PeerNode selectPeer()
-        {
-            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
-            //return peerAccess.getPeer("0"); //select the server ip as default
-            return peerAccess.getPeer(peerAccess.getMaxId().ToString());
-
-        }
-
-
         public TcpClient getDataConnect(int tree)
         {
 
@@ -429,7 +434,7 @@ namespace Client
             //    return "No source can join!";
             //}
             TcpClient treeclient = new TcpClient(joinPeer.Ip, Dport[tree]);
-            clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Dport[tree] + "\n");
+            clientFrm.rtbdownload.AppendText("T[" + tree + "] " + joinPeer.Ip + ":" + Dport[tree] + "\n");
             return treeclient;
         }
 
@@ -440,6 +445,15 @@ namespace Client
             TcpClient treeclient = new TcpClient(joinPeer.Ip, Cport[tree]);
           //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
             return treeclient;
+        }
+
+        //selecting Peer for conection
+        private PeerNode selectPeer()
+        {
+            PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
+            //return peerAccess.getPeer("0"); //select the server ip as default
+            return peerAccess.getPeer(peerAccess.getMaxId().ToString());
+
         }
 
     }
