@@ -20,12 +20,13 @@ namespace Client
         //static int RECV_CHUNK_SIZE = 3182;
         //static int CHUNK_BUF = 1;
         //static int START_BUF = 2;
-        static int TREE_NO = 4;
+        //static int TREE_NO = 2;
 
         //===============upload variable=============
         string CLIENTIP = "127.0.0.1";
-        static int PeerListenPort = 1100;
-
+       
+        //static int PeerListenPort = 1100;
+        int PeerListenPort;
         int max_peer;
         bool uploading = false; //indicate whether upload thread is started
         TcpListener listenPeer;
@@ -35,16 +36,17 @@ namespace Client
 
         //===================================
 
+        int treeNO = 0;
         //int[] chunkList_wIndex = new int[TREE_NO]; 
         int chunkList_wIndex = 0;  //write index
         int chunkList_rIndex = 0;  //read index
-        int oddList_wIndex = 0;
-        int oddList_rIndex = 0;  
-        int evenList_wIndex = 0;
-        int evenList_rIndex = 0;
+        //int oddList_wIndex = 0;
+        //int oddList_rIndex = 0;  
+        //int evenList_wIndex = 0;
+        //int evenList_rIndex = 0;
         int tempSeq = 0;
-        int currentEvenNo = 0;
-        int currentOddNo = 0;
+        //int currentEvenNo = 0;
+        //int currentOddNo = 0;
         int lb, ub, mid, tempResult;
         int resultIndex = 0;        
         int virtualServerPort = 0;   //virtual server broadcast port number
@@ -66,24 +68,25 @@ namespace Client
 
         IPAddress localAddr = IPAddress.Parse("127.0.0.1");
         List<Chunk> chunkList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
-        List<Chunk> oddList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
-        List<Chunk> evenList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
+
+        //List<Chunk> oddList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
+        //List<Chunk> evenList;// = new List<Chunk>(CHUNKLIST_CAPACITY);
 
         //yam:02-01-10
-        List<List<Chunk>> treeChunkList = new List<List<Chunk>>(TREE_NO);
-        int[] treeCLWriteIndex = new int[TREE_NO];
-        int[] treeCLReadIndex = new int[TREE_NO];
-        int[] treeCLCurrentSeq = new int[TREE_NO];
+        List<List<Chunk>> treeChunkList;// = new List<List<Chunk>>(TREE_NO);
+        int[] treeCLWriteIndex;// = new int[TREE_NO];
+        int[] treeCLReadIndex;// = new int[TREE_NO];
+        int[] treeCLCurrentSeq;// = new int[TREE_NO];
        // int[] treeCLWaitRound = new int[TREE_NO];
 
 
-        List<Thread> recciveChunkThread = new List<Thread>(TREE_NO);
+        List<Thread> recciveChunkThread;// = new List<Thread>(TREE_NO);
         Thread broadcastVlcStreamingThread;
         Thread updateChunkListThread;
 
         //TcpClient ClientC;
-        List<TcpClient> ClientC = new List<TcpClient>(TREE_NO);
-        List<TcpClient> ClientD = new List<TcpClient>(TREE_NO); //Tree list of data TCP
+        List<TcpClient> ClientC;// = new List<TcpClient>(TREE_NO);
+        List<TcpClient> ClientD;// = new List<TcpClient>(TREE_NO); //Tree list of data TCP
 
         TcpListener server;
         NetworkStream localvlcstream;
@@ -103,15 +106,37 @@ namespace Client
             ch = new ChunkHandler();
 
             cConfig.load("C:\\ClientConfig");
-
             chunkList = new List<Chunk>(cConfig.ChunkCapacity);
-            oddList = new List<Chunk>(cConfig.ChunkCapacity);
-            evenList = new List<Chunk>(cConfig.ChunkCapacity);
+            
+
+            string[] xmlList = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml");
+            foreach (string xmlfile in xmlList)
+            {
+                File.Delete(xmlfile);
+            }
+            //oddList = new List<Chunk>(cConfig.ChunkCapacity);
+            //evenList = new List<Chunk>(cConfig.ChunkCapacity);
 
             //load config
             //cConfig = new ClientConfig("C:\\vlc-0.9.9", 1100, 2100, 2200, 2301, 200, 3, RECV_CHUNK_SIZE, CHUNKLIST_CAPACITY, CHUNK_BUF, START_BUF);
             //cConfig.save("C:\\ClientConfig.xml");
         }
+
+        public void initialize()
+        {
+            treeChunkList = new List<List<Chunk>>(treeNO);
+            treeCLWriteIndex = new int[treeNO];
+            treeCLReadIndex = new int[treeNO];
+            treeCLCurrentSeq = new int[treeNO];
+
+            recciveChunkThread = new List<Thread>(treeNO);
+
+            ClientC = new List<TcpClient>(treeNO);
+            ClientD = new List<TcpClient>(treeNO); //Tree list of data TCP
+
+
+        }
+
 //yam:11-10-09
         public void setPlayState(bool state)
         {
@@ -156,7 +181,7 @@ namespace Client
                 return response;
             //=======================================
 
-            response = connectToPeer();
+            //response = connectToPeer();
 
             if (response == "OK2")
                 response = connectToSource();
@@ -175,22 +200,12 @@ namespace Client
             this.trackerIp = serverIp;
             
             peerh = new PeerHandler(serverIp, mainFm);
+            treeNO = peerh.findTracker();
 
-            if (peerh.findTracker())
+            if (treeNO != -1)
             {
+                initialize();
                 return "OK";
-
-                //if (peerh.connectPeer())
-                //{
-                //    //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
-                //    //serverConnect = true;
-                //    //checkClose = false;
-                //    return "OK";
-                //}
-                //else
-                //{
-                //    return "Peer Unreachable!";
-                //}
             }
             else
             {
@@ -222,6 +237,8 @@ namespace Client
             virtualServerPort = peerh.Cport11+ cConfig.VlcPortBase;
             serverConnect = true;
             checkClose = false;
+
+            PeerListenPort = TcpApps.RanPort(1100, 1120);
         //by Yam
             try
             {
@@ -237,12 +254,13 @@ namespace Client
                 }
                 */
 
-                for (int i = 0; i <TREE_NO; i++)
+                for (int i = 0; i < treeNO; i++)
                 {
                     ClientC.Add(peerh.getControlConnect(i));
                     ClientD.Add(peerh.getDataConnect(i));
 
-                    peerh.registerToTracker(i, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
+                    //peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
+                    peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
                 }
 
                 
@@ -260,7 +278,7 @@ namespace Client
         {
             tempSeq = 0;
 
-            for (int i = 0; i < TREE_NO; i++)
+            for (int i = 0; i < treeNO; i++)
             {
                 List<Chunk> chunkLists = new List<Chunk>(cConfig.ChunkCapacity);
                 treeChunkList.Add(chunkLists);
@@ -299,8 +317,8 @@ namespace Client
 
                 //start uploading thread
                 this.max_peer = cConfig.MaxPeer;
-                upPorth = new UploadPortHandler(cConfig, CLIENTIP, mainFm);
-                upPorth.startPort();
+                upPorth = new UploadPortHandler(cConfig, CLIENTIP, mainFm, treeNO);
+                upPorth.startTreePort();
                 //mainFm.rtbupload.AppendText("upPorth.startPort()");
 
                 //localAddr = IPAddress.Parse(sConfig.Serverip);
@@ -352,8 +370,6 @@ namespace Client
                 {
                     byte[] responseMessage = new byte[cConfig.ChunkSize];
                     responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    //by vinci: send responseBytes directly to peer
-                    //this.uploadToPeer(responseMessageBytes);
 
                     streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
 
@@ -361,6 +377,13 @@ namespace Client
                     {
                         Thread.Sleep(10);
                         continue;
+                    }
+
+                    //by vinci: send responseBytes directly to peer
+                    //this.uploadToPeer(responseMessageBytes);
+                    if(uploading)
+                    {
+                        upPorth.setChunkList(streamingChunk, tree_index);
                     }
 
                     //by yam:04-01-10
@@ -409,7 +432,7 @@ namespace Client
         {
             while (true)
             {
-                if (treeChunkList[0].Count > 5 && treeChunkList[1].Count > 5)
+                if (treeChunkList[0].Count > 1 && treeChunkList[1].Count > 1)   //Problem: Cause slow start when there is many sub stream
                 {
                     tempSeq = treeChunkList[0][0].seq;
                     break;
@@ -421,13 +444,13 @@ namespace Client
 
             while (true)
             {
-                for (int i = 0; i < TREE_NO; i++)
+                for (int i = 0; i < treeNO; i++)
                 {
                     
                     //check the tagert seqnumber belong to which tree
-                    remainder_num = tempSeq % TREE_NO;
+                    remainder_num = tempSeq % treeNO;
                     if (remainder_num== 0)
-                       check_num=TREE_NO - 1;
+                       check_num=treeNO - 1;
                     else
                        check_num=remainder_num - 1;
 
@@ -454,7 +477,7 @@ namespace Client
                             else
                                 treeCLReadIndex[i] = r_index;
 
-                             mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
+                             //mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
 
                         }
                  
@@ -473,93 +496,6 @@ namespace Client
             }
         }
        
-       
-
-        public void receiveChunk(TcpClient tcpClient, int treeIndex)
-        {
-            TcpClient clientD = tcpClient;
-            NetworkStream stream = clientD.GetStream();
-            BinaryFormatter bf = new BinaryFormatter();
-         
-           
-            try
-            {
-               // byte[] responseMessage = new byte[cConfig.ChunkSize];
-                Chunk streamingChunk;
-                int responseMessageBytes;
-
-                while (serverConnect)
-                {
-                  
-
-                        byte[] responseMessage = new byte[cConfig.ChunkSize];
-                        responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    //by vinci: send responseBytes directly to peer
-                        //this.uploadToPeer(responseMessageBytes);
-
-                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
-
-                        if (streamingChunk == null)
-                        {
-                            Thread.Sleep(3);
-                            continue;
-                        }
-                        //by yam
-                        if (treeIndex == 0 && streamingChunk.seq % 2 != 0)
-                        {
-                            if (oddList.Count <= cConfig.ChunkCapacity)
-                                oddList.Add(streamingChunk);
-                            else
-                                oddList[oddList_wIndex] = streamingChunk;
-
-                            if (oddList_wIndex == cConfig.ChunkCapacity)
-                                oddList_wIndex = 0;
-                            else
-                                oddList_wIndex += 1;
-
-                            currentOddNo = streamingChunk.seq;
-//by vinci: add chunk to odd upload buffer
-                            if(uploading)
-                                    upPorth.setOddListChunk(streamingChunk);
-
-                        }
-                        else
-                        {
-                            if (evenList.Count <= cConfig.ChunkCapacity)
-                                evenList.Add(streamingChunk);
-                            else
-                                evenList[evenList_wIndex] = streamingChunk;
-
-                            if (evenList_wIndex == cConfig.ChunkCapacity)
-                                evenList_wIndex = 0;
-                            else
-                                evenList_wIndex += 1;
-
-                            currentEvenNo = streamingChunk.seq;
-//by vinci: add chunk to even upload buffer
-                            if(uploading)
-                                    upPorth.setEvenListChunk(streamingChunk);
-                        }
-
-                       // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { chunkList_wIndex.ToString() + ":" + streamingChunk.seq });
-                        mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { currentOddNo.ToString() + ":" + currentEvenNo.ToString() });
-
-                        Thread.Sleep(3);
-                 
-                } //end while loop
-                stream.Close();
-                clientD.Close();
-            }
-            catch(Exception ex)
-            {
-                stream.Close();
-                clientD.Close();
-                MessageBox.Show(ex.ToString());
-            }
-        
-        }
-
-
         private void broadcastVlcStreaming()
         {
             server = new TcpListener(localAddr, virtualServerPort);
@@ -597,76 +533,7 @@ namespace Client
             localvlcstream.Close();
             client.Close();
         }
-
-        private void updateChunkList()
-        {
-            defineFistChunk();
-
-            while (true)
-            {
-                if ((tempSeq) % 2 != 0)
-                {
-                    if (tempSeq <= currentOddNo)
-                    {
-                        resultIndex = searchChunk(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
-
-                        if (resultIndex != -1)
-                            addToChunkList(oddList, ref oddList_rIndex, resultIndex);
-                       // else
-                           // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { tempSeq.ToString() });
-
-                        incrementTempSeq();
-                    }
-                    else
-                        Thread.Sleep(40);
-
-                }
-                else
-                {
-                    if (tempSeq <= currentEvenNo)
-                    {
-                        resultIndex = searchChunk(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
-
-                        if (resultIndex != -1)
-                            addToChunkList(evenList, ref evenList_rIndex, resultIndex);
-                        //else
-                          //  mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { tempSeq.ToString() });
-
-                        incrementTempSeq();
-                    }
-                    else
-                        Thread.Sleep(40);
-
-                }
-                Thread.Sleep(2);
-            }
-        }
-
-        private void defineFistChunk()
-        {
-            while (true)
-            {
-                if (oddList.Count > 10 && evenList.Count > 10)
-                {
-                    if (oddList[0].seq < evenList[0].seq)
-                        tempSeq = oddList[0].seq;
-                    else
-                        tempSeq = evenList[0].seq;
-                    break;
-                }
-                Thread.Sleep(2);
-            }
-        }
-
-        private void incrementTempSeq()
-        {
-            if (tempSeq == 2147483647)
-                tempSeq = 1;
-            else
-                tempSeq += 1;
-        }
-
-        
+      
         private int searchChunk(List<Chunk> list, int rIndex, int wIndex, int target)
         {
             if (wIndex < rIndex)
@@ -710,20 +577,7 @@ namespace Client
             return -1;
         }
 
-        private void addToChunkList(List<Chunk> list, ref int rIndex, int targetIndex)
-        {
-            if (chunkList.Count <= cConfig.ChunkCapacity)
-                chunkList.Add(list[targetIndex]);
-            else
-                chunkList[chunkList_wIndex] = list[targetIndex];
 
-            if (chunkList_wIndex == cConfig.ChunkCapacity)
-                chunkList_wIndex = 0;
-            else
-                chunkList_wIndex += 1;
-
-            rIndex = targetIndex;
-        }
 
         private void checkbuff() // by vinci:TO keep buffer for chunklist
         {
@@ -765,7 +619,7 @@ namespace Client
                 checkClose = true;
 
                 //this.sendMessage(ClientC);
-                for (int i = 0; i < TREE_NO; i++)
+                for (int i = 0; i < treeNO; i++)
                 {
                     this.sendMessage(ClientC[i]);
                 }
@@ -775,7 +629,7 @@ namespace Client
                 broadcastVlcStreamingThread.Join(1000);
                 vlc.stop();
 
-                for (int i = 0; i < TREE_NO; i++)
+                for (int i = 0; i < treeNO; i++)
                 {
                     recciveChunkThread[i].Join(1000);
                 }
@@ -791,15 +645,15 @@ namespace Client
 
                 chunkList_wIndex = 0;
                 chunkList_rIndex = 0;
-                oddList_wIndex = 0;
-                oddList_rIndex = 0;
-                evenList_wIndex = 0;
-                evenList_rIndex = 0;
+                //oddList_wIndex = 0;
+                //oddList_rIndex = 0;
+                //evenList_wIndex = 0;
+                //evenList_rIndex = 0;
                 virtualServerPort = 0;
 
 
-                currentEvenNo = 0;
-                currentOddNo = 0;
+                //currentEvenNo = 0;
+                //currentOddNo = 0;
                 resultIndex = 0;
 
                 lb = 0;
@@ -809,14 +663,14 @@ namespace Client
 
                 useOddSeqChunk = true;
                 checkedFirstChunk = false;
-                oddListAvailable = false;
-                evenListAvailable = false;
+                //oddListAvailable = false;
+                //evenListAvailable = false;
 
                 chunkList.Clear();
-                evenList.Clear();
-                oddList.Clear();
+                //evenList.Clear();
+                //oddList.Clear();
 
-                for (int i = 0; i < TREE_NO; i++)
+                for (int i = 0; i < treeNO; i++)
                 {
                     treeChunkList[i].Clear();
                     treeCLWriteIndex[i] = 0;
@@ -835,83 +689,363 @@ namespace Client
             listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
             listenPeer.Start();
 
-            int temp;
-
             while (true)
             {
+                //listenPeer.Start();
                 mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:" + uploadipAddr.ToString() + "\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
                 TcpClient client = listenPeer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
 
                 //yam:10-10-09
-                bool sendCPort = false;
-                bool sendD1Port = false;
-                bool sendD2Port = false;
+                // bool sendCPort = false;
+                //  bool sendD1Port = false;
+                //  bool sendD2Port = false;
 
                 try
                 {
-                    for (int i = 0; i < max_peer; i++)
-                    {
-                        if (upPorth.getCListClient(i) == null)
-                        {
-                            temp = upPorth.getCListPort(i);
-                            Byte[] cMessage = BitConverter.GetBytes(temp);
-                            stream.Write(cMessage, 0, cMessage.Length);
-                            sendCPort = true;
-                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + temp.ToString() + "\n" });
+                    //listenPeer.Start();
 
-                            break;
+
+                    /*  for (int i = 0; i < max_client; i++)
+                      {
+                          if (ph.getTreeCListClient(1, i) == null) //ph.getCListClient(i) == null
+                          {
+                              temp = ph.getTreeCListPort(1, i);//temp = ph.getCListPort(i);
+                              Byte[] cMessage = BitConverter.GetBytes(temp);
+                              stream.Write(cMessage, 0, cMessage.Length);
+                              sendCPort = true;
+                              mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:"+temp.ToString()+"\n" });
+
+                              break;
+                          }
+
+                      }
+
+                      for (int i = 0; i < max_client; i++)
+                      {
+                          if (ph.getTreeDListClient(1, i) == null) //ph.getDListClient(i) == null
+                          {
+                              temp=ph.getTreeDListPort(1,i);//temp = ph.getDListPort(i, 1);
+                              Byte[] d1Message = BitConverter.GetBytes(temp);
+                              stream.Write(d1Message, 0, d1Message.Length);
+                              sendD1Port = true;
+                              mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "D1port:" + temp.ToString() + "\n" });
+
+                              break;
+                          }
+                      }
+
+                      for (int i = 0; i < max_client; i++)
+                      {
+                          if (ph.getTreeDListClient(2, i) == null) //ph.getDListClient(i) == null
+                          {
+                              temp = ph.getTreeDListPort(2, i);//temp = ph.getDListPort(i, 2);
+                              Byte[] d2Message = BitConverter.GetBytes(temp);
+                              stream.Write(d2Message, 0, d2Message.Length);
+                              sendD2Port = true;
+                              mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "D2port:" + temp.ToString() + "\n" });
+
+                              break;
+                          }
+                      }
+                   
+                    
+                  if (sendCPort == false || sendD1Port==false || sendD2Port==false)
+                  {
+                      Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
+                      stream.Write(cMessage, 0, cMessage.Length);
+
+                      Byte[] dMessage = BitConverter.GetBytes(0000);
+                      stream.Write(dMessage, 0, dMessage.Length);     //d1
+
+                      stream.Write(dMessage, 0, dMessage.Length);     //d2
+                  }
+                  */
+
+
+                    /* 
+                       bool sendCPortState = false;
+                       bool sendDPortState = false;
+                      
+                      for (int i = 1; i <= max_tree; i++)
+                     {
+                         for (int j = 0; i < max_client; j++)
+                         {
+                             Byte[] cMessage;
+                             Byte[] dMessage;
+                             sendCPortState = false;
+                             sendDPortState = false;
+
+                             if (ph.getTreeCListClient(i, j) == null)
+                                 sendCPortState = true;
+                              
+                             if (ph.getTreeDListClient(i, j) == null)
+                                 sendDPortState = true;
+                              
+
+                             if (sendCPortState == true && sendDPortState == true)
+                             {
+                                 temp = ph.getTreeCListPort(i, j);
+                                 cMessage = BitConverter.GetBytes(temp);
+                                 stream.Write(cMessage, 0, cMessage.Length);
+                                 mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + temp.ToString() + "\n" });
+
+                                 temp = ph.getTreeDListPort(i, j);
+                                 dMessage = BitConverter.GetBytes(temp);
+                                 stream.Write(dMessage, 0, dMessage.Length);
+                                 mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + temp.ToString() + "\n" });
+
+                                 break;
+                             }
+                         }
+
+
+                         if (sendCPortState != true && sendDPortState != true)
+                         {
+                             Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
+                             stream.Write(cMessage, 0, cMessage.Length);
+
+                             Byte[] dMessage = BitConverter.GetBytes(0000);
+                             stream.Write(dMessage, 0, dMessage.Length); 
+                         }
+                     }
+                     */
+
+                    int total_req_num = 0;
+                    int req_tree_num = 0;
+                    int tempC_num, tempD_num;
+
+                    Byte[] cMessage;
+                    Byte[] dMessage;
+
+                    //client require how many tree
+                    byte[] responseMessage = new Byte[4];
+                    stream.Read(responseMessage, 0, responseMessage.Length);
+                    total_req_num = BitConverter.ToInt16(responseMessage, 0);
+
+                    for (int i = 0; i < total_req_num; i++)
+                    {
+                        //which tree ,client want to join.
+                        bool sendPort = false;
+                        stream.Read(responseMessage, 0, responseMessage.Length);
+                        req_tree_num = BitConverter.ToInt16(responseMessage, 0);
+
+
+                        for (int j = 0; j < max_peer; j++)
+                        {
+                            if (upPorth.getTreeCListClient(req_tree_num, j) == null && upPorth.getTreeDListClient(req_tree_num, j) == null)
+                            {
+                                tempC_num = upPorth.getTreeCListPort(req_tree_num, j);
+                                cMessage = BitConverter.GetBytes(tempC_num);
+                                stream.Write(cMessage, 0, cMessage.Length);
+                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + tempC_num.ToString() + "\n" });
+
+                                tempD_num = upPorth.getTreeDListPort(req_tree_num, j);
+                                dMessage = BitConverter.GetBytes(tempD_num);
+                                stream.Write(dMessage, 0, dMessage.Length);
+                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
+
+                                sendPort = true;
+                                break;
+                            }
                         }
+
+                        if (sendPort != true)
+                        {   // required tree number cant join
+                            Byte[] cMessage2 = BitConverter.GetBytes(0000);
+                            stream.Write(cMessage2, 0, cMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:no port" + "\n" });
+
+                            Byte[] dMessage2 = BitConverter.GetBytes(0000);
+                            stream.Write(dMessage2, 0, dMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:no port" + "\n" });
+                        }
+
                     }
 
-                    for (int i = 0; i < max_peer; i++)
-                    {
-                        if (upPorth.getDListClient(i, 1) == null)
-                        {
-                            temp = upPorth.getDListPort(i, 1);
-                            Byte[] d1Message = BitConverter.GetBytes(temp);
-                            stream.Write(d1Message, 0, d1Message.Length);
-                            sendD1Port = true;
-                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "D1port:" + temp.ToString() + "\n" });
-
-                            break;
-                        }
-                    }
-
-                    for (int i = 0; i < max_peer; i++)
-                    {
-                        if (upPorth.getDListClient(i, 2) == null)
-                        {
-                            temp = upPorth.getDListPort(i, 2);
-                            Byte[] d2Message = BitConverter.GetBytes(temp);
-                            stream.Write(d2Message, 0, d2Message.Length);
-                            sendD2Port = true;
-                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "D2port:" + temp.ToString() + "\n" });
-
-                            break;
-                        }
-                    }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Windows.Forms.MessageBox.Show(ex.ToString());
+
                     mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
                     break;
                 }
-
-                if (sendCPort == false || sendD1Port == false || sendD2Port == false)
-                {
-                    Byte[] cMessage = BitConverter.GetBytes(0000);   //0000 mean no C port can join
-                    stream.Write(cMessage, 0, cMessage.Length);
-
-                    Byte[] dMessage = BitConverter.GetBytes(0000);
-                    stream.Write(dMessage, 0, dMessage.Length);     //d1
-
-                    stream.Write(dMessage, 0, dMessage.Length);     //d2
-                }
+                stream.Dispose();
+                client = null;
+                //listenPeer.Stop();
+                Thread.Sleep(50);
 
             }//end while loop
+            listenPeer.Stop();
         }
 
+        //        public void receiveChunk(TcpClient tcpClient, int treeIndex)
+        //        {
+        //            TcpClient clientD = tcpClient;
+        //            NetworkStream stream = clientD.GetStream();
+        //            BinaryFormatter bf = new BinaryFormatter();
+
+
+        //            try
+        //            {
+        //               // byte[] responseMessage = new byte[cConfig.ChunkSize];
+        //                Chunk streamingChunk;
+        //                int responseMessageBytes;
+
+        //                while (serverConnect)
+        //                {
+
+
+        //                        byte[] responseMessage = new byte[cConfig.ChunkSize];
+        //                        responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+        //                    //by vinci: send responseBytes directly to peer
+        //                        //this.uploadToPeer(responseMessageBytes);
+
+        //                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
+
+        //                        if (streamingChunk == null)
+        //                        {
+        //                            Thread.Sleep(3);
+        //                            continue;
+        //                        }
+        //                        //by yam
+        //                        if (treeIndex == 0 && streamingChunk.seq % 2 != 0)
+        //                        {
+        //                            if (oddList.Count <= cConfig.ChunkCapacity)
+        //                                oddList.Add(streamingChunk);
+        //                            else
+        //                                oddList[oddList_wIndex] = streamingChunk;
+
+        //                            if (oddList_wIndex == cConfig.ChunkCapacity)
+        //                                oddList_wIndex = 0;
+        //                            else
+        //                                oddList_wIndex += 1;
+
+        //                            currentOddNo = streamingChunk.seq;
+        ////by vinci: add chunk to odd upload buffer
+        //                            if(uploading)
+        //                                    upPorth.setOddListChunk(streamingChunk);
+
+        //                        }
+        //                        else
+        //                        {
+        //                            if (evenList.Count <= cConfig.ChunkCapacity)
+        //                                evenList.Add(streamingChunk);
+        //                            else
+        //                                evenList[evenList_wIndex] = streamingChunk;
+
+        //                            if (evenList_wIndex == cConfig.ChunkCapacity)
+        //                                evenList_wIndex = 0;
+        //                            else
+        //                                evenList_wIndex += 1;
+
+        //                            currentEvenNo = streamingChunk.seq;
+        ////by vinci: add chunk to even upload buffer
+        //                            if(uploading)
+        //                                    upPorth.setEvenListChunk(streamingChunk);
+        //                        }
+
+        //                       // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { chunkList_wIndex.ToString() + ":" + streamingChunk.seq });
+        //                        mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { currentOddNo.ToString() + ":" + currentEvenNo.ToString() });
+
+        //                        Thread.Sleep(3);
+
+        //                } //end while loop
+        //                stream.Close();
+        //                clientD.Close();
+        //            }
+        //            catch(Exception ex)
+        //            {
+        //                stream.Close();
+        //                clientD.Close();
+        //                MessageBox.Show(ex.ToString());
+        //            }
+
+        //        }
+
+        //private void updateChunkList()
+        //{
+        //    defineFistChunk();
+
+        //    while (true)
+        //    {
+        //        if ((tempSeq) % 2 != 0)
+        //        {
+        //            if (tempSeq <= currentOddNo)
+        //            {
+        //                resultIndex = searchChunk(oddList, oddList_rIndex, oddList_wIndex, tempSeq);
+
+        //                if (resultIndex != -1)
+        //                    addToChunkList(oddList, ref oddList_rIndex, resultIndex);
+        //               // else
+        //                   // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { tempSeq.ToString() });
+
+        //                incrementTempSeq();
+        //            }
+        //            else
+        //                Thread.Sleep(40);
+
+        //        }
+        //        else
+        //        {
+        //            if (tempSeq <= currentEvenNo)
+        //            {
+        //                resultIndex = searchChunk(evenList, evenList_rIndex, evenList_wIndex, tempSeq);
+
+        //                if (resultIndex != -1)
+        //                    addToChunkList(evenList, ref evenList_rIndex, resultIndex);
+        //                //else
+        //                  //  mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { tempSeq.ToString() });
+
+        //                incrementTempSeq();
+        //            }
+        //            else
+        //                Thread.Sleep(40);
+
+        //        }
+        //        Thread.Sleep(2);
+        //    }
+        //}
+
+        //private void defineFistChunk()
+        //{
+        //    while (true)
+        //    {
+        //        if (oddList.Count > 10 && evenList.Count > 10)
+        //        {
+        //            if (oddList[0].seq < evenList[0].seq)
+        //                tempSeq = oddList[0].seq;
+        //            else
+        //                tempSeq = evenList[0].seq;
+        //            break;
+        //        }
+        //        Thread.Sleep(2);
+        //    }
+        //}
+
+        //private void incrementTempSeq()
+        //{
+        //    if (tempSeq == 2147483647)
+        //        tempSeq = 1;
+        //    else
+        //        tempSeq += 1;
+        //}
+
+        //private void addToChunkList(List<Chunk> list, ref int rIndex, int targetIndex)
+        //{
+        //    if (chunkList.Count <= cConfig.ChunkCapacity)
+        //        chunkList.Add(list[targetIndex]);
+        //    else
+        //        chunkList[chunkList_wIndex] = list[targetIndex];
+
+        //    if (chunkList_wIndex == cConfig.ChunkCapacity)
+        //        chunkList_wIndex = 0;
+        //    else
+        //        chunkList_wIndex += 1;
+
+        //    rIndex = targetIndex;
+        //}
 
     }// end class     
 }// end namespace
