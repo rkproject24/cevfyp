@@ -135,10 +135,11 @@ namespace TrackerServer
                         string MsgContent = ByteArrayToString(responsePeerMsg2);
                         string[] messages = MsgContent.Split('@');
 
-                        int treeNo = Int32.Parse(messages[0]);
-                        string clientid = messages[1];
-                        int MaxClient = Int32.Parse( messages[2]);
-                        int layer = Int32.Parse(messages[3]);
+                        int listenPort = Int32.Parse(messages[0]);
+                        int treeNo = Int32.Parse(messages[1]);
+                        string clientid = messages[2];
+                        int MaxClient = Int32.Parse( messages[3]);
+                        int layer = Int32.Parse(messages[4]);
 
                         //int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
@@ -147,10 +148,13 @@ namespace TrackerServer
 
                         //int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
 
-                        PeerNode clientNode = new PeerNode(clientid, clientendpt.ToString(), MaxClient);
+                        PeerNode clientNode = new PeerNode(clientid, clientendpt.ToString(), MaxClient, listenPort);
                         clientNode.Layer = layer;
+
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
+                        Thread.Sleep(400);
                         TreeAccess.addPeer(clientNode);
+                        Thread.Sleep(400);
                         TreeAccess.setMaxId(Int32.Parse(clientid));
 
                         //PeerNode clientNodeB = new PeerNode(clientid, clientendpt.ToString(), MaxClient);
@@ -195,25 +199,34 @@ namespace TrackerServer
                     {
                         responsePeerMsg = new byte[4];
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                        int listenPort = BitConverter.ToInt16(responsePeerMsg, 0);
+
+                        responsePeerMsg = new byte[4];
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                         treeNo = BitConverter.ToInt16(responsePeerMsg, 0);
 
                         responsePeerMsg = new byte[4];
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
-                        PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient);
+                        PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient, listenPort);
                         serverNode.Layer = 0;
 
                         //by vinci:                       
+                        //for (int i = 0; i < treeNo; i++)
+                        //{
+                        //    //remove the old xml
+                        //    if (File.Exists(Peerlist_name + i + ".xml"))
+                        //        File.Delete(Peerlist_name + i + ".xml");
+                        //}
+                        
                         for (int i = 0; i < treeNo; i++)
                         {
-                            //remove the old xml
-                            if (File.Exists(Peerlist_name + i + ".xml"))
-                                File.Delete(Peerlist_name + i + ".xml");
-
-                            PeerInfoAccessor TreeAccess1 = new PeerInfoAccessor(Peerlist_name + i);
-                            TreeAccess1.addPeer(serverNode);
-                            TreeAccess1.NewMaxId();
+                            PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + i);
+                            Thread.Sleep(400);
+                            TreeAccess.initialize(treeNo);
+                            Thread.Sleep(400);
+                            TreeAccess.addPeer(serverNode);
                         }
 
 
@@ -223,17 +236,23 @@ namespace TrackerServer
                     }
 
                 }
-                catch
+                catch(Exception ex)
                 {
-                    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "One client join fail...\n" });
-                    break;
+                    //this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "One client join fail...\n" });
+                    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { ex+"\n" });
+                    //break;
                 }
-
+                Thread.Sleep(50);
             }
         }
 
         private void start()
         {
+            string[] xmlList = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml");
+            foreach (string xmlfile in xmlList)
+            {
+                File.Delete(xmlfile);
+            }
             //this.max_client = sConfig.MaxClient;
 
             localAddr = IPAddress.Parse(sConfig.Serverip);
