@@ -61,7 +61,6 @@ namespace Server
 
         ChunkHandler ch;
         ServerConfig sConfig;
-        TcpApps tapps;
 
        //TcpClient CPortClient = null;
 
@@ -107,7 +106,6 @@ namespace Server
 
             ch = new ChunkHandler();
             sConfig = new ServerConfig();
-            tapps = new TcpApps();
 
 
           /*  for (int i = 0; i < max_client; i++)
@@ -284,7 +282,7 @@ namespace Server
             int resultIndex = 0;
             TcpClient DPortClient;
 
-            int ran_port = tapps.RanPort(1200, 1300);
+            int ran_port = TcpApps.RanPort(1200, 1400);
             TcpListener DportListener = new TcpListener(localAddr,ran_port);
             DportListener.Start(1);
 
@@ -328,7 +326,7 @@ namespace Server
                         */
 
                         //by yam: not seach method
-                        if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
+                        if (treeChunkList[tree_index].Count > 0 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
                             
                             sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], sConfig.ChunkSize);
@@ -363,7 +361,7 @@ namespace Server
 
         private void TreePortHandle_Cport(int CThreadList_index,int tree_index)
         {
-            int ran_port = tapps.RanPort(1301, 1400);
+            int ran_port = TcpApps.RanPort(1401, 1600);
             TcpClient CPortClient = null;
             TcpListener CPortListener = new TcpListener(localAddr,ran_port);
 
@@ -430,51 +428,51 @@ namespace Server
         }
       
         
-        //yam:10-10-09
-        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
-        {
-            int lb, ub, tempResult;
-            if (wIndex < rIndex)
-            {
-                lb = rIndex;
-                ub = CHUNKLIST_CAPACITY;
-                tempResult = binarySearch(list, lb, ub, target);
-                if (tempResult != -1)
-                    return tempResult;
-                else
-                {
-                    lb = 0;
-                    ub = wIndex - 1;
-                    tempResult = binarySearch(list, lb, ub, target);
-                    return tempResult;
-                }
-            }
-            else
-            {
-                lb = rIndex;
-                ub = wIndex - 1;
+        ////yam:10-10-09
+        //private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        //{
+        //    int lb, ub, tempResult;
+        //    if (wIndex < rIndex)
+        //    {
+        //        lb = rIndex;
+        //        ub = CHUNKLIST_CAPACITY;
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        if (tempResult != -1)
+        //            return tempResult;
+        //        else
+        //        {
+        //            lb = 0;
+        //            ub = wIndex - 1;
+        //            tempResult = binarySearch(list, lb, ub, target);
+        //            return tempResult;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lb = rIndex;
+        //        ub = wIndex - 1;
 
-                tempResult = binarySearch(list, lb, ub, target);
-                return tempResult;
-            }
-        }
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        return tempResult;
+        //    }
+        //}
 
-        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
-        {
-            int mid;
-            for (; lb <= ub; )
-            {
-                mid = (lb + ub) / 2;
+        //private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        //{
+        //    int mid;
+        //    for (; lb <= ub; )
+        //    {
+        //        mid = (lb + ub) / 2;
 
-                if (list[mid].seq == target)
-                    return mid;
-                else if (target > list[mid].seq)
-                    lb = mid + 1;
-                else
-                    ub = mid - 1;
-            }
-            return -1;
-        }
+        //        if (list[mid].seq == target)
+        //            return mid;
+        //        else if (target > list[mid].seq)
+        //            lb = mid + 1;
+        //        else
+        //            ub = mid - 1;
+        //    }
+        //    return -1;
+        //}
         
 
 
