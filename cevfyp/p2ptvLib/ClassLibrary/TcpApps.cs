@@ -23,7 +23,7 @@ namespace ClassLibrary
             return false;
         }
 
-        public int RanPort(int begin, int end)
+        public static int RanPort(int begin, int end)
         {
             IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
             IPEndPoint[] endpoints = ipGP.GetActiveTcpListeners();

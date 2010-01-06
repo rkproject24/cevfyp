@@ -9,7 +9,7 @@ namespace ClassLibrary
         private string id;
         private string ip;
         private int maxClient;
-        
+        private int listenPort;
 
         private List<string> childPeer;
         private int layer;
@@ -17,11 +17,13 @@ namespace ClassLibrary
 
 
 
-        public PeerNode(string id, string ip, int maxClient)
+        public PeerNode(string id, string ip, int maxClient, int listenPort)
         {
            // parentPeer = new List<string>(maxParent);
             this.id = id;
             this.ip = ip;
+            this.listenPort = listenPort;
+
             this.layer = 0;
             childPeer = new List<string>(maxClient);
         }
@@ -60,6 +62,12 @@ namespace ClassLibrary
             get { return childPeer; }
             set { childPeer = value; }
         }
+        public int ListenPort
+        {
+            get { return listenPort; }
+            set { listenPort = value; }
+        }
+
         //private List<string> parentPeer;
 
         //public List<string> ParentPeer
