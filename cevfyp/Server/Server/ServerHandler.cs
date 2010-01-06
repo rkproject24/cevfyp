@@ -23,7 +23,7 @@ namespace Server
 
         static int TrackerSLPort = 1500;
 
-        
+        int slPort;
         int max_client;
         int max_tree;
         int seqNumber = 1;
@@ -109,12 +109,12 @@ namespace Server
                 //mainFm.tbServerIp.Text = sConfig.Serverip;
                 sConfig.load("C:\\ServerConfig");
                 reloadUI();
-
+                //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
                 this.max_client = sConfig.MaxClient;
                 this.max_tree = sConfig.TreeSize;
                 ph = new PortHandler(max_client,max_tree, sConfig.Serverip, mainFm);
                 ph.startTreePort();//ph.startPort();
-
+                //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
 
                 localAddr = IPAddress.Parse(sConfig.Serverip);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
@@ -160,6 +160,11 @@ namespace Server
                 //byte[] cmdbyte = StrToByteArray("start");
                 //trackerStream.Write(cmdbyte, 0, cmdbyte.Length);
 
+                slPort = TcpApps.RanPort(1100, 1120);
+
+                byte[] ListenPortbyte = BitConverter.GetBytes(slPort); //register the number of tree in tracker
+                trackerStream.Write(ListenPortbyte, 0, ListenPortbyte.Length);
+
                 byte[] treeSizebyte = BitConverter.GetBytes(sConfig.TreeSize); //register the number of tree in tracker
                 trackerStream.Write(treeSizebyte, 0, treeSizebyte.Length);
 
@@ -186,16 +191,13 @@ namespace Server
 
         private void listenForClients()
         {
-            listenServer = new TcpListener(localAddr, sConfig.SLPort);
-           // listenServer.Start();
-
-            int temp;
-
+            listenServer = new TcpListener(localAddr, slPort);
+            listenServer.Start();
 
             while (true)
             {
-                listenServer.Start();
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + sConfig.SLPort.ToString() + "]:Listening...\n" });
+                //listenServer.Start();
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + slPort + "]:Listening...\n" });
                 TcpClient client = listenServer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
                 
@@ -377,10 +379,11 @@ namespace Server
 
                 stream.Dispose();
                 client = null;
-                listenServer.Stop();
+                
 
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }//end while loop
+            listenServer.Stop();
         }
 
         public static string ByteArrayToString(byte[] bytes)
