@@ -6,12 +6,14 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 
+
 namespace ClassLibrary
 {
     public class xml
     {
         private string xmlFile;
         private string node;
+        private XmlDocument xmlDoc;
 
         public xml(string fileName, string group, bool rebuild)
         {
@@ -19,45 +21,39 @@ namespace ClassLibrary
             this.node = group;
 
             if (File.Exists(xmlFile) && rebuild)
-            {
                 File.Delete(xmlFile);
-            }
-            
-            XmlDocument xmlDoc = new XmlDocument();
-            try
+
+            if (rebuild || !File.Exists(xmlFile))
             {
                 try
-                {
-                    xmlDoc.Load(xmlFile);
-                }
-                catch
                 {
                     XmlTextWriter xmlWrite = new XmlTextWriter(xmlFile, System.Text.Encoding.UTF8);
                     xmlWrite.Formatting = Formatting.Indented;
                     xmlWrite.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
                     xmlWrite.WriteStartElement(node);
                     xmlWrite.Close();
-                    xmlDoc.Load(xmlFile);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+
+            
+
         }
 
         public void AddAttribute(string group, string type, string value)
         {
-            XmlDocument setting = new XmlDocument();
-            setting.Load(this.xmlFile);
-
-
+            xmlDoc = new XmlDocument();
             //XmlNode node = setting.SelectSingleNode(group);
-            XmlAttribute xmlattribute_add = setting.CreateAttribute(type);
+            xmlDoc.Load(this.xmlFile);
+            XmlAttribute xmlattribute_add = xmlDoc.CreateAttribute(type);
             xmlattribute_add.Value = value;
             //node.Attributes.Append(xmlattribute_add);
-            setting.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
-            setting.Save(this.xmlFile);
+            
+            xmlDoc.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
+            xmlDoc.Save(this.xmlFile);
         }
 
 
@@ -97,11 +93,12 @@ namespace ClassLibrary
         //by vinci: attribute=NULL if there is no attributes in the node
         public void Add(string list, string []type, string []value, string []attributeName, string[] attributevalues)
         {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
+            xmlDoc = new XmlDocument();
+           
             XmlElement childNode;
+            xmlDoc.Load(this.xmlFile);
             XmlElement root = xmlDoc.DocumentElement;
-
+            
             //try
             //{
             //    //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
@@ -148,7 +145,7 @@ namespace ClassLibrary
 
         public void Add(string[] type, string[] value)
         {
-            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc = new XmlDocument();
             xmlDoc.Load(this.xmlFile);
 
 
@@ -173,11 +170,11 @@ namespace ClassLibrary
         public string ReadAttribute(string group, string type)
         {
                 string value;
-                XmlDocument read = new XmlDocument();
-                read.Load(this.xmlFile);
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
                 try
                 {
-                    value = read.SelectSingleNode(group).Attributes[type].Value;
+                    value = xmlDoc.SelectSingleNode(group).Attributes[type].Value;
                     return value;
                 }
                 catch
@@ -191,9 +188,9 @@ namespace ClassLibrary
 
          public string Read(string group, string type)
          {
-             XmlDocument doc = new XmlDocument();
-             doc.Load(this.xmlFile);
-             XmlElement root = doc.DocumentElement;
+             xmlDoc = new XmlDocument();
+             xmlDoc.Load(this.xmlFile);
+             XmlElement root = xmlDoc.DocumentElement;
              //XmlNodeList nodes = root.SelectNodes("/"+group);
              //XmlNodeList nodes = root.GetElementsByTagName(group);
 
@@ -240,9 +237,9 @@ namespace ClassLibrary
 
          public string Read(string nodeName, string attributeName, string attributeValue, string type)
          {
-             XmlDocument doc = new XmlDocument();
-             doc.Load(this.xmlFile);
-             XmlElement root = doc.DocumentElement;
+             xmlDoc = new XmlDocument();
+             xmlDoc.Load(this.xmlFile);
+             XmlElement root = xmlDoc.DocumentElement;
              //XmlNodeList nodes = root.SelectNodes("/"+group);
              //XmlNodeList nodes = root.GetElementsByTagName(group);
 
@@ -337,9 +334,9 @@ namespace ClassLibrary
 
          public int GetElementNum()
          {
-             XmlDocument GetELement = new XmlDocument();
-             GetELement.Load(this.xmlFile);
-             XmlElement root = GetELement.DocumentElement;
+             xmlDoc = new XmlDocument();
+             xmlDoc.Load(this.xmlFile);
+             XmlElement root = xmlDoc.DocumentElement;
 
              int EleNum = root.ChildNodes.Count;
 
@@ -350,21 +347,21 @@ namespace ClassLibrary
 
         public void modify(string group, string type, string newValue)
         {
-            XmlDocument modify = new XmlDocument();
-            modify.Load(this.xmlFile);
+            xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
             //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
-            XmlElement root = modify.DocumentElement;
+            XmlElement root = xmlDoc.DocumentElement;
 
            // foreach (XmlElement 
             
             //attribute.Value = newValue;
-            modify.Save(this.xmlFile);
+            xmlDoc.Save(this.xmlFile);
         }
 
         //by vinci
         public void modifyAttribute(string node, string attributeName, string newValue)
         {
-            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc = new XmlDocument();
             xmlDoc.Load(this.xmlFile);
             XmlAttribute attribute = xmlDoc.SelectSingleNode(node).Attributes[attributeName];
             //xmlDoc.SelectSingleNode(node).Attributes[attributeName] = newValue;
@@ -376,22 +373,31 @@ namespace ClassLibrary
 
         public void deleteAttribute(string group, string type)
         {
-            XmlDocument delete = new XmlDocument();
-            delete.Load(this.xmlFile);
-            XmlAttribute attribute = delete.SelectSingleNode(group).Attributes[type];
+            xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlAttribute attribute = xmlDoc.SelectSingleNode(group).Attributes[type];
             attribute.ParentNode.RemoveChild(attribute);
-            delete.Save(this.xmlFile);
+            xmlDoc.Save(this.xmlFile);
         }
 
         public void deleteNode(string group)
         {
-            XmlDocument delete = new XmlDocument();
-            delete.Load(this.xmlFile);
-            XmlNode node = delete.SelectSingleNode(group);
+            xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlNode node = xmlDoc.SelectSingleNode(group);
             node.ParentNode.RemoveChild(node);
-            delete.Save(this.xmlFile);
+            xmlDoc.Save(this.xmlFile);
         }
 
+        public void save()
+        {
+            xmlDoc.Save(this.xmlFile);
+        }
+        public void load()
+        {
+            xmlDoc = new XmlDocument();
+            xmlDoc.Save(this.xmlFile);
+        }
       }
 
     public static class SiteHelper

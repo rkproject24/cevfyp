@@ -8,6 +8,7 @@ namespace ClassLibrary
     using System.Collections.Generic;
     using System.Text;
     using ClassLibrary;
+    using System.Threading;
 
     public class PeerInfoAccessor
     {
@@ -73,7 +74,9 @@ namespace ClassLibrary
         {
             string ip = getIP(id);
             string layer = getLayer(id);
-            return new PeerNode(id, ip, Int32.Parse(layer));
+            string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
+
+            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort));
         }
 
         public void addPeer(PeerNode peer)
@@ -81,15 +84,18 @@ namespace ClassLibrary
             string[] attributes = {"ID"};
             string[] attributesValue = {peer.Id};
 
-            string[] Info = {"IP", "Layer" };
-            string[] Value = { peer.Ip.ToString(), peer.Layer.ToString() };
+            string[] Info = {"IP", "Layer", "listenPort" };
+            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString() };
+
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
         }
 
-        public void NewMaxId()
+        public void initialize(int treeSize)
         {
             RPI.AddAttribute("Info", "MaxId", "0");
+            Thread.Sleep(500);
+            RPI.AddAttribute("Info", "treeSize", treeSize.ToString());
         }
 
 
@@ -102,6 +108,17 @@ namespace ClassLibrary
         {
 
             return Int32.Parse(RPI.ReadAttribute("Info", "MaxId"));
+        }
+
+        public void setTreeSize(int MaxId)
+        {
+            RPI.modifyAttribute("Info", "treeSize", MaxId.ToString());
+        }
+
+        public int getTreeSize()
+        {
+
+            return Int32.Parse(RPI.ReadAttribute("Info", "treeSize"));
         }
     }
 }
