@@ -245,6 +245,7 @@ namespace Client
 
             int tempSeq = tree_index + 1;
             int tempRead_index = 0;
+            bool firstRun = true;
 
             int resultIndex = 0;
             TcpClient DPortClient;
@@ -272,8 +273,16 @@ namespace Client
                 try
                 {
                     while (true)
-                    {  //by yam: using search method
-                        if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
+                    {
+                        if (firstRun == true && treeChunkList[tree_index].Count > 1)
+                        {
+                            tempSeq = treeCLCurrentSeq[tree_index];
+                            firstRun = false;
+                        }
+
+                        
+                        //by yam: using search method
+                        /*if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
 
                             resultIndex = search(treeChunkList[tree_index], treeCLReadIndex[tree_index], treeCLWriteIndex[tree_index], tempSeq);
@@ -290,26 +299,27 @@ namespace Client
                             else
                                 tempSeq += max_tree;
                         }
-                        
+                        */
+
 
                         //by yam: not seach method
-                        //if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
-                        //{
+                        if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
+                        {
 
-                        //    sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], cConfig.ChunkSize);
-                        //    stream.Write(sendMessage, 0, sendMessage.Length);
+                            sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], cConfig.ChunkSize);
+                            stream.Write(sendMessage, 0, sendMessage.Length);
 
 
-                        //    if (tempSeq == 2147483647)
-                        //        tempSeq = tree_index + 1;
-                        //    else
-                        //        tempSeq += max_tree;
+                            if (tempSeq == 2147483647)
+                                tempSeq = tree_index + 1;
+                            else
+                                tempSeq += max_tree;
 
-                        //    if (tempRead_index == CHUNKLIST_CAPACITY)
-                        //        tempRead_index = 0;
-                        //    else
-                        //        tempRead_index += 1;
-                        //}
+                            if (tempRead_index == CHUNKLIST_CAPACITY)
+                                tempRead_index = 0;
+                            else
+                                tempRead_index += 1;
+                        }
 
 
 
@@ -321,7 +331,9 @@ namespace Client
                     MessageBox.Show(ex.ToString());
                     delClientFromTreeDList(DThreadList_index, tree_index, ran_port);
                     stream = null;
-                    tempSeq = tree_index + 1;
+                    //tempSeq = tree_index + 1;
+                    tempSeq = 0;
+                    firstRun = true;
                 }
             }
         }

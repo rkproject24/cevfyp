@@ -56,6 +56,11 @@ namespace Client
             rtbupload.AppendText(message);
         }
 
+        public void UpdateRtbDownload(string message)
+        {
+            rtbdownload.AppendText(message);
+        }
+
         public ClientForm()
         {
             InitializeComponent();
