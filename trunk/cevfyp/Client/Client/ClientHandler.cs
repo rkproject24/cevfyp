@@ -402,15 +402,17 @@ namespace Client
                     treeCLCurrentSeq[tree_index] = streamingChunk.seq;
 
                   
-                  /*  if(tree_index==0)
-                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[0][write_index].seq.ToString()+" " });
-                        //mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { treeChunkList[0][write_index].seq.ToString() });
+                  //  if(tree_index==0)
+                      //  mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[0][write_index].seq.ToString()+" " });
+                       // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { treeCLWriteIndex[tree_index].ToString() });
 
-                    if (tree_index == 1)
-                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[1][write_index].seq.ToString() + " " });
-                    if (tree_index == 2)
-                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
-                    */
+                   // if (tree_index == 1)
+                     //   mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { treeChunkList[1][write_index].seq.ToString() + " " });
+                       // mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { treeChunkList[1][write_index].seq.ToString() });
+
+                      //if (tree_index == 2)
+                    //    mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
+                       //   mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
 
                       
                     Thread.Sleep(20);
@@ -432,7 +434,7 @@ namespace Client
         {
             while (true)
             {
-                if (treeChunkList[0].Count > 1 && treeChunkList[1].Count > 1)   //Problem: Cause slow start when there is many sub stream
+                if (treeChunkList[0].Count > 0)   //Problem: Cause slow start when there is many sub stream
                 {
                     tempSeq = treeChunkList[0][0].seq;
                     break;
@@ -454,11 +456,10 @@ namespace Client
                     else
                        check_num=remainder_num - 1;
 
-
                    if (tempSeq <= treeCLCurrentSeq[i] && check_num==i)
                     {
                        //by yam : search method
-                        int r_index = searchChunk(treeChunkList[i],treeCLReadIndex[i],treeCLWriteIndex[i], tempSeq);
+                        int r_index = searchChunk(i,treeCLReadIndex[i],treeCLWriteIndex[i], tempSeq);
                         if (r_index != -1)
                         {
                             //add to main chunk list
@@ -480,18 +481,12 @@ namespace Client
                              //mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
 
                         }
-                 
-
                         if (tempSeq == 2147483647)
                             tempSeq = 1;
                         else
-                            tempSeq += 1;
-                      
+                            tempSeq += 1; 
                     }
-
                 }
-
-            
                 Thread.Sleep(30);
             }
         }
@@ -520,7 +515,7 @@ namespace Client
                     Array.Copy(chunkList[chunkList_rIndex].streamingData, 0, sendClientChunk, 0, chunkList[chunkList_rIndex].bytes);
                     localvlcstream.Write(sendClientChunk, 0, sendClientChunk.Length);
 
-                    mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { chunkList_rIndex.ToString() + ":" + chunkList[chunkList_rIndex].seq });
+                   mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { chunkList_rIndex.ToString() + ":" + chunkList[chunkList_rIndex].seq });
 
                     if (chunkList_rIndex == cConfig.ChunkCapacity)
                         chunkList_rIndex = 0;
@@ -534,42 +529,42 @@ namespace Client
             client.Close();
         }
       
-        private int searchChunk(List<Chunk> list, int rIndex, int wIndex, int target)
+        private int searchChunk(int list_index, int rIndex, int wIndex, int target)
         {
-            if (wIndex < rIndex)
+           if (wIndex < rIndex)
             {
                 lb = rIndex;
                 ub = cConfig.ChunkCapacity;
-                tempResult = binarySearch(list, lb, ub, target);
+                tempResult = binarySearch(list_index, lb, ub, target);
                 if (tempResult != -1)
                     return tempResult;
                 else
                 {
                     lb = 0;
                     ub = wIndex - 1;
-                    tempResult = binarySearch(list, lb, ub, target);
+                    tempResult = binarySearch(list_index, lb, ub, target);
                     return tempResult;
                 }
             }
             else
-            {
+           {
                 lb = rIndex;
-                ub = wIndex - 1;
+                ub = wIndex -1;
 
-                tempResult = binarySearch(list, lb, ub, target);
+                tempResult = binarySearch(list_index, lb, ub, target);
                 return tempResult;
             }
         }
 
-        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        private int binarySearch(int list_index, int lb, int ub, int target)
         {
             for (; lb <= ub; )
             {
                 mid = (lb + ub) / 2;
 
-                if (list[mid].seq == target)
+                if (treeChunkList[list_index][mid].seq == target)
                     return mid;
-                else if (target > list[mid].seq)
+                else if (target > treeChunkList[list_index][mid].seq)
                     lb = mid + 1;
                 else
                     ub = mid - 1;

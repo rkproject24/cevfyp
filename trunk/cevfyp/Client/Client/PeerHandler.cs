@@ -451,8 +451,8 @@ namespace Client
         private PeerNode selectPeer()
         {
             PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
-            //return peerAccess.getPeer("0"); //select the server ip as default
-            return peerAccess.getPeer(peerAccess.getMaxId().ToString());
+            return peerAccess.getPeer("0"); //select the server ip as default
+            //return peerAccess.getPeer(peerAccess.getMaxId().ToString());
 
         }
 
