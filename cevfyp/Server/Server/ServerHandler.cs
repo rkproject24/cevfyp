@@ -84,7 +84,12 @@ namespace Server
 
         public void pause()
         {
-            vlc.pause();
+            //vlc.pause();
+            seqNumber = 1;
+            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
+            mainFm.richTextBox1.Clear();
+            mainFm.richTextBox2.Clear();
+
         }
 
         public void stop()

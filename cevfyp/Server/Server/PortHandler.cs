@@ -204,7 +204,7 @@ namespace Server
             treeCLCurrentSeq[tree_index] = sChunk.seq;
 
             
-            current_num = sChunk.seq;
+           // current_num = sChunk.seq;
         }
 
         public TcpClient getTreeCListClient(int tree_num, int cList_index)
@@ -276,8 +276,9 @@ namespace Server
             byte[] sendMessage = new byte[sConfig.ChunkSize];
             byte[] responseMessage = new byte[20];
 
-            int tempSeq = tree_index+1;
+            int tempSeq = tree_index + 1;// 0;
             int tempRead_index = 0;
+            bool firstRun = true;
 
             int resultIndex = 0;
             TcpClient DPortClient;
@@ -305,7 +306,14 @@ namespace Server
                 try
                 {
                     while (true)
-                    {  //by yam: using search method
+                    {
+                        if (firstRun == true && treeChunkList[tree_index].Count > 1)
+                        {
+                            tempSeq = treeCLCurrentSeq[tree_index];
+                            firstRun = false;
+                        }
+
+                        //by yam: using search method
                         /*if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
 
@@ -326,12 +334,11 @@ namespace Server
                         */
 
                         //by yam: not seach method
-                        if (treeChunkList[tree_index].Count > 0 && tempSeq <= treeCLCurrentSeq[tree_index])
+                        if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
                             
                             sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], sConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
-                            
 
                             if (tempSeq == 2147483647)
                                 tempSeq = tree_index + 1;
@@ -354,7 +361,17 @@ namespace Server
                    // MessageBox.Show(ex.ToString());
                     delClientFromTreeDList(DThreadList_index, tree_index, ran_port);
                     stream = null;
-                    tempSeq = tree_index+1;
+                   // tempSeq = tree_index+1;
+                    tempSeq = 0;
+                    firstRun = true;
+
+                   /* if (treeDPortList[tree_index][DThreadList_index].clientD == null)
+                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:" + tree_index + "del \n" });
+
+                    if (treeCPortList[tree_index][DThreadList_index].clientC == null)
+                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + "del \n" });
+                    */
+
                 }
             }
         }
@@ -406,13 +423,28 @@ namespace Server
 
                     if (responseString == "Exit")
                     {
-                        // MessageBox.Show("Client[" + listNo + "] disconected");
+
+                       /* if (treeDPortList[tree_index][CPortList_index].clientD != null)
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:" + tree_index + "non del \n" });
+
+                        if (treeCPortList[tree_index][CPortList_index].clientC != null)
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + "non del \n" });
+                        */
+
+                      
                         cp.clientC = null;
                         treeCPortList[tree_index][CPortList_index] = cp;
 
                         int portD= treeDPortList[tree_index][CPortList_index].PortD;
                         delClientFromTreeDList(CPortList_index, tree_index, portD);
-                        
+
+                      /*  if(treeDPortList[tree_index][CPortList_index].clientD==null)
+                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:"+tree_index+" del \n" });
+
+                        if (treeCPortList[tree_index][CPortList_index].clientC == null)
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + " del \n" });
+                        */
+                   
                         break;
                     }
                 }
