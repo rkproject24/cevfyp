@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.tbWriteStatus = new System.Windows.Forms.TextBox();
             this.tbReadStatus = new System.Windows.Forms.TextBox();
             this.tbStatus = new System.Windows.Forms.TextBox();
@@ -52,56 +52,56 @@
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(129, 51);
+            this.panel1.Location = new System.Drawing.Point(129, 55);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(322, 240);
+            this.panel1.Size = new System.Drawing.Size(322, 260);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
-            // button1
+            // btnConnect
             // 
-            this.button1.Location = new System.Drawing.Point(5, 299);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(54, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Connect";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnConnect.Location = new System.Drawing.Point(5, 324);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(54, 25);
+            this.btnConnect.TabIndex = 1;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.button1_Click);
             // 
             // tbWriteStatus
             // 
-            this.tbWriteStatus.Location = new System.Drawing.Point(137, 300);
+            this.tbWriteStatus.Location = new System.Drawing.Point(137, 325);
             this.tbWriteStatus.Name = "tbWriteStatus";
-            this.tbWriteStatus.Size = new System.Drawing.Size(83, 22);
+            this.tbWriteStatus.Size = new System.Drawing.Size(83, 20);
             this.tbWriteStatus.TabIndex = 3;
             // 
             // tbReadStatus
             // 
-            this.tbReadStatus.Location = new System.Drawing.Point(226, 300);
+            this.tbReadStatus.Location = new System.Drawing.Point(226, 325);
             this.tbReadStatus.Name = "tbReadStatus";
-            this.tbReadStatus.Size = new System.Drawing.Size(100, 22);
+            this.tbReadStatus.Size = new System.Drawing.Size(100, 20);
             this.tbReadStatus.TabIndex = 4;
             // 
             // tbStatus
             // 
-            this.tbStatus.Location = new System.Drawing.Point(226, 329);
+            this.tbStatus.Location = new System.Drawing.Point(226, 356);
             this.tbStatus.Name = "tbStatus";
-            this.tbStatus.Size = new System.Drawing.Size(100, 22);
+            this.tbStatus.Size = new System.Drawing.Size(100, 20);
             this.tbStatus.TabIndex = 5;
             // 
             // tbServerIp
             // 
-            this.tbServerIp.Location = new System.Drawing.Point(137, 328);
+            this.tbServerIp.Location = new System.Drawing.Point(137, 355);
             this.tbServerIp.Name = "tbServerIp";
-            this.tbServerIp.Size = new System.Drawing.Size(83, 22);
+            this.tbServerIp.Size = new System.Drawing.Size(83, 20);
             this.tbServerIp.TabIndex = 6;
-            this.tbServerIp.Text = "192.168.0.20";
+            this.tbServerIp.Text = "192.168.1.3";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(6, 326);
+            this.button2.Location = new System.Drawing.Point(6, 353);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(43, 23);
+            this.button2.Size = new System.Drawing.Size(43, 25);
             this.button2.TabIndex = 7;
             this.button2.Text = "mute";
             this.button2.UseVisualStyleBackColor = true;
@@ -110,17 +110,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(78, 329);
+            this.label1.Location = new System.Drawing.Point(78, 356);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "Tracker ip";
             // 
             // btnDisconnect
             // 
-            this.btnDisconnect.Location = new System.Drawing.Point(65, 299);
+            this.btnDisconnect.Location = new System.Drawing.Point(65, 324);
             this.btnDisconnect.Name = "btnDisconnect";
-            this.btnDisconnect.Size = new System.Drawing.Size(66, 22);
+            this.btnDisconnect.Size = new System.Drawing.Size(66, 24);
             this.btnDisconnect.TabIndex = 9;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = true;
@@ -141,29 +141,29 @@
             this.preferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem1});
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.preferenceToolStripMenuItem.Text = "Tools";
             // 
             // preferenceToolStripMenuItem1
             // 
             this.preferenceToolStripMenuItem1.Name = "preferenceToolStripMenuItem1";
-            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
+            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(130, 22);
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 
             // rtbupload
             // 
-            this.rtbupload.Location = new System.Drawing.Point(457, 50);
+            this.rtbupload.Location = new System.Drawing.Point(457, 54);
             this.rtbupload.Name = "rtbupload";
-            this.rtbupload.Size = new System.Drawing.Size(136, 241);
+            this.rtbupload.Size = new System.Drawing.Size(136, 261);
             this.rtbupload.TabIndex = 11;
             this.rtbupload.Text = "";
             // 
             // btnListenPeer
             // 
-            this.btnListenPeer.Location = new System.Drawing.Point(453, 326);
+            this.btnListenPeer.Location = new System.Drawing.Point(453, 353);
             this.btnListenPeer.Name = "btnListenPeer";
-            this.btnListenPeer.Size = new System.Drawing.Size(75, 23);
+            this.btnListenPeer.Size = new System.Drawing.Size(75, 25);
             this.btnListenPeer.TabIndex = 12;
             this.btnListenPeer.Text = "ListenPeer";
             this.btnListenPeer.UseVisualStyleBackColor = true;
@@ -171,52 +171,52 @@
             // 
             // tbhostIP
             // 
-            this.tbhostIP.Location = new System.Drawing.Point(453, 300);
+            this.tbhostIP.Location = new System.Drawing.Point(453, 325);
             this.tbhostIP.Name = "tbhostIP";
-            this.tbhostIP.Size = new System.Drawing.Size(94, 22);
+            this.tbhostIP.Size = new System.Drawing.Size(94, 20);
             this.tbhostIP.TabIndex = 13;
-            this.tbhostIP.Text = "127.0.0.1";
+            this.tbhostIP.Text = "192.168.1.3";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(396, 304);
+            this.label2.Location = new System.Drawing.Point(396, 329);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(51, 12);
+            this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 14;
             this.label2.Text = "HostingIP";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(454, 36);
+            this.label3.Location = new System.Drawing.Point(454, 39);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 12);
+            this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 15;
             this.label3.Text = "Upload log";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 36);
+            this.label4.Location = new System.Drawing.Point(3, 39);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(71, 12);
+            this.label4.Size = new System.Drawing.Size(72, 13);
             this.label4.TabIndex = 16;
             this.label4.Text = "Download log";
             // 
             // rtbdownload
             // 
-            this.rtbdownload.Location = new System.Drawing.Point(5, 52);
+            this.rtbdownload.Location = new System.Drawing.Point(5, 56);
             this.rtbdownload.Name = "rtbdownload";
-            this.rtbdownload.Size = new System.Drawing.Size(118, 240);
+            this.rtbdownload.Size = new System.Drawing.Size(118, 260);
             this.rtbdownload.TabIndex = 17;
             this.rtbdownload.Text = "";
             // 
             // ClientForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(599, 352);
+            this.ClientSize = new System.Drawing.Size(599, 381);
             this.Controls.Add(this.rtbdownload);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -231,7 +231,7 @@
             this.Controls.Add(this.tbStatus);
             this.Controls.Add(this.tbReadStatus);
             this.Controls.Add(this.tbWriteStatus);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -250,7 +250,7 @@
         #endregion
 
         public System.Windows.Forms.Panel panel1;
-        public System.Windows.Forms.Button button1;
+        public System.Windows.Forms.Button btnConnect;
         public System.Windows.Forms.TextBox tbWriteStatus;
         public System.Windows.Forms.TextBox tbReadStatus;
         public System.Windows.Forms.TextBox tbStatus;

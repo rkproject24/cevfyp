@@ -277,6 +277,7 @@ namespace Client
                         if (firstRun == true && treeChunkList[tree_index].Count > 1)
                         {
                             tempSeq = treeCLCurrentSeq[tree_index];
+                            tempRead_index = treeCLWriteIndex[tree_index] - 1;
                             firstRun = false;
                         }
 

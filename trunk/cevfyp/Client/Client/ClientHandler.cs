@@ -260,10 +260,14 @@ namespace Client
                     ClientD.Add(peerh.getDataConnect(i));
 
                     //peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
-                    peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
+                    peerh.registerToTracker(i, PeerListenPort, peerh.JoinPeer[i].Layer.ToString()); //by vinci: register To Tree in Tracker
                 }
 
-                
+                mainFm.Text = "Client:";
+                for (int i = 0; i < peerh.Selfid.Length; i++)
+                {
+                    mainFm.Text += peerh.Selfid[i]+ ",";
+                }
 
                 return "OK3";
             }
@@ -683,11 +687,11 @@ namespace Client
             IPAddress uploadipAddr = IPAddress.Parse(CLIENTIP);
             listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
             listenPeer.Start();
-
+            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:" + uploadipAddr.ToString() + "\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
             while (true)
             {
                 //listenPeer.Start();
-                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:" + uploadipAddr.ToString() + "\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
+
                 TcpClient client = listenPeer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
 
@@ -699,8 +703,6 @@ namespace Client
                 try
                 {
                     //listenPeer.Start();
-
-
                     /*  for (int i = 0; i < max_client; i++)
                       {
                           if (ph.getTreeCListClient(1, i) == null) //ph.getCListClient(i) == null
@@ -833,7 +835,7 @@ namespace Client
                                 tempC_num = upPorth.getTreeCListPort(req_tree_num, j);
                                 cMessage = BitConverter.GetBytes(tempC_num);
                                 stream.Write(cMessage, 0, cMessage.Length);
-                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + tempC_num.ToString() + "\n" });
+                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + tempC_num.ToString() + " " });
 
                                 tempD_num = upPorth.getTreeDListPort(req_tree_num, j);
                                 dMessage = BitConverter.GetBytes(tempD_num);
