@@ -82,6 +82,7 @@ namespace Client
             else
             {
                 btnDisconnect.Enabled = true;
+                btnConnect.Enabled = false;
                 clientHandler.startThread();
             }
             //string response;
