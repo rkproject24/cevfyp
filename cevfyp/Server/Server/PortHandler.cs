@@ -279,6 +279,7 @@ namespace Server
             int tempSeq = tree_index + 1;// 0;
             int tempRead_index = 0;
             bool firstRun = true;
+            //bool[] firstRun = new bool[max_tree]; //temp seq, bool for each tree 
 
             int resultIndex = 0;
             TcpClient DPortClient;
@@ -310,7 +311,9 @@ namespace Server
                         if (firstRun == true && treeChunkList[tree_index].Count > 1)
                         {
                             tempSeq = treeCLCurrentSeq[tree_index];
+                            tempRead_index = treeCLWriteIndex[tree_index] - 1;
                             firstRun = false;
+
                         }
 
                         //by yam: using search method
@@ -461,50 +464,50 @@ namespace Server
       
         
         ////yam:10-10-09
-        //private int search(List<Chunk> list, int rIndex, int wIndex, int target)
-        //{
-        //    int lb, ub, tempResult;
-        //    if (wIndex < rIndex)
-        //    {
-        //        lb = rIndex;
-        //        ub = CHUNKLIST_CAPACITY;
-        //        tempResult = binarySearch(list, lb, ub, target);
-        //        if (tempResult != -1)
-        //            return tempResult;
-        //        else
-        //        {
-        //            lb = 0;
-        //            ub = wIndex - 1;
-        //            tempResult = binarySearch(list, lb, ub, target);
-        //            return tempResult;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        lb = rIndex;
-        //        ub = wIndex - 1;
+        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        {
+            int lb, ub, tempResult;
+            if (wIndex < rIndex)
+            {
+                lb = rIndex;
+                ub = CHUNKLIST_CAPACITY;
+                tempResult = binarySearch(list, lb, ub, target);
+                if (tempResult != -1)
+                    return tempResult;
+                else
+                {
+                    lb = 0;
+                    ub = wIndex - 1;
+                    tempResult = binarySearch(list, lb, ub, target);
+                    return tempResult;
+                }
+            }
+            else
+            {
+                lb = rIndex;
+                ub = wIndex - 1;
 
-        //        tempResult = binarySearch(list, lb, ub, target);
-        //        return tempResult;
-        //    }
-        //}
+                tempResult = binarySearch(list, lb, ub, target);
+                return tempResult;
+            }
+        }
 
-        //private int binarySearch(List<Chunk> list, int lb, int ub, int target)
-        //{
-        //    int mid;
-        //    for (; lb <= ub; )
-        //    {
-        //        mid = (lb + ub) / 2;
+        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        {
+            int mid;
+            for (; lb <= ub; )
+            {
+                mid = (lb + ub) / 2;
 
-        //        if (list[mid].seq == target)
-        //            return mid;
-        //        else if (target > list[mid].seq)
-        //            lb = mid + 1;
-        //        else
-        //            ub = mid - 1;
-        //    }
-        //    return -1;
-        //}
+                if (list[mid].seq == target)
+                    return mid;
+                else if (target > list[mid].seq)
+                    lb = mid + 1;
+                else
+                    ub = mid - 1;
+            }
+            return -1;
+        }
         
 
 

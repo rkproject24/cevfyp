@@ -199,10 +199,11 @@ namespace Server
             listenServer = new TcpListener(localAddr, slPort);
             listenServer.Start();
 
+            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + slPort + "]:Listening...\n" });
             while (true)
             {
                 //listenServer.Start();
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + slPort + "]:Listening...\n" });
+                
                 TcpClient client = listenServer.AcceptTcpClient();
                 NetworkStream stream = client.GetStream();
                 
@@ -210,10 +211,6 @@ namespace Server
                // bool sendCPort = false;
               //  bool sendD1Port = false;
               //  bool sendD2Port = false;
-
-
-               
-
                 try
                 {
                   /*  for (int i = 0; i < max_client; i++)
@@ -348,7 +345,7 @@ namespace Server
                                 tempC_num = ph.getTreeCListPort(req_tree_num, j);
                                 cMessage = BitConverter.GetBytes(tempC_num);
                                 stream.Write(cMessage, 0, cMessage.Length);
-                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num.ToString() + "\n" });
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num.ToString() + " " });
 
                                 tempD_num = ph.getTreeDListPort(req_tree_num, j);
                                 dMessage = BitConverter.GetBytes(tempD_num);
