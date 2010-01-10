@@ -23,7 +23,7 @@ namespace Client
         //static int TREE_NO = 2;
 
         //===============upload variable=============
-        string CLIENTIP = "127.0.0.1";
+        string CLIENTIP;// = "127.0.0.1";
        
         //static int PeerListenPort = 1100;
         int PeerListenPort;
@@ -107,7 +107,8 @@ namespace Client
 
             cConfig.load("C:\\ClientConfig");
             chunkList = new List<Chunk>(cConfig.ChunkCapacity);
-            
+
+            mainFm.tbhostIP.Text = TcpApps.LocalIPAddress();
 
             string[] xmlList = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml");
             foreach (string xmlfile in xmlList)
@@ -152,21 +153,6 @@ namespace Client
                 vlc.setMute(0);
 
         }
-
-        /*
-        public string LocalIPAddress()
-        {
-            IPHostEntry host;
-           string localIP = "";
-           host = Dns.GetHostEntry(Dns.GetHostName());
-           foreach (IPAddress ip in host.AddressList)
-           {
-               if (ip.AddressFamily.ToString() == "InterNetwork")
-                   localIP = ip.ToString();
-           }
-           return localIP;
-        }
-        */
 
         public string establishConnect(string tackerIp)
         {
