@@ -18,15 +18,14 @@ using ClassLibrary;
 
 namespace TrackerServer
 {
-    public partial class Form1 : Form
+    public partial class TrackerMainFrm : Form
     {
         int treeNo;
         const string Peerlist_name = "PeerInfoT";
         const int tlPort = 1500;
-        int[] lastID; //store the largest ID of each Peer list
 
         private xml PeerInfo;
-        private ServerConfig sConfig;
+        //private ServerConfig sConfig;
         IPAddress localAddr;
         TcpListener TrackerListen;
         Thread listenerThread;
@@ -34,30 +33,27 @@ namespace TrackerServer
 
        // List<PeerNode> peerList; //store all the Peer include server in a list
 
-        public Form1()
+        public TrackerMainFrm()
         {
-            sConfig = new ServerConfig();
-            sConfig.load("C:\\ServerConfig");
+            //sConfig = new ServerConfig();
+            //sConfig.load("C:\\ServerConfig");
             //peerList = new List<PeerNode>();
-            treeNo= 0;
-
-            lastID = new int[sConfig.TreeSize];
-            foreach(int i in lastID)
-                lastID[i] = 0;
-
+            treeNo= 0;        
             InitializeComponent();
         }
-
-
 
         private void btnOn_Click(object sender, EventArgs e)
         {
             start();
             btnOn.Enabled = false;
+            btnReset.Enabled = true;
         }
         private void btnReset_Click(object sender, EventArgs e)
         {
             rtbClientlist.Text = "";
+            cbbTree.Items.Clear();
+            TreelistView.Columns.Clear();
+
             listenerThread.Abort();
             TrackerListen.Stop();
             //peerList.Clear();
@@ -152,9 +148,9 @@ namespace TrackerServer
                         clientNode.Layer = layer;
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
-                        Thread.Sleep(400);
+                        //Thread.Sleep(400);
                         TreeAccess.addPeer(clientNode);
-                        Thread.Sleep(400);
+                        //Thread.Sleep(400);
                         TreeAccess.setMaxId(Int32.Parse(clientid));
 
                         //PeerNode clientNodeB = new PeerNode(clientid, clientendpt.ToString(), MaxClient);
@@ -193,7 +189,7 @@ namespace TrackerServer
 
                         //peerList.Add(clientNode);
 
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { treeNo +": Client:" + clientNode.Id +" ip:" + clientendpt.ToString() + " connected to Peer\n" });
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { treeNo +": Peer:" + clientNode.Id +" ip:" + clientendpt.ToString() + " connected to Peer\n" });
                     }
                     else if (peertype.Contains("<serverReg>"))
                     {
@@ -223,10 +219,12 @@ namespace TrackerServer
                         for (int i = 0; i < treeNo; i++)
                         {
                             PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + i);
-                            Thread.Sleep(400);
+                            //Thread.Sleep(400);
                             TreeAccess.initialize(treeNo);
-                            Thread.Sleep(400);
+                            //Thread.Sleep(400);
                             TreeAccess.addPeer(serverNode);
+
+                            this.cbbTree.BeginInvoke(new UpdateTextCallback(TreeComboBox), new object[] {"T"+i });
                         }
 
 
@@ -255,7 +253,7 @@ namespace TrackerServer
             }
             //this.max_client = sConfig.MaxClient;
 
-            localAddr = IPAddress.Parse(sConfig.Serverip);
+            localAddr = IPAddress.Parse(TcpApps.LocalIPAddress());
             //localAddr= new  IPAddress.Parse("")
 
             listenerThread = new Thread(new ThreadStart(listenForClients));
@@ -263,6 +261,7 @@ namespace TrackerServer
             listenerThread.Name = " listen_for_clients";
             listenerThread.Start();
 
+            buildlistView();
             this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "START@" + localAddr.ToString() + "\n" });
         }
 
@@ -281,6 +280,75 @@ namespace TrackerServer
         public void UpdatertbClientlist(string message)
         {
             rtbClientlist.AppendText(message);
+        }
+
+        public void TreeComboBox(string message)
+        {
+            cbbTree.Items.Add(message);
+        }
+
+        private void buildlistView()
+        {
+            // Create a new ListView control.
+            //ListView listView1 = new ListView();
+            //listView1.Bounds = new Rectangle(new Point(10, 10), new Size(300, 200));
+
+            // Set the view to show details.
+            TreelistView.View = View.Details;
+            // Allow the user to edit item text.
+            TreelistView.LabelEdit = false;
+            // Allow the user to rearrange columns.
+            TreelistView.AllowColumnReorder = false;
+            // Display check boxes.
+            //TreelistView.CheckBoxes = true;
+            // Select the item and subitems when selection is made.
+            TreelistView.FullRowSelect = true;
+            // Display grid lines.
+            TreelistView.GridLines = true;
+            // Sort the items in the list in ascending order.
+            TreelistView.Sorting = SortOrder.Ascending;
+
+            // Create columns for the items and subitems.
+            TreelistView.Columns.Add("ID",40);
+            TreelistView.Columns.Add("IP Address",80);
+            TreelistView.Columns.Add("ListenPort");
+            TreelistView.Columns.Add("Layer");
+        }
+
+        private void updateTreelistView(int tree)
+        {
+            TreelistView.Items.Clear();
+
+            PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+            for (int i = 0; i <= TreeAccess.getMaxId(); i++)
+            {
+                PeerNode displayNode = TreeAccess.getPeer(i.ToString());
+                ListViewItem item = new ListViewItem(displayNode.Id, i);
+                item.SubItems.Add(displayNode.Ip);
+                item.SubItems.Add(displayNode.ListenPort.ToString());
+                item.SubItems.Add(displayNode.Layer.ToString());
+
+                TreelistView.Items.Add(item);
+            }
+
+
+            //// Create three items and three sets of subitems for each item.
+            //ListViewItem item1 = new ListViewItem("Peer1", 0);
+            //// Place a check mark next to the item.
+            ////item1.Checked = true;
+            //item1.SubItems.Add("1");
+            //item1.SubItems.Add("2");
+            //item1.SubItems.Add("3");
+
+
+            //Add the items to the ListView.
+            //TreelistView.Items.AddRange(new ListViewItem[] { item1, item2, item3 });
+            //TreelistView.Items.AddRange(item);
+        }
+
+        private void cbbTree_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateTreelistView(cbbTree.SelectedIndex);
         }
 
     }
