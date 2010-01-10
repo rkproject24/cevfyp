@@ -65,6 +65,23 @@ namespace Server
             this.Close();
         }
 
+        private void btnVLClib_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog path = new FolderBrowserDialog();
+            path.ShowDialog();
+            if(!path.SelectedPath.Equals(""))
+                tbPlugin.Text = path.SelectedPath;
+        }
+
+        private void btnVideoSrc_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.Title = "Select streaming file";
+            file.Filter = "mpg files (*.avi,*.mpg)|*.avi;*.mpg";// |All files (*.*)|*.*";
+            file.ShowDialog();
+            tbvideodir.Text = file.FileName;
+        }
+
 
     }
 }

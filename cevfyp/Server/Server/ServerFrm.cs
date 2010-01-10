@@ -95,6 +95,14 @@ namespace Server
             preferencefm.Show();
         }
 
+        private void btnVideoPath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.Title = "Select streaming file";
+	        file.ShowDialog();
+            this.tbfilesrc.Text = file.FileName;
+        }
+
       
 
 
