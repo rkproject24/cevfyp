@@ -9,13 +9,14 @@ using System.Net;
 using System.Net.Sockets;
 using ClassLibrary;
 using System.IO;
+using System.Threading;
 
 namespace Client
 {
     class PeerHandler
     {
         //static int TRACKER_PORT = 1100;  //server listen port
-        const string Peerlist_name = "PeerInfoT"; 
+        string Peerlist_name = "PeerInfoT"; 
         int TREE_NO;
    
 
@@ -72,6 +73,12 @@ namespace Client
 
         public void treeInitial()
         {
+            //create directory for each client program
+            if (Directory.Exists(selfid[0]))
+                Directory.Delete(selfid[0], true);
+            Directory.CreateDirectory(selfid[0]);
+            Peerlist_name = selfid[0] + "\\" + Peerlist_name;
+
             selfid = new string[TREE_NO];
             Dport = new int[TREE_NO];
             Cport = new int[TREE_NO];
@@ -305,37 +312,48 @@ namespace Client
                 //require each tree at each round.
                 for (int i = 1; i <= TREE_NO; i++)
                 {
-                    //select a peer to connect
-                    PeerNode conNode = selectPeer(i-1);
-                    joinPeers[i - 1] = conNode;
+                    bool joined = false;
 
-                    connectServerClient = new TcpClient(joinPeers[i - 1].Ip, joinPeers[i - 1].ListenPort);
-                    connectServerStream = connectServerClient.GetStream();
+                    while (!joined)
+                    {
+                        //select a peer to connect
+                        PeerNode conNode = selectPeer(i - 1);
+                        joinPeers[i - 1] = conNode;
 
-                    Byte[] message = BitConverter.GetBytes(1);
-                    connectServerStream.Write(message, 0, message.Length);
+                        connectServerClient = new TcpClient(joinPeers[i - 1].Ip, joinPeers[i - 1].ListenPort);
+                        connectServerStream = connectServerClient.GetStream();
 
-                   // getTreePort(connectServerStream, i);
+                        Byte[] message = BitConverter.GetBytes(1);
+                        connectServerStream.Write(message, 0, message.Length);
 
-                    byte[] amessage = BitConverter.GetBytes(i);
-                    connectServerStream.Write(amessage, 0, amessage.Length);
+                        // getTreePort(connectServerStream, i);
 
-                    byte[] responseMessage = new Byte[4];
-                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
-                    Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+                        byte[] amessage = BitConverter.GetBytes(i);
+                        connectServerStream.Write(amessage, 0, amessage.Length);
 
-                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
-                    Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+                        byte[] responseMessage = new Byte[4];
+                        connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
 
-                    Cport11 = Cport[i - 1];
-                
+                        connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
 
-                    //connectServerStream.Close();
-                    //connectServerClient.Close();
+                        //check whether there is available port in target peer
+                        if (Cport[i - 1] != 0 && Dport[i - 1] != 0)
+                            joined = true;
 
-                    connectServerStream.Dispose();
-                    connectServerClient.Close();
-                    connectServerClient = null;
+                        Cport11 = Cport[i - 1];
+
+
+                        //connectServerStream.Close();
+                        //connectServerClient.Close();
+
+                        connectServerStream.Dispose();
+                        connectServerClient.Close();
+                        connectServerClient = null;
+
+                        Thread.Sleep(10);
+                    }
 
                     //serverConnect = true;
                     //checkClose = false;
@@ -422,8 +440,8 @@ namespace Client
         {
             //PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
             PeerInfoAccessor peerAccess = new PeerInfoAccessor(Peerlist_name + tree);
-
-            return peerAccess.getPeer(RandomNumber(0, peerAccess.getMaxId()).ToString());   //Random select
+           //clientFrm.rtbdownload.AppendText(RandomNumber(0, peerAccess.getMaxId()+1) + "\n");
+            return peerAccess.getPeer(RandomNumber(0, peerAccess.getMaxId()+1).ToString());   //Random select
             //return peerAccess.getPeer("0");                                               //select the server ip as default
             //return peerAccess.getPeer(peerAccess.getMaxId().ToString());                  //select the last peer
 

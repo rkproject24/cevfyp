@@ -173,9 +173,9 @@
             // 
             this.tbhostIP.Location = new System.Drawing.Point(453, 325);
             this.tbhostIP.Name = "tbhostIP";
+            this.tbhostIP.ReadOnly = true;
             this.tbhostIP.Size = new System.Drawing.Size(94, 20);
             this.tbhostIP.TabIndex = 13;
-            this.tbhostIP.Text = "192.168.1.3";
             // 
             // label2
             // 

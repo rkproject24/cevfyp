@@ -59,5 +59,13 @@ namespace Client
             cConfig.save("C:\\ClientConfig");
             this.Close();
         }
+
+        private void btnVLClib_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog path = new FolderBrowserDialog();
+            path.ShowDialog();
+            if (!path.SelectedPath.Equals(""))
+                tbPlugin.Text = path.SelectedPath;
+        }
     }
 }
