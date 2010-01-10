@@ -47,6 +47,8 @@
             this.tbStreamType = new System.Windows.Forms.TextBox();
             this.tbPlugin = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tbTracker = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.tbDefaultIp = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.NudMaxClient = new System.Windows.Forms.NumericUpDown();
@@ -56,8 +58,8 @@
             this.tbSLPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.tbTracker = new System.Windows.Forms.TextBox();
+            this.btnVLClib = new System.Windows.Forms.Button();
+            this.btnVideoSrc = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudMaxClient)).BeginInit();
@@ -67,86 +69,88 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 11);
+            this.label1.Location = new System.Drawing.Point(7, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 12);
+            this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Plugin";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 37);
+            this.label2.Location = new System.Drawing.Point(7, 40);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 12);
+            this.label2.Size = new System.Drawing.Size(64, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "StreamType";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 65);
+            this.label3.Location = new System.Drawing.Point(7, 70);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(80, 12);
+            this.label3.Size = new System.Drawing.Size(71, 13);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Video Directory";
+            this.label3.Text = "Default Video";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 91);
+            this.label4.Location = new System.Drawing.Point(9, 99);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 12);
+            this.label4.Size = new System.Drawing.Size(62, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Stream Port";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 11);
+            this.label5.Location = new System.Drawing.Point(6, 12);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 12);
+            this.label5.Size = new System.Drawing.Size(79, 13);
             this.label5.TabIndex = 4;
             this.label5.Text = "Server List Port";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 37);
+            this.label6.Location = new System.Drawing.Point(6, 40);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(48, 12);
+            this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 5;
             this.label6.Text = "Data port";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 65);
+            this.label7.Location = new System.Drawing.Point(6, 70);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(88, 12);
+            this.label7.Size = new System.Drawing.Size(89, 13);
             this.label7.TabIndex = 6;
             this.label7.Text = "Control Port Base";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 93);
+            this.label8.Location = new System.Drawing.Point(6, 101);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(78, 12);
+            this.label8.Size = new System.Drawing.Size(80, 13);
             this.label8.TabIndex = 7;
             this.label8.Text = "MaxClient/Tree";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 119);
+            this.label9.Location = new System.Drawing.Point(6, 129);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(59, 12);
+            this.label9.Size = new System.Drawing.Size(61, 13);
             this.label9.TabIndex = 8;
             this.label9.Text = "No. of Tree";
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnVideoSrc);
+            this.groupBox1.Controls.Add(this.btnVLClib);
             this.groupBox1.Controls.Add(this.tbChunkSize);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.tbRecStream);
@@ -159,71 +163,73 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(267, 156);
+            this.groupBox1.Size = new System.Drawing.Size(267, 169);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Local VLC";
             // 
             // tbChunkSize
             // 
-            this.tbChunkSize.Location = new System.Drawing.Point(218, 116);
+            this.tbChunkSize.Location = new System.Drawing.Point(218, 126);
             this.tbChunkSize.Name = "tbChunkSize";
-            this.tbChunkSize.Size = new System.Drawing.Size(43, 22);
+            this.tbChunkSize.Size = new System.Drawing.Size(43, 20);
             this.tbChunkSize.TabIndex = 11;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(148, 119);
+            this.label12.Location = new System.Drawing.Point(148, 129);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(64, 12);
+            this.label12.Size = new System.Drawing.Size(65, 13);
             this.label12.TabIndex = 10;
             this.label12.Text = "Chunk SIZE";
             // 
             // tbRecStream
             // 
-            this.tbRecStream.Location = new System.Drawing.Point(87, 116);
+            this.tbRecStream.Location = new System.Drawing.Point(87, 126);
             this.tbRecStream.Name = "tbRecStream";
-            this.tbRecStream.Size = new System.Drawing.Size(55, 22);
+            this.tbRecStream.Size = new System.Drawing.Size(55, 20);
             this.tbRecStream.TabIndex = 9;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 119);
+            this.label11.Location = new System.Drawing.Point(6, 129);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(80, 12);
+            this.label11.Size = new System.Drawing.Size(86, 13);
             this.label11.TabIndex = 8;
             this.label11.Text = "Rec Stream Size";
             // 
             // tbstreamport
             // 
-            this.tbstreamport.Location = new System.Drawing.Point(87, 88);
+            this.tbstreamport.Location = new System.Drawing.Point(87, 95);
             this.tbstreamport.Name = "tbstreamport";
-            this.tbstreamport.Size = new System.Drawing.Size(55, 22);
+            this.tbstreamport.Size = new System.Drawing.Size(55, 20);
             this.tbstreamport.TabIndex = 7;
             // 
             // tbvideodir
             // 
-            this.tbvideodir.Location = new System.Drawing.Point(87, 60);
+            this.tbvideodir.Location = new System.Drawing.Point(87, 65);
             this.tbvideodir.Name = "tbvideodir";
-            this.tbvideodir.Size = new System.Drawing.Size(174, 22);
+            this.tbvideodir.ReadOnly = true;
+            this.tbvideodir.Size = new System.Drawing.Size(126, 20);
             this.tbvideodir.TabIndex = 6;
             // 
             // tbStreamType
             // 
-            this.tbStreamType.Location = new System.Drawing.Point(87, 34);
+            this.tbStreamType.Location = new System.Drawing.Point(87, 37);
             this.tbStreamType.Name = "tbStreamType";
-            this.tbStreamType.Size = new System.Drawing.Size(174, 22);
+            this.tbStreamType.Size = new System.Drawing.Size(126, 20);
             this.tbStreamType.TabIndex = 5;
             // 
             // tbPlugin
             // 
-            this.tbPlugin.Location = new System.Drawing.Point(87, 8);
+            this.tbPlugin.Location = new System.Drawing.Point(87, 9);
             this.tbPlugin.Name = "tbPlugin";
-            this.tbPlugin.Size = new System.Drawing.Size(174, 22);
+            this.tbPlugin.ReadOnly = true;
+            this.tbPlugin.Size = new System.Drawing.Size(126, 20);
             this.tbPlugin.TabIndex = 4;
             // 
             // groupBox2
@@ -242,39 +248,55 @@
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(279, 12);
+            this.groupBox2.Location = new System.Drawing.Point(279, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(157, 202);
+            this.groupBox2.Size = new System.Drawing.Size(157, 219);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "P2P server";
             // 
+            // tbTracker
+            // 
+            this.tbTracker.Location = new System.Drawing.Point(64, 183);
+            this.tbTracker.Name = "tbTracker";
+            this.tbTracker.Size = new System.Drawing.Size(87, 20);
+            this.tbTracker.TabIndex = 18;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 183);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(54, 13);
+            this.label13.TabIndex = 17;
+            this.label13.Text = "TrackerIP";
+            // 
             // tbDefaultIp
             // 
-            this.tbDefaultIp.Location = new System.Drawing.Point(64, 144);
+            this.tbDefaultIp.Location = new System.Drawing.Point(64, 156);
             this.tbDefaultIp.Name = "tbDefaultIp";
-            this.tbDefaultIp.Size = new System.Drawing.Size(87, 22);
+            this.tbDefaultIp.Size = new System.Drawing.Size(87, 20);
             this.tbDefaultIp.TabIndex = 16;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 147);
+            this.label10.Location = new System.Drawing.Point(6, 159);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 12);
+            this.label10.Size = new System.Drawing.Size(54, 13);
             this.label10.TabIndex = 15;
             this.label10.Text = "Default IP";
             // 
             // NudMaxClient
             // 
-            this.NudMaxClient.Location = new System.Drawing.Point(110, 89);
+            this.NudMaxClient.Location = new System.Drawing.Point(110, 96);
             this.NudMaxClient.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.NudMaxClient.Name = "NudMaxClient";
-            this.NudMaxClient.Size = new System.Drawing.Size(41, 22);
+            this.NudMaxClient.Size = new System.Drawing.Size(41, 20);
             this.NudMaxClient.TabIndex = 14;
             this.NudMaxClient.Value = new decimal(new int[] {
             3,
@@ -284,14 +306,14 @@
             // 
             // NudTreeSize
             // 
-            this.NudTreeSize.Location = new System.Drawing.Point(110, 117);
+            this.NudTreeSize.Location = new System.Drawing.Point(110, 127);
             this.NudTreeSize.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.NudTreeSize.Name = "NudTreeSize";
-            this.NudTreeSize.Size = new System.Drawing.Size(41, 22);
+            this.NudTreeSize.Size = new System.Drawing.Size(41, 20);
             this.NudTreeSize.TabIndex = 13;
             this.NudTreeSize.Value = new decimal(new int[] {
             2,
@@ -301,30 +323,30 @@
             // 
             // tbConport
             // 
-            this.tbConport.Location = new System.Drawing.Point(110, 62);
+            this.tbConport.Location = new System.Drawing.Point(110, 67);
             this.tbConport.Name = "tbConport";
-            this.tbConport.Size = new System.Drawing.Size(41, 22);
+            this.tbConport.Size = new System.Drawing.Size(41, 20);
             this.tbConport.TabIndex = 11;
             // 
             // tbDataport
             // 
-            this.tbDataport.Location = new System.Drawing.Point(110, 34);
+            this.tbDataport.Location = new System.Drawing.Point(110, 37);
             this.tbDataport.Name = "tbDataport";
-            this.tbDataport.Size = new System.Drawing.Size(41, 22);
+            this.tbDataport.Size = new System.Drawing.Size(41, 20);
             this.tbDataport.TabIndex = 10;
             // 
             // tbSLPort
             // 
-            this.tbSLPort.Location = new System.Drawing.Point(110, 8);
+            this.tbSLPort.Location = new System.Drawing.Point(110, 9);
             this.tbSLPort.Name = "tbSLPort";
-            this.tbSLPort.Size = new System.Drawing.Size(41, 22);
+            this.tbSLPort.Size = new System.Drawing.Size(41, 20);
             this.tbSLPort.TabIndex = 9;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(21, 174);
+            this.btnSave.Location = new System.Drawing.Point(21, 189);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(47, 19);
+            this.btnSave.Size = new System.Drawing.Size(47, 21);
             this.btnSave.TabIndex = 11;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -332,35 +354,39 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(74, 174);
+            this.btnReset.Location = new System.Drawing.Point(74, 189);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(48, 19);
+            this.btnReset.Size = new System.Drawing.Size(48, 21);
             this.btnReset.TabIndex = 12;
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // label13
+            // btnVLClib
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 169);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(51, 12);
-            this.label13.TabIndex = 17;
-            this.label13.Text = "TrackerIP";
+            this.btnVLClib.Location = new System.Drawing.Point(218, 9);
+            this.btnVLClib.Name = "btnVLClib";
+            this.btnVLClib.Size = new System.Drawing.Size(24, 23);
+            this.btnVLClib.TabIndex = 12;
+            this.btnVLClib.Text = "...";
+            this.btnVLClib.UseVisualStyleBackColor = true;
+            this.btnVLClib.Click += new System.EventHandler(this.btnVLClib_Click);
             // 
-            // tbTracker
+            // btnVideoSrc
             // 
-            this.tbTracker.Location = new System.Drawing.Point(64, 169);
-            this.tbTracker.Name = "tbTracker";
-            this.tbTracker.Size = new System.Drawing.Size(87, 22);
-            this.tbTracker.TabIndex = 18;
+            this.btnVideoSrc.Location = new System.Drawing.Point(218, 63);
+            this.btnVideoSrc.Name = "btnVideoSrc";
+            this.btnVideoSrc.Size = new System.Drawing.Size(24, 23);
+            this.btnVideoSrc.TabIndex = 13;
+            this.btnVideoSrc.Text = "...";
+            this.btnVideoSrc.UseVisualStyleBackColor = true;
+            this.btnVideoSrc.Click += new System.EventHandler(this.btnVideoSrc_Click);
             // 
             // PreferenceFm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 217);
+            this.ClientSize = new System.Drawing.Size(445, 235);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox2);
@@ -409,5 +435,7 @@
         private System.Windows.Forms.TextBox tbChunkSize;
         private System.Windows.Forms.TextBox tbTracker;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnVLClib;
+        private System.Windows.Forms.Button btnVideoSrc;
     }
 }

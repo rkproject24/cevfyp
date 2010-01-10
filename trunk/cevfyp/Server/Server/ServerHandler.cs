@@ -58,7 +58,8 @@ namespace Server
         public void reloadUI()
         {
             mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
-            mainFm.tbServerIp.Text = sConfig.Serverip;
+            //mainFm.tbServerIp.Text = sConfig.Serverip;
+            mainFm.tbServerIp.Text = TcpApps.LocalIPAddress();
             mainFm.tbfilesrc.Text = sConfig.VideoDir;
             mainFm.tbTracker.Text = sConfig.Trackerip;
         }
