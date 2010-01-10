@@ -12,6 +12,19 @@ namespace ClassLibrary
         public TcpApps()
         { }
 
+        public static string LocalIPAddress()
+        {
+            IPHostEntry host;
+            string localIP = "";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily.ToString() == "InterNetwork")
+                    localIP = ip.ToString();
+            }
+            return localIP;
+        }
+
         public static bool TcpUsing(int port)
         {
             IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
