@@ -161,6 +161,7 @@
             // 
             // btnListenPeer
             // 
+            this.btnListenPeer.Enabled = false;
             this.btnListenPeer.Location = new System.Drawing.Point(453, 353);
             this.btnListenPeer.Name = "btnListenPeer";
             this.btnListenPeer.Size = new System.Drawing.Size(75, 25);

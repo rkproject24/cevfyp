@@ -118,6 +118,7 @@ namespace Client
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
             btnDisconnect.Enabled = false;
+            btnConnect.Enabled = true;
             clientHandler.disconectall();
         }
 
