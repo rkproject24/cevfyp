@@ -219,14 +219,14 @@ namespace Client
                     CPortThread.IsBackground = true;
                     CPortThread.Name = " Cport_handle_" +i + j;
                     CPortThread.Start();
-                    Thread.Sleep(100);
+                    Thread.Sleep(20);
                     CThreadList.Add(CPortThread);
                   
                     Thread DPortThread = new Thread(delegate() { TreePortHandle_Dport(j,i); });
                     DPortThread.IsBackground = true;
                     DPortThread.Name = " Dport_handle_" +i+ j;
                     DPortThread.Start();
-                    Thread.Sleep(100);
+                    Thread.Sleep(20);
                     DThreadList.Add(DPortThread);
 
                 }
@@ -329,7 +329,7 @@ namespace Client
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                   // MessageBox.Show(ex.ToString());
                     delClientFromTreeDList(DThreadList_index, tree_index, ran_port);
                     stream = null;
                     //tempSeq = tree_index + 1;

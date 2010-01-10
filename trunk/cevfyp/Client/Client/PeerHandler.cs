@@ -362,6 +362,7 @@ namespace Client
             }
             catch
             {
+                return false;
             }
             //}
             return false;

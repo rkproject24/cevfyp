@@ -204,17 +204,18 @@ namespace Client
         {
             //if(peerh.PeerIp.Equals("NOPEER"))
             //    return "NO Peer available in Peer list!";
-            if (peerh.connectPeer())
+            while(true)
             {
-                //virtualServerPort = peerh.Cport1 + cConfig.VlcPortBase;
-                //serverConnect = true;
-                //checkClose = false;
-                return "OK2";
+                if (peerh.connectPeer())
+                {
+                    return "OK2";
+                }
+                Thread.Sleep(50);
             }
-            else
-            {
-                return "Peer Unreachable!";
-            }
+            //else
+            //{
+            //    return "Peer Unreachable!";
+            //}
         }
 
         private string connectToSource()
@@ -254,6 +255,9 @@ namespace Client
                 {
                     mainFm.Text += peerh.Selfid[i]+ ",";
                 }
+
+                //automatic start listen
+                startUpload();
 
                 return "OK3";
             }
