@@ -699,6 +699,16 @@ namespace Client
                         else
                             tempSeq += 1; 
                     }
+
+                   if (check_num == i && ClientD[i] == null)
+                   {
+
+                       if (tempSeq == 2147483647)
+                           tempSeq = 1;
+                       else
+                           tempSeq += 1; 
+
+                   }
                 }
                 Thread.Sleep(30);
             }
