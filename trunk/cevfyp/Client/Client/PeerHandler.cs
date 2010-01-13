@@ -368,23 +368,23 @@ namespace Client
             return false;
         }
 
-        private void getTreePort(NetworkStream stream,int tree_num)
-        {
+        //private void getTreePort(NetworkStream stream,int tree_num)
+        //{
 
-            byte[] message = BitConverter.GetBytes(tree_num);
-            stream.Write(message, 0, message.Length);
+        //    byte[] message = BitConverter.GetBytes(tree_num);
+        //    stream.Write(message, 0, message.Length);
 
-            byte[] responseMessage = new Byte[4];
-            stream.Read(responseMessage, 0, responseMessage.Length);
-            Cport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
+        //    byte[] responseMessage = new Byte[4];
+        //    stream.Read(responseMessage, 0, responseMessage.Length);
+        //    Cport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
 
-            stream.Read(responseMessage, 0, responseMessage.Length);
-            Dport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
+        //    stream.Read(responseMessage, 0, responseMessage.Length);
+        //    Dport[tree_num-1] = BitConverter.ToInt16(responseMessage, 0);
 
-            Cport11 = Cport[tree_num - 1];
+        //    Cport11 = Cport[tree_num - 1];
 
 
-        }
+        //}
 
 
         public TcpClient getDataConnect(int tree)
@@ -419,6 +419,15 @@ namespace Client
             //    return "No source can join!";
             //}
             TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Dport[tree]);
+
+            //send selfId
+            NetworkStream stream = treeclient.GetStream();
+            string sendstr = selfid[tree];
+            Byte[] sendbyte = StrToByteArray(sendstr);
+            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+            stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+            stream.Write(sendbyte, 0, sendbyte.Length);
+
             clientFrm.rtbdownload.AppendText("T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n");
             return treeclient;
         }
@@ -426,6 +435,15 @@ namespace Client
         public TcpClient getControlConnect(int tree)
         {
             TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Cport[tree]);
+
+            //send selfId
+            NetworkStream stream = treeclient.GetStream();
+            string sendstr = selfid[tree];
+            Byte[] sendbyte = StrToByteArray(sendstr);
+            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+            stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+            stream.Write(sendbyte, 0, sendbyte.Length);
+
           //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
             return treeclient;
         }
@@ -441,11 +459,16 @@ namespace Client
         {
             //PeerInfoAccessor peerAccess = new PeerInfoAccessor("PeerInfoT0");
             PeerInfoAccessor peerAccess = new PeerInfoAccessor(Peerlist_name + tree);
-           //clientFrm.rtbdownload.AppendText(RandomNumber(0, peerAccess.getMaxId()+1) + "\n");
-            return peerAccess.getPeer(RandomNumber(0, peerAccess.getMaxId()+1).ToString());   //Random select
-            //return peerAccess.getPeer("0");                                               //select the server ip as default
-            //return peerAccess.getPeer(peerAccess.getMaxId().ToString());                  //select the last peer
+            PeerNode tempPeer=null;
 
+            while (tempPeer == null)
+            {
+                //clientFrm.rtbdownload.AppendText(RandomNumber(0, peerAccess.getMaxId()+1) + "\n");
+                tempPeer = peerAccess.getPeer(RandomNumber(0, peerAccess.getMaxId() + 1).ToString());   //Random select
+                //tempPeer = peerAccess.getPeer("0");                                               //select the server ip as default
+                //tempPeer = peerAccess.getPeer(peerAccess.getMaxId().ToString());                  //select the last peer
+            }
+            return tempPeer;
         }
 
     }
