@@ -466,7 +466,8 @@ namespace Server
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit~\n" });
                             break;
                         }
-                        stream.ReadTimeout = 5000;
+
+                        stream.ReadTimeout = 2000;
                         int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
 
