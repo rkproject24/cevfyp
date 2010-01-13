@@ -80,6 +80,7 @@ namespace Server
             getStreamingThread.Name = "get_Streaming";
             Thread.Sleep(100);
             getStreamingThread.Start();
+            ph.playStateB = true;
         }
 
 
@@ -100,6 +101,7 @@ namespace Server
            // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             //mainFm.richTextBox1.Clear();
             getStreamingThread.Abort(); //by vinci
+            ph.playStateB = false;
         }
 
         public bool start()
