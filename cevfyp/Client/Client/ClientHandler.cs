@@ -78,13 +78,15 @@ namespace Client
         int[] treeCLReadIndex;// = new int[TREE_NO];
         int[] treeCLCurrentSeq;// = new int[TREE_NO];
        // int[] treeCLWaitRound = new int[TREE_NO];
-
+      
 
         List<Thread> recciveChunkThread;// = new List<Thread>(TREE_NO);
+        List<Thread> receiveControlThread;
+
         Thread broadcastVlcStreamingThread;
         Thread updateChunkListThread;
 
-        //TcpClient ClientC;
+      
         List<TcpClient> ClientC;// = new List<TcpClient>(TREE_NO);
         List<TcpClient> ClientD;// = new List<TcpClient>(TREE_NO); //Tree list of data TCP
 
@@ -129,8 +131,10 @@ namespace Client
             treeCLWriteIndex = new int[treeNO];
             treeCLReadIndex = new int[treeNO];
             treeCLCurrentSeq = new int[treeNO];
+           
 
             recciveChunkThread = new List<Thread>(treeNO);
+            receiveControlThread=new List<Thread>(treeNO);
 
             ClientC = new List<TcpClient>(treeNO);
             ClientD = new List<TcpClient>(treeNO); //Tree list of data TCP
@@ -156,6 +160,9 @@ namespace Client
 
         public string establishConnect(string tackerIp)
         {
+            mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { "" });
+
+
             string response = "";
 
             //connect tracker
@@ -277,12 +284,22 @@ namespace Client
                 List<Chunk> chunkLists = new List<Chunk>(cConfig.ChunkCapacity);
                 treeChunkList.Add(chunkLists);
 
-                Thread DRecvThread = new Thread(delegate() { receiveTreeChunk(ClientD[i], i); });
+                Thread DRecvThread = new Thread(delegate() { receiveTreeChunk(i); });
                 DRecvThread.IsBackground = true;
                 DRecvThread.Name = " DRecv_handle_" + i;
                 DRecvThread.Start();
-                Thread.Sleep(10);
+                Thread.Sleep(20);
                 recciveChunkThread.Add(DRecvThread);
+
+
+                Thread CRecvThread = new Thread(delegate() { receiveTreeControl(i); });
+                CRecvThread.IsBackground = true;
+                CRecvThread.Name = " CRecv_handle_" + i;
+                CRecvThread.Start();
+                Thread.Sleep(20);
+                receiveControlThread.Add(CRecvThread);
+
+
 
             }
 
@@ -325,7 +342,7 @@ namespace Client
             }
         }
 
-        public void sendMessage(object tcpClinet)
+       /* public void sendMessage(object tcpClinet)
         {
             TcpClient clientC = (TcpClient)tcpClinet;
             NetworkStream stream = clientC.GetStream();
@@ -346,84 +363,286 @@ namespace Client
                 clientC.Close();
             }
         }
+        */
 
-        public void receiveTreeChunk(TcpClient tcpClient, int tree_index)
+     
+
+        public void receiveTreeChunk(int tree_index)
         {
-            TcpClient clientD = tcpClient;
-            NetworkStream stream = clientD.GetStream();
+            TcpClient clientD;// = tcpClient;
+            NetworkStream stream;//= clientD.GetStream();
             BinaryFormatter bf = new BinaryFormatter();
+            bool waiting = true;
 
+           byte[] responseMessage = new byte[cConfig.ChunkSize];
+            Chunk streamingChunk;
+            int responseMessageBytes;
 
-            try
+            while (serverConnect)
             {
-                // byte[] responseMessage = new byte[cConfig.ChunkSize];
-                Chunk streamingChunk;
-                int responseMessageBytes;
-
-                while (serverConnect)
+                //check a avaiable stream to join after the disconnection and run reconnection funtion
+                if (ClientD[tree_index] != null)
                 {
-                    byte[] responseMessage = new byte[cConfig.ChunkSize];
-                    responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-
-                    streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
-
-                    if (streamingChunk == null)
-                    {
-                        Thread.Sleep(10);
-                        continue;
-                    }
-
-                    //by vinci: send responseBytes directly to peer
-                    //this.uploadToPeer(responseMessageBytes);
-                    if(uploading)
-                    {
-                        upPorth.setChunkList(streamingChunk, tree_index);
-                    }
-
-                    //by yam:04-01-10
-                    int write_index = treeCLWriteIndex[tree_index];
-
-                    if (treeChunkList[tree_index].Count <= cConfig.ChunkCapacity)
-                        treeChunkList[tree_index].Add(streamingChunk);
-                    else
-                        treeChunkList[tree_index][write_index] = streamingChunk;
-
-                    if (write_index == cConfig.ChunkCapacity)
-                        treeCLWriteIndex[tree_index] = 0;
-                    else
-                        treeCLWriteIndex[tree_index] += 1;
-
-                    treeCLCurrentSeq[tree_index] = streamingChunk.seq;
-
-                  
-                  //  if(tree_index==0)
-                      //  mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[0][write_index].seq.ToString()+" " });
-                       // mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { treeCLWriteIndex[tree_index].ToString() });
-
-                   // if (tree_index == 1)
-                     //   mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { treeChunkList[1][write_index].seq.ToString() + " " });
-                       // mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { treeChunkList[1][write_index].seq.ToString() });
-
-                      //if (tree_index == 2)
-                    //    mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
-                       //   mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
-
-                      
+                    clientD = ClientD[tree_index];
+                    stream = clientD.GetStream();
+                }
+                else
+                {
                     Thread.Sleep(20);
+                    continue;
+                }
 
-                } //end while loop
-                stream.Close();
-                clientD.Close();
-            }
-            catch (Exception ex)
-            {
-                stream.Close();
-                clientD.Close();
-                MessageBox.Show(ex.ToString());
-            }
+
+                try
+                {
+                    while (true)
+                    {
+
+                        //if control port dead which cause this case happen
+                          if (ClientD[tree_index] == null)
+                          {
+                              stream.Dispose();
+                              clientD = null;
+                              upPorth.setTreeCLState(tree_index, 0);
+
+                              if (tree_index == 0)
+                                  mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Reconnecting~" });
+                              if (tree_index == 1)
+                                  mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Reconnecting~" });
+                              if (tree_index == 2)
+                                  mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Reconnecting~" });
+
+                              mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] {"T:"+tree_index+" D exit~\n" });
+                       
+
+                              /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]**/
+
+                              break;
+
+                          }
+                        
+                        stream.ReadTimeout = 5000;//5 sec
+                        responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+
+                        string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
+                        //mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { responseString });
+                       
+                        if (responseString == "Wait")
+                        {
+                            upPorth.setTreeCLState(tree_index, 0);
+                            Thread.Sleep(20);
+
+                            if (tree_index == 0)
+                            {
+                                if (waiting == true)
+                                {
+                                    waiting = false;
+                                    mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] {"Wait" });
+                                }
+                                else
+                                {
+                                    waiting = true;
+                                    mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Wait!!!!!!" });
+                                }
+                                
+                                }
+                            if (tree_index == 1)
+                                if (waiting == true)
+                                {
+                                    waiting = false;
+                                    mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Wait" });
+                                }
+                                else
+                                {
+                                    waiting = true;
+                                    mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Wait!!!!!!" });
+                                }
+                            if (tree_index == 2)
+                                if (waiting == true)
+                                {
+                                    waiting = false;
+                                    mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Wait" });
+                                }
+                                else
+                                {
+                                    waiting = true;
+                                    mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Wait!!!!!!" });
+                                }
+
+                            continue;
+                        }
+                        
+
+
+                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
+
+                        if (streamingChunk == null)
+                        {
+                            Thread.Sleep(10);
+                            continue;
+                        }
+
+                        upPorth.setTreeCLState(tree_index, 1);
+                     
+
+                        //by vinci: send responseBytes directly to peer
+                        //this.uploadToPeer(responseMessageBytes);
+                        if (uploading)
+                        {
+                            upPorth.setChunkList(streamingChunk, tree_index);
+                        }
+
+                        //by yam:04-01-10
+                        int write_index = treeCLWriteIndex[tree_index];
+
+                        if (treeChunkList[tree_index].Count <= cConfig.ChunkCapacity)
+                            treeChunkList[tree_index].Add(streamingChunk);
+                        else
+                            treeChunkList[tree_index][write_index] = streamingChunk;
+
+                        if (write_index == cConfig.ChunkCapacity)
+                            treeCLWriteIndex[tree_index] = 0;
+                        else
+                            treeCLWriteIndex[tree_index] += 1;
+
+                        treeCLCurrentSeq[tree_index] = streamingChunk.seq;
+
+
+                        if (tree_index == 0)
+                            mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+                        //  mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[0][write_index].seq.ToString()+" " });
+
+                        if (tree_index == 1)
+                            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+                        //   mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { treeChunkList[1][write_index].seq.ToString() + " " });
+
+                        if (tree_index == 2)
+                            mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+                        //    mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { treeChunkList[2][write_index].seq.ToString() + " " });
+
+
+
+                    }
+                }
+                catch(Exception ex)
+                {
+                   
+                        stream.Close();
+                        clientD.Close();
+
+                        ClientD[tree_index] = null;
+                        ClientC[tree_index] = null;
+                        if (tree_index == 0)
+                            mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Reconnecting" });
+                        if (tree_index == 1)
+                            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Reconnecting" });
+                        if (tree_index == 2)
+                            mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Reconnecting" });
+
+                        if (checkClose == true)
+                        {
+                            if (tree_index == 0)
+                            mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "close ok" });
+                            if (tree_index == 1)
+                            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "close ok" });
+                            if (tree_index == 2)
+                            mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "close ok" });
+                        }
+
+                        mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " D exit\n" });
+                       
+                   //     MessageBox.Show(ex.ToString());
+
+                    /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]**/
+                }
+
+
+            } //end while loop
+
+
 
         }
 
+        public void receiveTreeControl(int tree_index)
+        {
+          //  int responseMessageBytes;
+            TcpClient clientC;
+            NetworkStream stream;
+            byte[] sMessage = new byte[4];
+            
+            while (true)
+            {
+                if (ClientC[tree_index] != null)
+                {
+                    clientC = ClientC[tree_index];
+                    stream = clientC.GetStream();
+                }
+                else
+                {
+                    Thread.Sleep(20);
+                    continue;
+                }
+
+                try
+                {
+                    while (true)
+                    {
+
+                        //if streaming port dead which cause this case happen
+                        if (ClientC[tree_index] == null)
+                        {
+                            stream.Dispose();
+                            clientC = null;
+                            //upPorth.setTreeCLState(tree_index, 0);
+                            mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " C exit~\n" });
+                       
+
+                            /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]**/
+                            break;
+
+                        }
+
+
+                        if (checkClose == true)
+                        {
+                            sMessage = System.Text.Encoding.ASCII.GetBytes("Exit");
+                            stream.Write(sMessage, 0, sMessage.Length);
+
+                            //  stream.Close();
+                            // clientC.Close();
+                            //break;
+                        }
+                        else
+                        {
+                            stream.WriteTimeout = 5000;
+                            sMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
+                            stream.Write(sMessage, 0, sMessage.Length);
+
+                            Thread.Sleep(20);
+                            continue;
+
+                        }
+                    }
+
+                }
+                catch
+                {
+                    stream.Close();
+                    clientC.Close();
+
+                    ClientC[tree_index] = null;
+                    ClientD[tree_index] = null;
+                    mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " C exit\n" });
+                       
+                    /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]**/
+
+                }
+
+                //Thread.Sleep(20);
+            }
+         }
+
+        
         private void updateTreeChunkList()
         {
             while (true)
@@ -472,7 +691,7 @@ namespace Client
                             else
                                 treeCLReadIndex[i] = r_index;
 
-                             //mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
+                          //   mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "tree:" + i+ " : "+ treeChunkList[i][r_index].seq + "\n" });
 
                         }
                         if (tempSeq == 2147483647)
@@ -587,14 +806,14 @@ namespace Client
                 if (!(indexdiff < 0))
                 {
                     checkToBoardcast = false;
-                    if (mainFm.tbStatus.Text != "Buffering...")
-                        mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Buffering..." });
+                    //if (mainFm.tbStatus.Text != "Buffering...")
+                      //  mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Buffering..." });
                 }
             }
             else if (indexdiff > cConfig.StartBuf)
             {
-                if (mainFm.tbStatus.Text != "Playing")
-                    mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Playing" });
+                //if (mainFm.tbStatus.Text != "Playing")
+                  //  mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Playing" });
                 checkToBoardcast = true;
             }
         }       
@@ -603,33 +822,35 @@ namespace Client
         {
             if (serverConnect == true)
             {
+                mainFm.tbWriteStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox1), new object[] { "Closing Thread.." });
+
                 serverConnect = false;
                 vlcConnect = false;
                 checkClose = true;
-
-                //this.sendMessage(ClientC);
-                for (int i = 0; i < treeNO; i++)
-                {
-                    this.sendMessage(ClientC[i]);
-                }
-
-
 
                 broadcastVlcStreamingThread.Join(1000);
                 vlc.stop();
 
                 for (int i = 0; i < treeNO; i++)
                 {
-                    recciveChunkThread[i].Join(1000);
+                 //   recciveChunkThread[i].Join(1000);
+                    //receiveControlThread[i].Join(1000);
+                    recciveChunkThread[i].Abort();
+                    receiveControlThread[i].Abort();
+
+                  
+
                 }
+
                 //updateChunkListThread = null;
                 updateChunkListThread.Abort();
                 server.Stop();
 
 
                 recciveChunkThread.Clear();
-                ClientD.Clear();
-                ClientC.Clear();
+                receiveControlThread.Clear();
+              //  ClientD.Clear();
+                //ClientC.Clear();
 
 
                 chunkList_wIndex = 0;
@@ -667,6 +888,14 @@ namespace Client
                     treeCLCurrentSeq[i] = 0;
                     
                 }
+
+                listenerThread.Abort();
+                upPorth.sendDisconnect();
+             //   upPorth.sendDisconnect2();
+
+               // mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "" });
+                //mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "" });
+                //mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "" });
 
                 
             }
@@ -853,7 +1082,7 @@ namespace Client
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show(ex.ToString());
+                    //System.Windows.Forms.MessageBox.Show(ex.ToString());
 
                     mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
                     break;

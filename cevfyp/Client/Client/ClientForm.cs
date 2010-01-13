@@ -37,6 +37,19 @@ namespace Client
             tbWriteStatus.Text = message;
         }
 
+        public void UpdateTBox1(string message)
+        {
+            textBox1.Text = message;
+        }
+        public void UpdateTBox2(string message)
+        {
+            textBox2.Text = message;
+        }
+        public void UpdateTBox3(string message)
+        {
+            textBox3.Text = message;
+        }
+
         public void UpdateTextBox2(string message)
         {
             tbReadStatus.Text = message;
@@ -124,7 +137,7 @@ namespace Client
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            clientHandler.disconectall();
+           // clientHandler.disconectall();
         }
 
         private void preferenceToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -136,6 +149,11 @@ namespace Client
         private void btnListenPeer_Click(object sender, EventArgs e)
         {
             clientHandler.startUpload();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
     
