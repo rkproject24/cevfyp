@@ -243,6 +243,8 @@ namespace Server
 
         public void delClientFromTreeDList(int dList_index,int tree_index)
         {
+            unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
+
             int port_num = treeDPortList[tree_index][dList_index].PortD;
 
             dPort dport = new dPort();
@@ -255,6 +257,7 @@ namespace Server
 
         public void delClientFromTreeCList(int cList_index, int tree_index)
         {
+            unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
 
             int port_num = treeCPortList[tree_index][cList_index].PortC;
 
@@ -357,7 +360,7 @@ namespace Server
                             stream = null;
                             firstRun = true;
 
-                             unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
+                           //  unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
                       
                             break;
                         
@@ -436,7 +439,7 @@ namespace Server
                     delClientFromTreeDList(DThreadList_index, tree_index);
                     delClientFromTreeCList(DThreadList_index, tree_index);
 
-                     unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
+                    // unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
                     
 
                     stream = null;
@@ -492,7 +495,7 @@ namespace Server
                         //if streaming port dead which cause this case happen
                         if (treeCPortList[tree_index][CThreadList_index].clientC == null)
                         {
-                            unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                           // unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
                       
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit~\n" });
                             break;
@@ -504,8 +507,9 @@ namespace Server
 
                         if (responseString == "Exit")
                         {
-                            cp.clientC = null;
-                            treeCPortList[tree_index][CThreadList_index] = cp;
+                          //  cp.clientC = null;
+                           // treeCPortList[tree_index][CThreadList_index] = cp;
+                            delClientFromTreeCList(CThreadList_index, tree_index);
 
                             delClientFromTreeDList(CThreadList_index, tree_index);
 
@@ -527,12 +531,13 @@ namespace Server
                 {
                     mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + "C:" + ran_port + "exit\n" });
 
-                    cpt.clientC = null;
-                    treeCPortList[tree_index][CThreadList_index] = cp;
+                  //  cpt.clientC = null;
+                   // treeCPortList[tree_index][CThreadList_index] = cp;
+                    delClientFromTreeCList(CThreadList_index, tree_index);
 
                     delClientFromTreeDList(CThreadList_index, tree_index);
 
-                    unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                   // unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
                       
                     stream = null;
 
