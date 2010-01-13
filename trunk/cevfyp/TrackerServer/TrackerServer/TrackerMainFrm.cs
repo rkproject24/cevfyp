@@ -38,7 +38,7 @@ namespace TrackerServer
             //sConfig = new ServerConfig();
             //sConfig.load("C:\\ServerConfig");
             //peerList = new List<PeerNode>();
-            treeNo= 0;        
+            treeNo= 0;
             InitializeComponent();
         }
 
@@ -171,8 +171,6 @@ namespace TrackerServer
                         //string[] Value1 = { clientNode.Ip.ToString(), layer.ToString() };
                         //PeerInfo.Add(DataNum.ToString(), InfoN1, Value1);
 
-
-
                         //responsePeerMsg1 = new byte[4];
                         //cstream.Read(responsePeerMsg1, 0, responsePeerMsg1.Length);
 
@@ -207,14 +205,6 @@ namespace TrackerServer
 
                         PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient, listenPort);
                         serverNode.Layer = 0;
-
-                        //by vinci:                       
-                        //for (int i = 0; i < treeNo; i++)
-                        //{
-                        //    //remove the old xml
-                        //    if (File.Exists(Peerlist_name + i + ".xml"))
-                        //        File.Delete(Peerlist_name + i + ".xml");
-                        //}
                         
                         for (int i = 0; i < treeNo; i++)
                         {
@@ -231,6 +221,30 @@ namespace TrackerServer
 
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
+                    }
+                    else if (peertype.Contains("<unRegists>"))
+                    {
+                        responsePeerMsg = new byte[4];
+
+
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                        int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+
+                        byte[] responsePeerMsg2 = new byte[MsgSize];
+                        cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                        string MsgContent = ByteArrayToString(responsePeerMsg2);
+                        string[] messages = MsgContent.Split('@');
+                        string tree = messages[0];
+                        string peerId = messages[1];
+                        //==incompleted
+
+                        PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                        PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0);
+                        TreeAccess.deletePeer(p1);
+                        p1 = TreeAccess.getPeer("1");
+                        if (p1 == null)
+                            Console.WriteLine("Nothings");
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree +"\n" });
                     }
 
                 }
@@ -323,6 +337,8 @@ namespace TrackerServer
             for (int i = 0; i <= TreeAccess.getMaxId(); i++)
             {
                 PeerNode displayNode = TreeAccess.getPeer(i.ToString());
+                if (displayNode == null) //skip if the peer not exist in the list
+                    continue;
                 ListViewItem item = new ListViewItem(displayNode.Id, i);
                 item.SubItems.Add(displayNode.Ip);
                 item.SubItems.Add(displayNode.ListenPort.ToString());
