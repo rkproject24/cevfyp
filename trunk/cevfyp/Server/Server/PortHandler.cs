@@ -261,10 +261,9 @@ namespace Server
             cPort cport = new cPort();
             cport.clientC = null;
             cport.PortC = port_num;
-
+            cport.peerId = -1;
             treeCPortList[tree_index][cList_index] = cport;
         }
-
 
 
        // List<Thread> CThreadList = new List<Thread>();
@@ -357,6 +356,9 @@ namespace Server
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index +" D:"+ran_port+ " exit~\n" });
                             stream = null;
                             firstRun = true;
+
+                             unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
+                      
                             break;
                         
                         
@@ -434,6 +436,9 @@ namespace Server
                     delClientFromTreeDList(DThreadList_index, tree_index);
                     delClientFromTreeCList(DThreadList_index, tree_index);
 
+                     unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
+                    
+
                     stream = null;
                     tempSeq = 0;
                     firstRun = true;
@@ -444,7 +449,7 @@ namespace Server
             }
         }
 
-        private void TreePortHandle_Cport(int CThreadList_index,int tree_index)
+       private void TreePortHandle_Cport(int CThreadList_index,int tree_index)
         {
             int ran_port = TcpApps.RanPort(1401, 1600);
             TcpClient CPortClient = null;
@@ -453,7 +458,6 @@ namespace Server
             cPort cp = new cPort();
             cp.PortC = ran_port;
             cp.clientC = null;
-            cp.peerId = -1;
             treeCPortList[tree_index].Add(cp);
             NetworkStream stream;
             Byte[] responseMessage = new Byte[4];
@@ -463,8 +467,7 @@ namespace Server
                 CPortListener.Start(1);
                 CPortClient = CPortListener.AcceptTcpClient();
 
-                //get the peer id
-                NetworkStream stream = CPortClient.GetStream();
+                stream = CPortClient.GetStream();
                 byte[] responsePeerMsg = new byte[4];
                 stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                 int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
@@ -477,8 +480,7 @@ namespace Server
                 cpt.PortC = ran_port;
                 cpt.peerId = Int32.Parse(peerId);
                 treeCPortList[tree_index][CThreadList_index] = cpt;
-                stream = CPortClient.GetStream();
-                
+               
 
 
                 //checkTreeDisconnect(CPortClient, ran_port, tree_index, CThreadList_index);
@@ -490,6 +492,8 @@ namespace Server
                         //if streaming port dead which cause this case happen
                         if (treeCPortList[tree_index][CThreadList_index].clientC == null)
                         {
+                            unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                      
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit~\n" });
                             break;
                         }
@@ -504,6 +508,8 @@ namespace Server
                             treeCPortList[tree_index][CThreadList_index] = cp;
 
                             delClientFromTreeDList(CThreadList_index, tree_index);
+
+
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit!\n" });
 
                             break;
@@ -525,6 +531,9 @@ namespace Server
                     treeCPortList[tree_index][CThreadList_index] = cp;
 
                     delClientFromTreeDList(CThreadList_index, tree_index);
+
+                    unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                      
                     stream = null;
 
                 }
@@ -532,70 +541,6 @@ namespace Server
                 CPortClient = null;
                 CPortListener.Stop();
             }
-        }
-
-        /*private void checkTreeDisconnect(TcpClient client, int port_num,int tree_index,int CPortList_index)
-        {
-            NetworkStream stream = client.GetStream();
-            Byte[] responseMessage = new Byte[4];
-            cPort cp = new cPort();
-            cp.PortC = port_num;
-
-            try
-            {
-                while (true)
-                {
-                    
-                    if (treeCPortList[tree_index][CPortList_index].clientC == null)
-                        break;
-
-                    stream.ReadTimeout = 10000;
-                    int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
-                    string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-
-                    if (responseString == "Exit")
-                    {
-<<<<<<< .mine
-
-                       /* if (treeDPortList[tree_index][CPortList_index].clientD != null)
-                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:" + tree_index + "non del \n" });
-
-                        if (treeCPortList[tree_index][CPortList_index].clientC != null)
-                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + "non del \n" });
-                        */
-                        unregister(tree_index, treeCPortList[tree_index][CPortList_index].peerId);
-                      
-=======
->>>>>>> .r154
-                        cp.clientC = null;
-                        cp.peerId = -1;
-                        treeCPortList[tree_index][CPortList_index] = cp;
-
-                        delClientFromTreeDList(CPortList_index, tree_index);
-
-                      ///if(treeDPortList[tree_index][CPortList_index].clientD==null)
-                        //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:"+tree_index+" del \n" });
-
-                        //if (treeCPortList[tree_index][CPortList_index].clientC == null)
-                          //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + " del \n" });
-                        
-                   
-                        break;
-                    }
-
-                   
-                }
-            }
-            catch
-            {
-                 
-               cp.clientC = null;
-               treeCPortList[tree_index][CPortList_index] = cp;
-
-               delClientFromTreeDList(CPortList_index, tree_index);
-                
-            }
-            stream = null;
         }
 
         private bool unregister(int tree, int peerId)
@@ -630,11 +575,59 @@ namespace Server
 
             return true;
         }
-<<<<<<< .mine
 
-=======
+        /*private void checkTreeDisconnect(TcpClient client, int port_num,int tree_index,int CPortList_index)
+        {
+            NetworkStream stream = client.GetStream();
+            Byte[] responseMessage = new Byte[4];
+            cPort cp = new cPort();
+            cp.PortC = port_num;
+
+            try
+            {
+                while (true)
+                {
+                    
+                    if (treeCPortList[tree_index][CPortList_index].clientC == null)
+                        break;
+
+                    stream.ReadTimeout = 10000;
+                    int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                    string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
+
+                    if (responseString == "Exit")
+                    {
+                        cp.clientC = null;
+                        treeCPortList[tree_index][CPortList_index] = cp;
+
+                        delClientFromTreeDList(CPortList_index, tree_index);
+
+                      ///if(treeDPortList[tree_index][CPortList_index].clientD==null)
+                        //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:"+tree_index+" del \n" });
+
+                        //if (treeCPortList[tree_index][CPortList_index].clientC == null)
+                          //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + " del \n" });
+                        
+                   
+                        break;
+                    }
+
+                   
+                }
+            }
+            catch
+            {
+                 
+               cp.clientC = null;
+               treeCPortList[tree_index][CPortList_index] = cp;
+
+               delClientFromTreeDList(CPortList_index, tree_index);
+                
+            }
+            stream = null;
+
+        }
      */ 
->>>>>>> .r154
         
         ////yam:10-10-09
         private int search(List<Chunk> list, int rIndex, int wIndex, int target)
