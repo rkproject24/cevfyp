@@ -120,11 +120,11 @@ namespace Server
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
                 this.max_client = sConfig.MaxClient;
                 this.max_tree = sConfig.TreeSize;
-                ph = new PortHandler(max_client,max_tree, sConfig.Serverip, mainFm);
+                ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
                 ph.startTreePort();//ph.startPort();
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
 
-                localAddr = IPAddress.Parse(sConfig.Serverip);
+                localAddr = IPAddress.Parse(mainFm.tbServerIp.Text);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
                 listenerThread.IsBackground = true;
                 listenerThread.Name = " listen_for_clients";

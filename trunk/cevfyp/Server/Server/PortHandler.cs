@@ -12,11 +12,14 @@ using ClassLibrary;
 
 namespace Server
 {  
+    
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct cPort
     {
         public int PortC;
         public TcpClient clientC;
+        public int peerId;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -24,13 +27,14 @@ namespace Server
     {
         public TcpClient clientD;
         public int PortD;
-       
+        public int peerId;
     }
 
     class PortHandler
     {
         IPAddress localAddr;
-    
+
+        static int TrackerSLPort = 1500;
         int max_client;
         int max_tree;
 
@@ -244,6 +248,7 @@ namespace Server
             dPort dport = new dPort();
             dport.clientD = null;
             dport.PortD = port_num;
+            dport.peerId = -1;
 
             treeDPortList[tree_index][dList_index] = dport;
         }
@@ -318,18 +323,29 @@ namespace Server
             dPort dp = new dPort();
             dp.PortD = ran_port;
             dp.clientD = null;
+            dp.peerId = -1;
             treeDPortList[tree_index].Add(dp);
 
             while (true)
             {
                 DportListener.Start(1);
                 DPortClient = DportListener.AcceptTcpClient();
-                
+
+                stream = DPortClient.GetStream();
+
+                //get the peer id
+                byte[] responsePeerMsg = new byte[4];
+                stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+                byte[] responsePeerMsg2 = new byte[MsgSize];
+                stream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                string peerId = ByteArrayToString(responsePeerMsg2);
+
                 dPort dpt = new dPort();
                 dpt.clientD = DPortClient;
                 dpt.PortD = ran_port;
+                dpt.peerId = Int32.Parse(peerId);
                 treeDPortList[tree_index][DThreadList_index] = dpt;
-                stream = DPortClient.GetStream();
 
                 try
                 {
@@ -437,6 +453,7 @@ namespace Server
             cPort cp = new cPort();
             cp.PortC = ran_port;
             cp.clientC = null;
+            cp.peerId = -1;
             treeCPortList[tree_index].Add(cp);
             NetworkStream stream;
             Byte[] responseMessage = new Byte[4];
@@ -446,9 +463,19 @@ namespace Server
                 CPortListener.Start(1);
                 CPortClient = CPortListener.AcceptTcpClient();
 
+                //get the peer id
+                NetworkStream stream = CPortClient.GetStream();
+                byte[] responsePeerMsg = new byte[4];
+                stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+                byte[] responsePeerMsg2 = new byte[MsgSize];
+                stream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                string peerId = ByteArrayToString(responsePeerMsg2);
+
                 cPort cpt = new cPort();
                 cpt.clientC = CPortClient;
                 cpt.PortC = ran_port;
+                cpt.peerId = Int32.Parse(peerId);
                 treeCPortList[tree_index][CThreadList_index] = cpt;
                 stream = CPortClient.GetStream();
                 
@@ -528,7 +555,20 @@ namespace Server
 
                     if (responseString == "Exit")
                     {
+<<<<<<< .mine
+
+                       /* if (treeDPortList[tree_index][CPortList_index].clientD != null)
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeD:" + tree_index + "non del \n" });
+
+                        if (treeCPortList[tree_index][CPortList_index].clientC != null)
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "treeC:" + tree_index + "non del \n" });
+                        */
+                        unregister(tree_index, treeCPortList[tree_index][CPortList_index].peerId);
+                      
+=======
+>>>>>>> .r154
                         cp.clientC = null;
+                        cp.peerId = -1;
                         treeCPortList[tree_index][CPortList_index] = cp;
 
                         delClientFromTreeDList(CPortList_index, tree_index);
@@ -556,9 +596,45 @@ namespace Server
                 
             }
             stream = null;
-
         }
+
+        private bool unregister(int tree, int peerId)
+        {
+            TcpClient connectTracker;
+            NetworkStream connectTrackerStream;
+            try
+            {
+               // mainFm.tbTracker.Text, TrackerSLPort
+                connectTracker = new TcpClient(mainFm.tbTracker.Text, TrackerSLPort);
+                connectTrackerStream = connectTracker.GetStream();
+
+                //define client message type
+                Byte[] clienttype = StrToByteArray("<unRegists>");
+                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+
+                string sendstr = tree + "@" + peerId;
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                connectTracker.Close();
+                connectTrackerStream.Close();
+
+            }
+            catch
+            {
+            }
+
+            return true;
+        }
+<<<<<<< .mine
+
+=======
      */ 
+>>>>>>> .r154
         
         ////yam:10-10-09
         private int search(List<Chunk> list, int rIndex, int wIndex, int target)
@@ -606,6 +682,16 @@ namespace Server
             return -1;
         }
 
+        public static string ByteArrayToString(byte[] bytes)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(bytes);
+        }
+        private static byte[] StrToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            return encoding.GetBytes(str);
+        }
 
        /*
         public TcpClient getCListClient(int listIndex)
