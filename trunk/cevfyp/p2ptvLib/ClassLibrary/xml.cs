@@ -389,6 +389,44 @@ namespace ClassLibrary
             xmlDoc.Save(this.xmlFile);
         }
 
+        public bool deleteInnerNode(string nodeName, string attributeName, string attributeValue)
+        {
+            xmlDoc = new XmlDocument();
+            xmlDoc.Load(this.xmlFile);
+            XmlElement root = xmlDoc.DocumentElement;
+            //XmlNodeList nodes = root.SelectNodes("/"+group);
+            //XmlNodeList nodes = root.GetElementsByTagName(group);
+            try
+            {
+
+                foreach (XmlElement G in root)
+                {
+                    if ((G.LocalName) == nodeName)
+                    {
+                        XmlAttributeCollection attributes = G.Attributes;
+                        foreach (XmlAttribute attri in attributes)
+                        {
+                            if (attri.Name.Equals(attributeName) && attri.InnerText.Equals(attributeValue))
+                            {
+                                root.RemoveChild(G);
+                                xmlDoc.Save(this.xmlFile);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Reading Error! Please input both group and type!");
+                //return "error";
+                //return ex.ToString();
+                return false;
+            }
+            return false;
+        }
+
+
         public void save()
         {
             xmlDoc.Save(this.xmlFile);

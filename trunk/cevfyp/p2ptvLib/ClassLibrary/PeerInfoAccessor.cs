@@ -73,6 +73,8 @@ namespace ClassLibrary
         public PeerNode getPeer(string id)
         {
             string ip = getIP(id);
+            if (ip.Equals("")) //return NULL if the node is not exist in the list
+                return null;
             string layer = getLayer(id);
             string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
 
@@ -89,6 +91,12 @@ namespace ClassLibrary
 
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
+        }
+        public bool deletePeer(PeerNode peer)
+        {
+            string attributesValue =  peer.Id ;
+
+            return RPI.deleteInnerNode("Peer", "ID", attributesValue);
         }
 
         public void initialize(int treeSize)
