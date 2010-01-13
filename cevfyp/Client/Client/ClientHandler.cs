@@ -421,7 +421,7 @@ namespace Client
 
                           }
                         
-                        stream.ReadTimeout = 5000;//5 sec
+                        stream.ReadTimeout = 1000;
                         responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
 
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
@@ -614,7 +614,7 @@ namespace Client
                         }
                         else
                         {
-                            stream.WriteTimeout = 5000;
+                            stream.WriteTimeout = 1000;
                             sMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(sMessage, 0, sMessage.Length);
 

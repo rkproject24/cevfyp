@@ -307,7 +307,7 @@ namespace Client
                       
                        if (treeCLState[tree_index]!=1)
                         {
-                            stream.WriteTimeout = 5000;
+                            stream.WriteTimeout = 2000;
                             waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
 
@@ -426,7 +426,7 @@ namespace Client
                             break;
                         }
 
-                        stream.ReadTimeout = 5000;
+                        stream.ReadTimeout = 2000;
                         int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
 
