@@ -93,6 +93,8 @@ namespace Client
         //by Vinci: coonect to Tracker for peer ip 
         public int findTracker()
         {
+            if (File.Exists(Peerlist_name + "0.xml"))
+                File.Delete(Peerlist_name + "0.xml");
             if (!downloadPeerlist(0))
                 return -1;
             treeAccessor = new PeerInfoAccessor(Peerlist_name + "0");
