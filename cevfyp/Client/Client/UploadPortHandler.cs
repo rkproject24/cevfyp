@@ -17,6 +17,7 @@ namespace Client
     {
         public int PortC;
         public TcpClient clientC;
+        public int peerId;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -24,13 +25,14 @@ namespace Client
     {
         public TcpClient clientD;
         public int PortD;
-
+        public int peerId;
     }
 
     class UploadPortHandler
     {
         IPAddress localAddr;
 
+        static int TrackerSLPort = 1500;
         int max_client;
         int max_tree;
 
@@ -205,25 +207,49 @@ namespace Client
 
         public void delClientFromTreeDList(int dList_index, int tree_index)
         {
+            if (treeDPortList[tree_index][dList_index].peerId != -1)
+            {
+                unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
+                       
             int port_num = treeDPortList[tree_index][dList_index].PortD;
 
             dPort dport = new dPort();
             dport.clientD = null;
             dport.PortD = port_num;
+            dport.peerId = -1;
 
             treeDPortList[tree_index][dList_index] = dport;
+
+            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + " unReg \n" });
+                 
+            }
+           // else
+              //  clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + " Err \n" });
+                   
         }
 
         public void delClientFromTreeCList(int cList_index, int tree_index)
         {
+            if (treeCPortList[tree_index][cList_index].peerId != -1)
+            {
 
-            int port_num = treeCPortList[tree_index][cList_index].PortC;
+                unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
 
-            cPort cport = new cPort();
-            cport.clientC = null;
-            cport.PortC = port_num;
+                int port_num = treeCPortList[tree_index][cList_index].PortC;
 
-            treeCPortList[tree_index][cList_index] = cport;
+                cPort cport = new cPort();
+                cport.clientC = null;
+                cport.PortC = port_num;
+                cport.peerId = -1;
+
+                treeCPortList[tree_index][cList_index] = cport;
+
+                clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
+                  
+            }
+           // else
+              //  clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + " Err \n" });
+                   
         }
 
        // List<Thread> CThreadList = new List<Thread>();
@@ -287,11 +313,21 @@ namespace Client
                 DportListener.Start(1);
                 DPortClient = DportListener.AcceptTcpClient();
 
+                stream = DPortClient.GetStream();
+
+                //get the peer id
+                byte[] responsePeerMsg = new byte[4];
+                stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+                byte[] responsePeerMsg2 = new byte[MsgSize];
+                stream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                string peerId = ByteArrayToString(responsePeerMsg2);
+
                 dPort dpt = new dPort();
                 dpt.clientD = DPortClient;
                 dpt.PortD = ran_port;
+                dpt.peerId = Int32.Parse(peerId);
                 treeDPortList[tree_index][DThreadList_index] = dpt;
-                stream = DPortClient.GetStream();
 
                 try
                 {
@@ -305,7 +341,7 @@ namespace Client
                             break;
                         }
                       
-                       if (treeCLState[tree_index]!=1)
+                       if (treeCLState[tree_index]==0)
                         {
                             stream.WriteTimeout = 2000;
                             waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
@@ -350,7 +386,7 @@ namespace Client
                         if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
 
-                            stream.WriteTimeout = 5000;
+                            stream.WriteTimeout = 2000;
                             sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], cConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
 
@@ -380,9 +416,10 @@ namespace Client
                     delClientFromTreeCList(DThreadList_index, tree_index);
 
                     stream = null;
-                    //tempSeq = 0;
+                    tempSeq = 0;
                     firstRun = true;
                 }
+                DPortClient = null;
                 DportListener.Stop();
             }
         }
@@ -406,11 +443,19 @@ namespace Client
                 CPortListener.Start(1);
                 CPortClient = CPortListener.AcceptTcpClient();
 
+                stream = CPortClient.GetStream();
+                byte[] responsePeerMsg = new byte[4];
+                stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+                byte[] responsePeerMsg2 = new byte[MsgSize];
+                stream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                string peerId = ByteArrayToString(responsePeerMsg2);
+
                 cPort cpt = new cPort();
                 cpt.clientC = CPortClient;
                 cpt.PortC = ran_port;
+                cpt.peerId = Int32.Parse(peerId);
                 treeCPortList[tree_index][CThreadList_index] = cpt;
-                stream = CPortClient.GetStream();
                 
 
                // checkTreeDisconnect(CPortClient, ran_port, tree_index, CThreadList_index);
@@ -432,9 +477,9 @@ namespace Client
 
                         if (responseString == "Exit")
                         {
-                            cp.clientC = null;
-                            treeCPortList[tree_index][CThreadList_index] = cp;
-
+                            //cp.clientC = null;
+                           // treeCPortList[tree_index][CThreadList_index] = cp;
+                            delClientFromTreeCList(CThreadList_index, tree_index);
                             delClientFromTreeDList(CThreadList_index, tree_index);
 
                             clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "C:" + ran_port + "Exit! \n" });
@@ -448,14 +493,16 @@ namespace Client
                             continue;
 
                         }
+                        Thread.Sleep(20);
                     }
                 }
                 catch
                 {
                     clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "C:" + ran_port + "Exit \n" });
 
-                    cpt.clientC = null;
-                    treeCPortList[tree_index][CThreadList_index] = cp;
+                    //cpt.clientC = null;
+                    //treeCPortList[tree_index][CThreadList_index] = cp;
+                    delClientFromTreeCList(CThreadList_index, tree_index);
 
                     delClientFromTreeDList(CThreadList_index, tree_index);
                     stream = null;
@@ -465,6 +512,39 @@ namespace Client
                 CPortClient = null;
                 CPortListener.Stop();
             }
+        }
+
+        private bool unregister(int tree, int peerId)
+        {
+            TcpClient connectTracker;
+            NetworkStream connectTrackerStream;
+            try
+            {
+                // mainFm.tbTracker.Text, TrackerSLPort
+                connectTracker = new TcpClient(clientFm.tbServerIp.Text, TrackerSLPort);
+                connectTrackerStream = connectTracker.GetStream();
+
+                //define client message type
+                Byte[] clienttype = StrToByteArray("<unRegists>");
+                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+
+                string sendstr = tree + "@" + peerId;
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                connectTracker.Close();
+                connectTrackerStream.Close();
+                connectTrackerStream.Dispose();
+            }
+            catch
+            {
+            }
+
+            return true;
         }
 
       /*  private void checkTreeDisconnect(TcpClient client, int port_num, int tree_index, int CPortList_index)
@@ -557,6 +637,16 @@ namespace Client
             return -1;
         }
 
+        public static string ByteArrayToString(byte[] bytes)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.ASCII;
+            return enc.GetString(bytes);
+        }
+        private static byte[] StrToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            return encoding.GetBytes(str);
+        }
 
         public void sendDisconnect()
         {

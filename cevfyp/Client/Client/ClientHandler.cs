@@ -380,6 +380,8 @@ namespace Client
 
             while (serverConnect)
             {
+               try
+               {
                 //check a avaiable stream to join after the disconnection and run reconnection funtion
                 if (ClientD[tree_index] != null)
                 {
@@ -388,13 +390,20 @@ namespace Client
                 }
                 else
                 {
+                    if (tree_index == 0)
+                        mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Reconnecting.." });
+                    if (tree_index == 1)
+                        mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Reconnecting.." });
+                    if (tree_index == 2)
+                        mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Reconnecting.." });
+
                     Thread.Sleep(20);
                     continue;
                 }
 
 
-                try
-                {
+               // try
+               // {
                     while (true)
                     {
 
@@ -415,13 +424,20 @@ namespace Client
                               mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] {"T:"+tree_index+" D exit~\n" });
                        
 
-                              /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]**/
-
+                              /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]
+                              
+                               * 
+                               * 
+                               * 
+                               * 
+                               * 
+                               */
+                               
                               break;
 
                           }
                         
-                        stream.ReadTimeout = 1000;
+                        stream.ReadTimeout = 2000;
                         responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
 
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
@@ -527,11 +543,14 @@ namespace Client
                 catch(Exception ex)
                 {
                    
-                        stream.Close();
-                        clientD.Close();
+                        //stream.Close();
+                        //clientD.Close();
 
                         ClientD[tree_index] = null;
                         ClientC[tree_index] = null;
+
+                        upPorth.setTreeCLState(tree_index, 0);
+
                         if (tree_index == 0)
                             mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Reconnecting" });
                         if (tree_index == 1)
@@ -553,7 +572,19 @@ namespace Client
                        
                    //     MessageBox.Show(ex.ToString());
 
-                    /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]**/
+                    /**
+                     * //if user clicks disconntion button to cause this catch exception happen,reconnection function will not run.
+                     * If (checkClose != true)  
+                     * {call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientD[tree_index]}
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     */
+
                 }
 
 
@@ -597,7 +628,14 @@ namespace Client
                             mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " C exit~\n" });
                        
 
-                            /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]**/
+                            /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]
+                             * 
+                             * 
+                             * 
+                             * 
+                             * 
+                             */
+
                             break;
 
                         }
@@ -614,7 +652,7 @@ namespace Client
                         }
                         else
                         {
-                            stream.WriteTimeout = 1000;
+                            stream.WriteTimeout = 2000;
                             sMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(sMessage, 0, sMessage.Length);
 
@@ -633,12 +671,23 @@ namespace Client
                     ClientC[tree_index] = null;
                     ClientD[tree_index] = null;
                     mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " C exit\n" });
-                       
-                    /**call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]**/
+
+                    /**
+                     * //if user clicks disconntion button to cause this catch exception happen,reconnection function will not run.
+                     * If (checkClose != true) 
+                     * {call reconnection funtion to find a new tree to join and replace a new tcpClient to ClientC[tree_index]}
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     * 
+                     */
 
                 }
 
-                //Thread.Sleep(20);
+                Thread.Sleep(10);
             }
          }
 

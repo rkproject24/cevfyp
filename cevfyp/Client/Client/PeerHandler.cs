@@ -199,6 +199,7 @@ namespace Client
                 trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
 
                 string xmlContent = ByteArrayToString(responsePeerMsg2);
+               // System.Windows.Forms.MessageBox.Show(xmlContent);
 
                 //string[] xmlTrees = xmlContent.Split('@');
 
@@ -235,8 +236,9 @@ namespace Client
             }
             catch (Exception ex)
             {
+                //System.Windows.Forms.MessageBox.Show("Tree:" + tree + "\n" + ex.ToString());
                 return false;
-                //System.Windows.Forms.MessageBox.Show("Tree:" +tree + "\n" +ex.ToString());
+               
             }
             return false;
         }
