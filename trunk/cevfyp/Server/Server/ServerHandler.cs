@@ -80,7 +80,13 @@ namespace Server
             getStreamingThread.Name = "get_Streaming";
             Thread.Sleep(100);
             getStreamingThread.Start();
-            ph.playStateB = true;
+            //ph.playStateB = true;
+
+            for (int i = 0; i < max_tree; i++)
+            {
+                ph.setTreeCLState(i, 1);
+
+            }
         }
 
 
@@ -101,7 +107,13 @@ namespace Server
            // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             //mainFm.richTextBox1.Clear();
             getStreamingThread.Abort(); //by vinci
-            ph.playStateB = false;
+            //ph.playStateB = false;
+            for (int i = 0; i < max_tree; i++)
+            {
+                ph.setTreeCLState(i, 0);
+
+            }
+
         }
 
         public bool start()
@@ -416,43 +428,54 @@ namespace Server
 
             byte[] sendMessage = new byte[sConfig.ChunkSize];
 
-
-            while (responseMessageBytes1 != 0)
+            try
             {
-                byte[] responseData = new byte[sConfig.ReceiveStreamSize];
-                responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
-                if (responseMessageBytes == 0)
+                while (responseMessageBytes1 != 0)
                 {
-                    Thread.Sleep(5);
-                    continue;
-                }
+                    vlcStream.ReadTimeout = 200;
+                    byte[] responseData = new byte[sConfig.ReceiveStreamSize];
+                    responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
+                    if (responseMessageBytes == 0)
+                    {
+                        Thread.Sleep(5);
+                        continue;
+                    }
 
-                streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
-               
-                //yam:10-10-09
-              //  if (streamingChunk.seq % 2 != 0)
-               //     ph.setOddListChunk(streamingChunk);
-              //  else
-               //     ph.setEvenListChunk(streamingChunk);
+                    streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
+
+                    //yam:10-10-09
+                    //  if (streamingChunk.seq % 2 != 0)
+                    //     ph.setOddListChunk(streamingChunk);
+                    //  else
+                    //     ph.setEvenListChunk(streamingChunk);
 
 
-                //yam:01-01-10
-                int remainder_number = streamingChunk.seq % max_tree;
+                    //yam:01-01-10
+                    int remainder_number = streamingChunk.seq % max_tree;
 
-                if (remainder_number == 0)
-                    ph.setChunkList(streamingChunk, max_tree - 1);
-                else
-                    ph.setChunkList(streamingChunk, remainder_number - 1);
-                   
+                    if (remainder_number == 0)
+                        ph.setChunkList(streamingChunk, max_tree - 1);
+                    else
+                        ph.setChunkList(streamingChunk, remainder_number - 1);
+
 
                     mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { seqNumber.ToString() });
 
-                if (seqNumber == 2147483647)
-                    seqNumber = 1;
-                else
-                    seqNumber += 1;
+                    if (seqNumber == 2147483647)
+                        seqNumber = 1;
+                    else
+                        seqNumber += 1;
 
-                Thread.Sleep(20);
+                    Thread.Sleep(20);
+                }
+            }
+            catch
+            {
+                for (int i = 0; i < max_tree; i++)
+                {
+                    ph.setTreeCLState(i, 0);
+
+                }
             }
 
         }
