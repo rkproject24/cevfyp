@@ -82,19 +82,21 @@ namespace Server
         int[] treeCLWriteIndex;
         int[] treeCLReadIndex;
         int[] treeCLCurrentSeq;// = new int[TREE_NO];
+        int[] treeCLState;
+
 
         List<Thread> CThreadList = new List<Thread>();
         List<Thread> DThreadList = new List<Thread>();
 
         int current_num = 0;
-        bool playState = false;
+       // bool playState = false;
 
 
-           public bool playStateB
-        {
-            get { return playState; }
-            set { playState = value; }
-        }
+     //      public bool playStateB
+      //  {
+     //       get { return playState; }
+      //      set { playState = value; }
+      //  }
             
         public PortHandler(int maxClient,int maxTree, string serverip, ServerFrm mainFm)
         {
@@ -152,7 +154,7 @@ namespace Server
             treeCLWriteIndex = new int[maxTree];
             treeCLReadIndex = new int[maxTree];
             treeCLCurrentSeq = new int[maxTree];
-
+            treeCLState = new int[maxTree];
 
             createTreeChunkList(maxTree,CHUNKLIST_CAPACITY);
             createTreePortList(maxTree, maxClient);
@@ -197,6 +199,13 @@ namespace Server
                // treeCLReadIndex.Add(0);
             }
         }
+
+        public void setTreeCLState(int tree_index, int state)
+        {
+            treeCLState[tree_index] = state;
+
+        }
+
 
         public void setChunkList(Chunk streamingChunk, int tree_index)
         {
@@ -243,29 +252,47 @@ namespace Server
 
         public void delClientFromTreeDList(int dList_index,int tree_index)
         {
-            unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
+            if (treeDPortList[tree_index][dList_index].peerId != -1)
+            {
+                unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
 
-            int port_num = treeDPortList[tree_index][dList_index].PortD;
+                int port_num = treeDPortList[tree_index][dList_index].PortD;
 
-            dPort dport = new dPort();
-            dport.clientD = null;
-            dport.PortD = port_num;
-            dport.peerId = -1;
+                dPort dport = new dPort();
+                dport.clientD = null;
+                dport.PortD = port_num;
+                dport.peerId = -1;
 
-            treeDPortList[tree_index][dList_index] = dport;
+                treeDPortList[tree_index][dList_index] = dport;
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + " unRge \n" });
+                  
+            }
+            //else
+              //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + " Err \n" });
+                   
         }
 
         public void delClientFromTreeCList(int cList_index, int tree_index)
         {
-            unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
+            if (treeCPortList[tree_index][cList_index].peerId != -1)
+            {
+                unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
 
-            int port_num = treeCPortList[tree_index][cList_index].PortC;
+                int port_num = treeCPortList[tree_index][cList_index].PortC;
 
-            cPort cport = new cPort();
-            cport.clientC = null;
-            cport.PortC = port_num;
-            cport.peerId = -1;
-            treeCPortList[tree_index][cList_index] = cport;
+                cPort cport = new cPort();
+                cport.clientC = null;
+                cport.PortC = port_num;
+                cport.peerId = -1;
+               
+                treeCPortList[tree_index][cList_index] = cport;
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
+                 
+
+            }
+           // else
+               // mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + " Err \n" });
+                  
         }
 
 
@@ -366,10 +393,10 @@ namespace Server
                         
                         
                         }
-                        
-                        if (playState==false)
+
+                        if (treeCLState[tree_index] == 0)
                         {
-                           // stream.WriteTimeout = 5000;
+                            stream.WriteTimeout = 2000;
                             waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
 
@@ -411,7 +438,7 @@ namespace Server
                         //by yam: not seach method
                         if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
-                          //  stream.WriteTimeout=5000;
+                            stream.WriteTimeout=2000;
                             sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], sConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
 
@@ -525,6 +552,8 @@ namespace Server
                             continue;
 
                         }
+
+                        Thread.Sleep(20);
                     }
                 }
                 catch
@@ -572,7 +601,7 @@ namespace Server
 
                 connectTracker.Close();
                 connectTrackerStream.Close();
-
+                connectTrackerStream.Dispose();
             }
             catch
             {
