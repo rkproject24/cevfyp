@@ -136,6 +136,7 @@ namespace TrackerServer
                         string clientid = messages[2];
                         int MaxClient = Int32.Parse( messages[3]);
                         int layer = Int32.Parse(messages[4]);
+                        string parentid = messages[5];
 
                         //int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
@@ -144,7 +145,7 @@ namespace TrackerServer
 
                         //int layer = Convert.ToInt32(BitConverter.ToString(responsePeerMsg1, 0));
 
-                        PeerNode clientNode = new PeerNode(clientid, clientendpt.ToString(), MaxClient, listenPort);
+                        PeerNode clientNode = new PeerNode(clientid, clientendpt.ToString(), MaxClient, listenPort, parentid);
                         clientNode.Layer = layer;
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
@@ -203,7 +204,7 @@ namespace TrackerServer
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                         int MaxClient = BitConverter.ToInt16(responsePeerMsg, 0);
 
-                        PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient, listenPort);
+                        PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient, listenPort, "-1");
                         serverNode.Layer = 0;
                         
                         for (int i = 0; i < treeNo; i++)
@@ -239,7 +240,7 @@ namespace TrackerServer
                         //==incompleted
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
-                        PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0);
+                        PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0, "-1");
                         TreeAccess.deletePeer(p1);
                         p1 = TreeAccess.getPeer("1");
                         if (p1 == null)
@@ -323,10 +324,11 @@ namespace TrackerServer
             TreelistView.Sorting = SortOrder.Ascending;
 
             // Create columns for the items and subitems.
-            TreelistView.Columns.Add("ID",40);
+            TreelistView.Columns.Add("ID",30);
             TreelistView.Columns.Add("IP Address",80);
             TreelistView.Columns.Add("ListenPort");
-            TreelistView.Columns.Add("Layer");
+            //TreelistView.Columns.Add("Layer");
+            TreelistView.Columns.Add("ParentID");
         }
 
         private void updateTreelistView(int tree)
@@ -342,8 +344,8 @@ namespace TrackerServer
                 ListViewItem item = new ListViewItem(displayNode.Id, i);
                 item.SubItems.Add(displayNode.Ip);
                 item.SubItems.Add(displayNode.ListenPort.ToString());
-                item.SubItems.Add(displayNode.Layer.ToString());
-
+                //item.SubItems.Add(displayNode.Layer.ToString());
+                item.SubItems.Add(displayNode.Parentid.ToString());
                 TreelistView.Items.Add(item);
             }
 
