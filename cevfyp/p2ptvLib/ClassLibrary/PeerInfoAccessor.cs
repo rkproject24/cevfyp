@@ -77,8 +77,9 @@ namespace ClassLibrary
                 return null;
             string layer = getLayer(id);
             string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
+            string parentid = RPI.Read("Peer", "ID", id, "Parentid");
 
-            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort));
+            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
         }
 
         public void addPeer(PeerNode peer)
@@ -86,8 +87,8 @@ namespace ClassLibrary
             string[] attributes = {"ID"};
             string[] attributesValue = {peer.Id};
 
-            string[] Info = {"IP", "Layer", "listenPort" };
-            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString() };
+            string[] Info = {"IP", "Layer", "listenPort","Parentid" };
+            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid };
 
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
@@ -125,8 +126,32 @@ namespace ClassLibrary
 
         public int getTreeSize()
         {
-
             return Int32.Parse(RPI.ReadAttribute("Info", "treeSize"));
+        }
+
+        public List<string> getPeerPrefix(PeerNode peer)
+        {
+            List<string> prefix = new List<string>();
+            PeerNode searchNode = peer;
+            while (searchNode.Parentid != "-1")
+            {
+                searchNode = getPeer(searchNode.Parentid);
+                prefix.Add(searchNode.Parentid);
+
+            }
+            prefix.Add("-1");
+            return prefix;
+        }
+
+        public bool checkchild(PeerNode peer, string selfid) // return true if peer is its child 
+        {
+            List<string> prefix = getPeerPrefix(peer);        
+            foreach(string node in prefix)
+            {
+                if(node.Equals(selfid))
+                    return true;
+            }
+            return false;
         }
     }
 }

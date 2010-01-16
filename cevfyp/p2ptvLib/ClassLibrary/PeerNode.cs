@@ -11,32 +11,37 @@ namespace ClassLibrary
         private int maxClient;
         private int listenPort;
 
-        private List<string> childPeer;
+        //private List<string> childPeer;
         private int layer;
+        private string parentid;
 
-
-
-
-        public PeerNode(string id, string ip, int maxClient, int listenPort)
+        public PeerNode(string id, string ip, int maxClient, int listenPort,string parentid)
         {
            // parentPeer = new List<string>(maxParent);
             this.id = id;
             this.ip = ip;
             this.listenPort = listenPort;
+            this.parentid= parentid;
 
             this.layer = 0;
-            childPeer = new List<string>(maxClient);
+            //childPeer = new List<string>(maxClient);
         }
 
-        public void addChild(string ip)
-        {
-            childPeer.Add(ip);
-        }
+        //public void addChild(string ip)
+        //{
+        //    childPeer.Add(ip);
+        //}
 
         //public void addParent(string ip)
         //{
         //    parentPeer.Add(ip);
         //}
+        public string Parentid
+        {
+            get { return parentid; }
+            set { parentid = value; }
+        }
+
         public string Id
         {
             get { return id; }
@@ -57,11 +62,11 @@ namespace ClassLibrary
             get { return maxClient; }
             set { maxClient = value; }
         }
-        public List<string> ChildPeer
-        {
-            get { return childPeer; }
-            set { childPeer = value; }
-        }
+        //public List<string> ChildPeer
+        //{
+        //    get { return childPeer; }
+        //    set { childPeer = value; }
+        //}
         public int ListenPort
         {
             get { return listenPort; }
