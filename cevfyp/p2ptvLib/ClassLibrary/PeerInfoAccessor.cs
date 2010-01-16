@@ -136,6 +136,8 @@ namespace ClassLibrary
             while (searchNode.Parentid != "-1")
             {
                 searchNode = getPeer(searchNode.Parentid);
+                if (searchNode == null)
+                    break;
                 prefix.Add(searchNode.Parentid);
 
             }
