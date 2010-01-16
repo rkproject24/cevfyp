@@ -275,7 +275,7 @@ namespace Client
                 //clientLayer = StrToByteArray(layerT2);
                 //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                string sendstr = listenPort + "@" +tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer;
+                string sendstr = listenPort + "@" + tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer + "@" + joinPeers[tree].Id;
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -468,9 +468,13 @@ namespace Client
             while (tempPeer == null)
             {
                 //clientFrm.rtbdownload.AppendText(RandomNumber(0, peerAccess.getMaxId()+1) + "\n");
-                tempPeer = peerAccess.getPeer(RandomNumber(0, peerAccess.getMaxId() + 1).ToString());   //Random select
-                //tempPeer = peerAccess.getPeer("0");                                               //select the server ip as default
-                //tempPeer = peerAccess.getPeer(peerAccess.getMaxId().ToString());                  //select the last peer
+                //String id  = peerAccess.getPeer("0");                                               //select the server ip as default
+                //string id = peerAccess.getMaxId().ToString();                  //select the last peer
+                string id =RandomNumber(0, peerAccess.getMaxId() + 1).ToString();//Random select
+                if (peerAccess.checkchild(peerAccess.getPeer(id), selfid[tree])) //if peer is child, skip it
+                    continue;
+                tempPeer = peerAccess.getPeer(id);   
+
             }
             return tempPeer;
         }
