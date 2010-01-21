@@ -147,6 +147,8 @@ namespace ClassLibrary
 
         public bool checkchild(PeerNode peer, string selfid) // return true if peer is its child 
         {
+            if (peer.Id.Equals(selfid))
+                return true;
             List<string> prefix = getPeerPrefix(peer);        
             foreach(string node in prefix)
             {
