@@ -242,10 +242,36 @@ namespace TrackerServer
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
                         PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0, "-1");
                         TreeAccess.deletePeer(p1);
-                        p1 = TreeAccess.getPeer("1");
-                        if (p1 == null)
-                            Console.WriteLine("Nothings");
+                        //p1 = TreeAccess.getPeer("1");
+                        //if (p1 == null)
+                        //    Console.WriteLine("Nothings");
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree +"\n" });
+                    }
+                    else if (peertype.Contains("<changePar>"))
+                    {
+                        responsePeerMsg = new byte[4];
+
+
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                        int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+
+                        byte[] responsePeerMsg2 = new byte[MsgSize];
+                        cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                        string MsgContent = ByteArrayToString(responsePeerMsg2);
+                        string[] messages = MsgContent.Split('@');
+
+                        string tree = messages[0];
+                        string peerId = messages[1];
+                        string newParentId = messages[2];
+                        //==incompleted
+
+                        PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                        PeerNode p1 = TreeAccess.getPeer(peerId);
+                        TreeAccess.deletePeer(p1);
+                        p1.Parentid = newParentId;
+                        TreeAccess.addPeer(p1);
+
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " change to Parent:" + newParentId + " in tree:" + tree + "\n" });
                     }
 
                 }
