@@ -74,6 +74,8 @@ namespace Client
             rtbdownload.AppendText(message);
         }
 
+       
+
         public ClientForm()
         {
             InitializeComponent();
@@ -155,6 +157,8 @@ namespace Client
         {
 
         }
+
+      
 
     
      

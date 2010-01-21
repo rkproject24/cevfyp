@@ -37,6 +37,7 @@ namespace Client
         int max_tree;
 
         static int CHUNKLIST_CAPACITY = 200;
+        bool localterminate = false;
         // static int NUM_D1PORT_BASE = 1200;
         //static int NUM_D2PORT_BASE = 1250;
         // static int NUM_CPORT_BASE = 1301;
@@ -209,7 +210,7 @@ namespace Client
         {
             if (treeDPortList[tree_index][dList_index].peerId != -1)
             {
-                unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
+                //unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
                        
             int port_num = treeDPortList[tree_index][dList_index].PortD;
 
@@ -220,7 +221,7 @@ namespace Client
 
             treeDPortList[tree_index][dList_index] = dport;
 
-            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + " unReg \n" });
+            //clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + " unReg \n" });
                  
             }
            // else
@@ -233,7 +234,7 @@ namespace Client
             if (treeCPortList[tree_index][cList_index].peerId != -1)
             {
 
-                unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
+                //unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
 
                 int port_num = treeCPortList[tree_index][cList_index].PortC;
 
@@ -244,7 +245,7 @@ namespace Client
 
                 treeCPortList[tree_index][cList_index] = cport;
 
-                clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
+                //clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
                   
             }
            // else
@@ -257,6 +258,7 @@ namespace Client
 
         public void startTreePort()
         {
+            localterminate = false; //indicate whether it is local terminate
             for (int i = 0; i < max_tree; i++)
             {
                // List<Thread> CThreadList = new List<Thread>(max_client);
@@ -343,11 +345,11 @@ namespace Client
                       
                        if (treeCLState[tree_index]==0)
                         {
-                            stream.WriteTimeout = 2000;
+                            //stream.WriteTimeout = 2000;
                             waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
 
-                            Thread.Sleep(20);
+                            Thread.Sleep(10);
                             continue;
                         }
                        
@@ -386,7 +388,7 @@ namespace Client
                         if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
 
-                            stream.WriteTimeout = 2000;
+                           // stream.WriteTimeout = 2000;
                             sendMessage = ch.chunkToByte(treeChunkList[tree_index][tempRead_index], cConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
 
@@ -414,6 +416,7 @@ namespace Client
 
                     delClientFromTreeDList(DThreadList_index, tree_index);
                     delClientFromTreeCList(DThreadList_index, tree_index);
+                    //unregister(tree_index, treeCPortList[tree_index][DThreadList_index].peerId);
 
                     stream = null;
                     tempSeq = 0;
@@ -479,8 +482,11 @@ namespace Client
                         {
                             //cp.clientC = null;
                            // treeCPortList[tree_index][CThreadList_index] = cp;
+                            unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " unReg \n" });
                             delClientFromTreeCList(CThreadList_index, tree_index);
                             delClientFromTreeDList(CThreadList_index, tree_index);
+                            
 
                             clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "C:" + ran_port + "Exit! \n" });
 
@@ -502,8 +508,13 @@ namespace Client
 
                     //cpt.clientC = null;
                     //treeCPortList[tree_index][CThreadList_index] = cp;
+                    if (!localterminate)
+                    {
+                        unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                        clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " unReg \n" });
+                        this.localterminate = false;
+                    }
                     delClientFromTreeCList(CThreadList_index, tree_index);
-
                     delClientFromTreeDList(CThreadList_index, tree_index);
                     stream = null;
 
@@ -674,8 +685,11 @@ namespace Client
 
                 for (int j = 0; j < CThreadList.Count; j++)
                 {
-                    CThreadList[j].Abort();
+                    //CThreadList[j].Abort();
                     DThreadList[j].Abort();
+                    this.localterminate = true;
+                    CThreadList[j].Abort();
+                    //DThreadList[j].Join(100);
                 }
             
 
