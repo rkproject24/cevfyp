@@ -254,7 +254,7 @@ namespace Server
         {
             if (treeDPortList[tree_index][dList_index].peerId != -1)
             {
-                unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
+                //unregister(tree_index, treeDPortList[tree_index][dList_index].peerId);
 
                 int port_num = treeDPortList[tree_index][dList_index].PortD;
 
@@ -264,7 +264,7 @@ namespace Server
                 dport.peerId = -1;
 
                 treeDPortList[tree_index][dList_index] = dport;
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + " unRge \n" });
+                //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + " unRge \n" });
                   
             }
             //else
@@ -276,7 +276,7 @@ namespace Server
         {
             if (treeCPortList[tree_index][cList_index].peerId != -1)
             {
-                unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
+                //unregister(tree_index, treeCPortList[tree_index][cList_index].peerId);
 
                 int port_num = treeCPortList[tree_index][cList_index].PortC;
 
@@ -286,7 +286,7 @@ namespace Server
                 cport.peerId = -1;
                
                 treeCPortList[tree_index][cList_index] = cport;
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
+                //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
                  
 
             }
@@ -462,10 +462,10 @@ namespace Server
                 {
                     mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + ran_port + " exit\n" });
 
-
+                    unregister(tree_index, treeCPortList[tree_index][DThreadList_index].peerId);
                     delClientFromTreeDList(DThreadList_index, tree_index);
                     delClientFromTreeCList(DThreadList_index, tree_index);
-
+                    
                     // unregister(tree_index, treeDPortList[tree_index][DThreadList_index].peerId);
                     
 
@@ -536,10 +536,12 @@ namespace Server
                         {
                           //  cp.clientC = null;
                            // treeCPortList[tree_index][CThreadList_index] = cp;
+                            unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index +  " unRge \n" });
                             delClientFromTreeCList(CThreadList_index, tree_index);
 
                             delClientFromTreeDList(CThreadList_index, tree_index);
-
+                            
 
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit!\n" });
 
@@ -562,11 +564,12 @@ namespace Server
 
                   //  cpt.clientC = null;
                    // treeCPortList[tree_index][CThreadList_index] = cp;
+                    unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
                     delClientFromTreeCList(CThreadList_index, tree_index);
 
                     delClientFromTreeDList(CThreadList_index, tree_index);
-
-                   // unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index +  " unRge \n" });
+                    
                       
                     stream = null;
 
@@ -579,32 +582,35 @@ namespace Server
 
         private bool unregister(int tree, int peerId)
         {
-            TcpClient connectTracker;
-            NetworkStream connectTrackerStream;
-            try
+            if (peerId != -1)
             {
-               // mainFm.tbTracker.Text, TrackerSLPort
-                connectTracker = new TcpClient(mainFm.tbTracker.Text, TrackerSLPort);
-                connectTrackerStream = connectTracker.GetStream();
+                TcpClient connectTracker;
+                NetworkStream connectTrackerStream;
+                try
+                {
+                    // mainFm.tbTracker.Text, TrackerSLPort
+                    connectTracker = new TcpClient(mainFm.tbTracker.Text, TrackerSLPort);
+                    connectTrackerStream = connectTracker.GetStream();
 
-                //define client message type
-                Byte[] clienttype = StrToByteArray("<unRegists>");
-                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+                    //define client message type
+                    Byte[] clienttype = StrToByteArray("<unRegists>");
+                    connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
-                string sendstr = tree + "@" + peerId;
-                Byte[] sendbyte = StrToByteArray(sendstr);
-                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                    string sendstr = tree + "@" + peerId;
+                    Byte[] sendbyte = StrToByteArray(sendstr);
+                    //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                    connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                    connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                connectTracker.Close();
-                connectTrackerStream.Close();
-                connectTrackerStream.Dispose();
-            }
-            catch
-            {
+                    connectTracker.Close();
+                    connectTrackerStream.Close();
+                    connectTrackerStream.Dispose();
+                }
+                catch
+                {
+                }
             }
 
             return true;
