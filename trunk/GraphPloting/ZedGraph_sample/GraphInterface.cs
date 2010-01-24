@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using ClassLibrary;
 
 namespace ZedGraph_sample
 {
@@ -27,9 +28,10 @@ namespace ZedGraph_sample
 
         }
 
-        public void importData(string FileN)
+        public void importData(string IP)
         {
-            FileStream read = new FileStream(@File, FileMode.open, FileAccess.Read);
+            //FileStream read = new FileStream(@File, FileMode.open, FileAccess.Read);
+            
             System.Diagnostics.ProcessStartInfo GenTxt = new System.Diagnostics.ProcessStartInfo("cmd", "/c " + "echo > Reading");
             //GenTxt.RedirectStandardOutput = true;
             GenTxt.UseShellExecute = false;
@@ -41,7 +43,7 @@ namespace ZedGraph_sample
             try
             {
                 Data import;
-                read.Read();
+                
 
 
             }
