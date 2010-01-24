@@ -9,7 +9,7 @@ using ZedGraph;
 using ClassLibrary;
 
 
-namespace ZedGraph_sample
+namespace Analysis
 {
     public partial class Form1 : Form
     {

@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using ClassLibrary;
 
-namespace ZedGraph_sample
+namespace Analysis
 {
     public interface GraphInterface
     {
@@ -43,9 +43,10 @@ namespace ZedGraph_sample
             try
             {
                 Data import;
-                xml 
-
-
+                xml GetValue = new xml(IP + ".xml", "Time");
+                import.IP = IP;
+                import.time = GetValue.Read("Time", "value");
+                import.Speed = GetValue.Read("Time", "speed");
             }
             finally
             {
