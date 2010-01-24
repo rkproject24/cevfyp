@@ -6,7 +6,7 @@ using ClassLibrary;
 using System.Threading;
 using System.IO;
 
-namespace ZedGraph_sample
+namespace Analysis
 {
     /// 
     /// The Main Ping Class
