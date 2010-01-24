@@ -1,4 +1,4 @@
-﻿namespace ZedGraph_sample
+﻿namespace Analysis
 {
     partial class Form1
     {
