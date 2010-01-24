@@ -53,7 +53,7 @@ namespace Server
             sConfig.CportBase = Convert.ToInt32(tbConport.Text);
             sConfig.Conportup = Convert.ToInt32(tbConportup.Text);
             sConfig.Dport = Convert.ToInt32(tbDataport.Text);
-            sConfig.Dataportup = Convert.ToInt32(tbDataport.Text);
+            sConfig.Dataportup = Convert.ToInt32(tbDataportup.Text);
             sConfig.PluginPath = tbPlugin.Text;
             sConfig.SLPort = Convert.ToInt32(tbSLPort.Text);
             sConfig.SLisPortup = Convert.ToInt32(tbSLPortup.Text);
