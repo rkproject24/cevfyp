@@ -13,12 +13,15 @@ namespace ClassLibrary
         private int maxClient;
         private int vlcStreamPort;
         private int SLisPort;
+        private int sLisPortup;
         private int Dataport;
+        private int dataportup;
         private int ConportBase;
+        private int conportup;
         private int TreeSizes;
-        private string serverip;
+        //private string serverip;
         private string trackerip;
-
+        private int trackerPort;
 
         private string videoDir;
         private int chunkSize;
@@ -32,16 +35,20 @@ namespace ClassLibrary
             maxClient = 0;
             vlcStreamPort = 0;
             SLisPort = 0;
+            sLisPortup = 0;
             Dataport = 0;
+            dataportup = 0;
             ConportBase = 0;
+            conportup = 0;
             TreeSize = 0;
-            serverip = "";
+            //serverip = "";
             trackerip = "";
             receiveStreamSize = 0;
             chunkSize = 0;
         }
 
-        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int Dataport, int ConportBase, int TreeSizes, string serverip, int receiveStreamSize, int chunkSize, string trackerip)
+        //public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int Dataport, int ConportBase, int TreeSizes, string serverip, int receiveStreamSize, int chunkSize, string trackerip)
+        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int sLisPortup, int Dataport, int dataportup, int ConportBase, int conportup, int TreeSizes, int receiveStreamSize, int chunkSize, string trackerip)
         {
             this.pluginPath = pluginPath;
             this.streamType = streamType;
@@ -49,10 +56,13 @@ namespace ClassLibrary
             this.maxClient = maxClient;
             this.vlcStreamPort = vlcStreamPort;
             this.SLisPort = SLisPort;
+            this.sLisPortup = sLisPortup;
             this.Dataport = Dataport;
+            this.dataportup = dataportup;
             this.ConportBase = ConportBase;
+            this.conportup = conportup;
             this.TreeSize = TreeSize;
-            this.serverip = serverip;
+            //this.serverip = serverip;
             this.chunkSize = chunkSize;
             this.receiveStreamSize = receiveStreamSize;
             this.trackerip = trackerip;
@@ -88,28 +98,42 @@ namespace ClassLibrary
             get { return SLisPort; }
             set { SLisPort = value; }
         }
+        public int SLisPortup
+        {
+            get { return sLisPortup; }
+            set { sLisPortup = value; }
+        }
         public int Dport
         {
             get { return Dataport; }
             set { Dataport = value; }
+        }
+        public int Dataportup
+        {
+            get { return dataportup; }
+            set { dataportup = value; }
         }
         public int CportBase
         {
             get { return ConportBase; }
             set { ConportBase = value; }
         }
-
+        public int Conportup
+        {
+            get { return conportup; }
+            set { conportup = value; }
+        }
         public int TreeSize
         {
             get { return TreeSizes; }
             set { TreeSizes = value; }
         }
 
-        public string Serverip
-        {
-            get { return serverip; }
-            set { serverip = value; }
-        }
+        //public string Serverip
+        //{
+        //    get { return serverip; }
+        //    set { serverip = value; }
+        //}
         public int ReceiveStreamSize
         {
             get { return receiveStreamSize; }
@@ -125,6 +149,11 @@ namespace ClassLibrary
             get { return trackerip; }
             set { trackerip = value; }
         }
+        public int TrackerPort
+        {
+            get { return trackerPort; }
+            set { trackerPort = value; }
+        }
 
         public void save(string fileName)
         {
@@ -134,9 +163,10 @@ namespace ClassLibrary
             }
             xml store = new xml(fileName, "server",true);
 
-            string[] type = { "pluginPath", "streamType", "videoDir", "maxClient", "vlcStreamPort", "SLisPort", "Dataport", "ConportBase", "TreeSize", "serverip", "trackerip", "chunkSize","receiveStreamSize"};
-            string[] value = {this.pluginPath, this.streamType, this.videoDir, this.maxClient.ToString(), this.vlcStreamPort.ToString(), this.SLisPort.ToString(), this.Dataport.ToString(), this.ConportBase.ToString(), this.TreeSize.ToString(), this.serverip, this.trackerip, this.chunkSize.ToString(), this.receiveStreamSize.ToString()};
-
+            //string[] type = { "pluginPath", "streamType", "videoDir", "maxClient", "vlcStreamPort", "SLisPort", "Dataport", "ConportBase", "TreeSize", "serverip", "trackerip", "chunkSize","receiveStreamSize"};
+            //string[] value = {this.pluginPath, this.streamType, this.videoDir, this.maxClient.ToString(), this.vlcStreamPort.ToString(), this.SLisPort.ToString(), this.Dataport.ToString(), this.ConportBase.ToString(), this.TreeSize.ToString(), this.serverip, this.trackerip, this.chunkSize.ToString(), this.receiveStreamSize.ToString()};
+            string[] type = { "pluginPath", "streamType", "videoDir", "maxClient", "vlcStreamPort", "SLisPort", "sLisPortup", "Dataport", "dataportup", "ConportBase", "conportup", "TreeSize", "trackerip","trackerPort", "chunkSize", "receiveStreamSize" };
+            string[] value = { this.pluginPath, this.streamType, this.videoDir, this.maxClient.ToString(), this.vlcStreamPort.ToString(), this.SLisPort.ToString(), this.sLisPortup.ToString(), this.Dataport.ToString(), this.Dataportup.ToString(), this.ConportBase.ToString(), this.Conportup.ToString(), this.TreeSize.ToString(), this.trackerip,this.trackerPort.ToString(), this.chunkSize.ToString(), this.receiveStreamSize.ToString() };
 
             store.Add(type, value);
 
@@ -152,11 +182,15 @@ namespace ClassLibrary
             this.maxClient = Convert.ToInt32(load.Read("server", "maxClient"));
             this.vlcStreamPort = Convert.ToInt32(load.Read("server", "vlcStreamPort"));
             this.SLisPort = Convert.ToInt32(load.Read("server", "SLisPort"));
+            this.SLisPortup = Convert.ToInt32(load.Read("server", "sLisPortup"));
             this.Dataport = Convert.ToInt32(load.Read("server", "Dataport"));
+            this.Dataportup = Convert.ToInt32(load.Read("server", "dataportup"));
             this.ConportBase = Convert.ToInt32(load.Read("server", "ConportBase"));
+            this.Conportup = Convert.ToInt32(load.Read("server", "conportup"));
             this.TreeSize = Convert.ToInt32(load.Read("server", "TreeSize"));
-            this.serverip = load.Read("server", "serverip");
+            //this.serverip = load.Read("server", "serverip");
             this.trackerip = load.Read("server", "trackerip");
+            this.trackerPort = Convert.ToInt32(load.Read("server", "trackerPort"));
             this.receiveStreamSize = Convert.ToInt32(load.Read("server", "receiveStreamSize"));
             this.chunkSize = Convert.ToInt32(load.Read("server", "chunkSize"));
         }
