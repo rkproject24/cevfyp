@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Windows.Forms;
 using ClassLibrary;
 using System.Threading;
+using System.IO;
 
 namespace ZedGraph_sample
 {
@@ -26,19 +27,19 @@ namespace ZedGraph_sample
             {
                 MessageBox.Show("Please Input IP.");
             }
-            //else if (Input.Length == 1)
-            //{
-             //   PingHost(Input[0]);
-            //}
-                    //loop the ping program
-                    while (true)
+                while (true)
+                {
+                    //call the method "PingHost" and pass the HostName as a parameter
+                    int Result = PingHost(Input[0]);
+                    while (File.Exists("Reading"))
                     {
-                        //call the method "PingHost" and pass the HostName as a parameter
-                        int Result = PingHost(Input[0]);
-                        xml PingResult = new xml("PingResult.xml", "IP");
-                        PingResult.Add("IP", Input[0], PingResult.ToString());
-                        
+                        while (!File.Exists("Reading"))
+                        {
+                            xml PingResult = new xml(Input[0]+".xml", "Time");
+                            PingResult.Add("Time",System.DateTime.Now.ToString(),Result.ToString());
+                        }
                     }
+                }
             }
             catch
             {
