@@ -255,11 +255,19 @@ namespace Client
 
         private void reconnection(int tree_index)
         {
-        
-            bool prlist = peerh.downloadPeerlist2(tree_index);
-            bool conPeer = peerh.connectPeer2(tree_index + 1);
-            bool conSource = connectToSource2(tree_index);
-            bool changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
+            bool prlist = false;
+            bool conPeer = false;
+            bool conSource = false;
+            bool changeParent = false;
+
+            while(!(prlist && conPeer && conSource && changeParent))
+            {
+                prlist = peerh.downloadPeerlist2(tree_index);
+                conPeer = peerh.connectPeer2(tree_index + 1);
+                conSource = connectToSource2(tree_index);
+                changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
+                Thread.Sleep(10);
+            }
             //treeReconnectState[tree_index] = 0;
 
         }
