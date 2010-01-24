@@ -129,32 +129,56 @@ namespace ClassLibrary
             return Int32.Parse(RPI.ReadAttribute("Info", "treeSize"));
         }
 
-        public List<string> getPeerPrefix(PeerNode peer)
-        {
-            List<string> prefix = new List<string>();
-            PeerNode searchNode = peer;
-            while (searchNode.Parentid != "-1")
-            {
-                searchNode = getPeer(searchNode.Parentid);
-                if (searchNode == null)
-                    break;
-                prefix.Add(searchNode.Parentid);
+        //public List<string> getPeerPrefix(PeerNode peer)
+        //{
+        //    List<string> prefix = new List<string>();
+        //    PeerNode searchNode = peer;
+        //    while (!searchNode.Parentid.Equals( "-1"))
+        //    {
+        //        searchNode = getPeer(searchNode.Parentid);
+        //        if (searchNode == null)
+        //            break;
+        //        prefix.Add(searchNode.Parentid);
 
-            }
-            prefix.Add("-1");
-            return prefix;
-        }
+        //    }
+        //    //prefix.Add("-1");
+        //    return prefix;
+        //}
 
         public bool checkchild(PeerNode peer, string selfid) // return true if peer is its child 
         {
+            //if (peer.Id.Equals(selfid))
+            //    return true;
+            //List<string> prefix = getPeerPrefix(peer);        
+            //foreach(string node in prefix)
+            //{
+            //    if(node.Equals(selfid))
+            //        return true;
+            //}
+            //return false;
+
             if (peer.Id.Equals(selfid))
                 return true;
-            List<string> prefix = getPeerPrefix(peer);        
-            foreach(string node in prefix)
+            while (!(peer.Parentid).Equals(selfid))
             {
-                if(node.Equals(selfid))
-                    return true;
+                if (peer.Parentid.Equals("-1"))
+                    return false;
+                if (peer.Parentid.Equals("-2"))
+                    break;
+                peer = getPeer(peer.Parentid);
+
             }
+            return true;
+        }
+
+        public bool reconecting(string id)
+        {
+            string ip = getIP(id);
+            if (ip.Equals("")) //return NULL if the node is not exist in the list
+                return true;
+            string parentid = RPI.Read("Peer", "ID", id, "Parentid");
+            if (parentid.Equals("-2"))
+                return true;
             return false;
         }
     }
