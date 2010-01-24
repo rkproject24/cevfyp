@@ -52,7 +52,7 @@ namespace TrackerServer
         {
             rtbClientlist.Text = "";
             cbbTree.Items.Clear();
-            TreelistView.Columns.Clear();
+            TreelistView.Clear();
 
             listenerThread.Abort();
             TrackerListen.Stop();
@@ -87,6 +87,23 @@ namespace TrackerServer
                         byte[] treeMsg = new byte[4];
                         cstream.Read(treeMsg, 0, treeMsg.Length);
                         int treeNo = BitConverter.ToInt32(treeMsg, 0);
+
+                        byte[] recoonectMsg = new byte[1];
+                        cstream.Read(recoonectMsg, 0, recoonectMsg.Length);
+                        bool recoonect = BitConverter.ToBoolean(recoonectMsg, 0);
+
+                        if(recoonect)
+                        {
+                            responsePeerMsg = new byte[4];
+                            cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                            int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+
+                            byte[] responsePeerMsg2 = new byte[MsgSize];
+                            cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                            string peerId = ByteArrayToString(responsePeerMsg2);
+
+                            changeParent(treeNo.ToString(), peerId, "-2"); //-2 indicate the peer is reconnecting
+                        }
 
                         byte[] peeripMsg;
                         //if (File.Exists(Peerlist_name + "1" + ".xml"))
@@ -265,11 +282,7 @@ namespace TrackerServer
                         string newParentId = messages[2];
                         //==incompleted
 
-                        PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
-                        PeerNode p1 = TreeAccess.getPeer(peerId);
-                        TreeAccess.deletePeer(p1);
-                        p1.Parentid = newParentId;
-                        TreeAccess.addPeer(p1);
+                        changeParent(tree, peerId, newParentId);
 
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " change to Parent:" + newParentId + " in tree:" + tree + "\n" });
                     }
@@ -393,6 +406,15 @@ namespace TrackerServer
         private void cbbTree_SelectedIndexChanged(object sender, EventArgs e)
         {
             updateTreelistView(cbbTree.SelectedIndex);
+        }
+
+        public void changeParent(string tree, string peerId, string newParentId)
+        {
+            PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+            PeerNode p1 = TreeAccess.getPeer(peerId);
+            TreeAccess.deletePeer(p1);
+            p1.Parentid = newParentId;
+            TreeAccess.addPeer(p1);
         }
 
     }
