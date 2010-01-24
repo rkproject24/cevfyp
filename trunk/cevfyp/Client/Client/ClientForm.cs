@@ -134,7 +134,7 @@ namespace Client
         {
             btnDisconnect.Enabled = false;
             btnConnect.Enabled = true;
-            clientHandler.disconectall();
+            clientHandler.closeAllThread();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
