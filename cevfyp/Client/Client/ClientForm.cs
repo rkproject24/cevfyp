@@ -140,6 +140,7 @@ namespace Client
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
            // clientHandler.disconectall();
+            clientHandler.closeAllThread();
         }
 
         private void preferenceToolStripMenuItem1_Click(object sender, EventArgs e)

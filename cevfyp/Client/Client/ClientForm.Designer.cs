@@ -98,7 +98,7 @@
             this.tbServerIp.Name = "tbServerIp";
             this.tbServerIp.Size = new System.Drawing.Size(83, 22);
             this.tbServerIp.TabIndex = 6;
-            this.tbServerIp.Text = "192.168.1.3";
+            this.tbServerIp.Text = "123.203.249.36";
             // 
             // button2
             // 
