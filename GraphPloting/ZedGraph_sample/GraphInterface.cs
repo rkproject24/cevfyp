@@ -7,7 +7,7 @@ namespace ZedGraph_sample
 {
     public interface GraphInterface
     {
-        void importData(string File);
+        void importData(string IP);
         void exportData(string File);
     }
 
