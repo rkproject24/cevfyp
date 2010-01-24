@@ -192,6 +192,10 @@ namespace Client
                 byte[] treeNo = BitConverter.GetBytes(tree);
                 trackerStream.Write(treeNo, 0, treeNo.Length);
 
+
+                byte[] reconnect = BitConverter.GetBytes(false);
+                trackerStream.Write(reconnect, 0, reconnect.Length);
+
                 byte[] responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
 
@@ -242,7 +246,6 @@ namespace Client
                 return false;
                
             }
-            return false;
         }
 
         public bool downloadPeerlist2(int tree)
@@ -261,6 +264,19 @@ namespace Client
 
                 byte[] treeNo = BitConverter.GetBytes(tree);
                 trackerStream.Write(treeNo, 0, treeNo.Length);
+
+                byte[] reconnect = BitConverter.GetBytes(true);
+                trackerStream.Write(reconnect, 0, reconnect.Length);
+
+                //By Vinci: Reconnect=====================================================
+                Byte[] sendbyte = StrToByteArray(Selfid[tree]);
+                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                byte[] MsgLength = BitConverter.GetBytes(Selfid[tree].Length);
+                trackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                trackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                //=========================================================================
 
                 byte[] responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -300,7 +316,6 @@ namespace Client
                 return false;
 
             }
-            return false;
         }
 
 
@@ -407,26 +422,21 @@ namespace Client
                         Cport11 = Cport[i - 1];
 
 
-                        //connectServerStream.Close();
-                        //connectServerClient.Close();
-
-                        connectServerStream.Dispose();
+                        connectServerStream.Close();
                         connectServerClient.Close();
-                        connectServerClient = null;
 
                         Thread.Sleep(10);
                     }
 
-                    //serverConnect = true;
-                    //checkClose = false;
                 }
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                //System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
-            //}
+           
             return false;
         }
 
@@ -632,6 +642,9 @@ namespace Client
                 //String id  = peerAccess.getPeer("0");                                               //select the server ip as default
                 //string id = peerAccess.getMaxId().ToString();                  //select the last peer
                 string id =RandomNumber(0, peerAccess.getMaxId() + 1).ToString();//Random select
+
+                if (peerAccess.reconecting(id))
+                    continue;
                 if (peerAccess.checkchild(peerAccess.getPeer(id), selfid[tree])) //if peer is child, skip it
                     continue;
                 tempPeer = peerAccess.getPeer(id);   
