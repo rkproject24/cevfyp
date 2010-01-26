@@ -205,7 +205,7 @@ namespace TrackerServer
 
                         //peerList.Add(clientNode);
 
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { treeNo +": Peer:" + clientNode.Id +" ip:" + clientendpt.ToString() + " connected to Peer\n" });
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] {"T["+ treeNo +"] Peer:" + clientNode.Id +" ip:" + clientendpt.ToString() + " connected to Peer\n" });
                     }
                     else if (peertype.Contains("<serverReg>"))
                     {
@@ -262,7 +262,7 @@ namespace TrackerServer
                         //p1 = TreeAccess.getPeer("1");
                         //if (p1 == null)
                         //    Console.WriteLine("Nothings");
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree +"\n" });
+                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree + "\n" });
                     }
                     else if (peertype.Contains("<changePar>"))
                     {
