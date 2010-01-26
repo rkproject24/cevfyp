@@ -157,11 +157,15 @@ namespace Server
 
         private bool UpdateTracker()
         {
-            TcpClient trackerTcp = new TcpClient(mainFm.tbTracker.Text, sConfig.TrackerPort);
-            NetworkStream trackerStream = trackerTcp.GetStream();
+            TcpClient trackerTcp = null;
+            NetworkStream trackerStream = null;
+
 
             try
             {
+                trackerTcp = new TcpClient(mainFm.tbTracker.Text, sConfig.TrackerPort);
+                trackerStream = trackerTcp.GetStream();
+
                 //define server type
                 byte[] clienttype = StrToByteArray("<serverReg>");
                 trackerStream.Write(clienttype, 0, clienttype.Length);
@@ -188,8 +192,10 @@ namespace Server
             }
             catch
             {
-                trackerStream.Close();
-                trackerTcp.Close();
+                if(trackerStream!=null)
+                  trackerStream.Close();
+                if(trackerTcp!=null)
+                  trackerTcp.Close();
             }
             return false;
 
@@ -205,8 +211,16 @@ namespace Server
         {
             TcpClient client = null;
             NetworkStream stream = null;
-            listenServer = new TcpListener(localAddr, slPort);
-            listenServer.Start();
+
+            try
+            {
+                listenServer = new TcpListener(localAddr, slPort);
+                listenServer.Start();
+            }
+            catch(Exception ex)
+            {
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
+            }
 
             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + slPort + "]:Listening...\n" });
             while (true)
@@ -243,7 +257,7 @@ namespace Server
                                 tempC_num = ph.getTreeCListPort(req_tree_num, j);
                                 cMessage = BitConverter.GetBytes(tempC_num);
                                 stream.Write(cMessage, 0, cMessage.Length);
-                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num.ToString() + " " });
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] {"T["+ (req_tree_num-1) + "] Cport:" + tempC_num.ToString() + " " });
 
                                 tempD_num = ph.getTreeDListPort(req_tree_num, j);
                                 dMessage = BitConverter.GetBytes(tempD_num);
