@@ -71,6 +71,7 @@ namespace Client
 
             ch = new ChunkHandler();
             this.cConfig = cConfig;
+          
 
             treeCPortList = new List<List<cPort>>(maxTree);
             treeDPortList = new List<List<dPort>>(maxTree);
@@ -266,9 +267,16 @@ namespace Client
             dp.peerId = -1;
             treeDPortList[tree_index].Add(dp);
 
-            //DportListener.Start(1);
-            //treeDPListener[tree_index][DThreadList_index].Start(1);
-            treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+         //   try
+          //  {
+                //DportListener.Start(1);
+                //treeDPListener[tree_index][DThreadList_index].Start(1);
+                treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+          //  }
+          //  catch (Exception ex)
+          //  {
+           //     clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+           // }
 
             while (true)
             {
@@ -301,7 +309,7 @@ namespace Client
                         //if control port dead which cause this case happen
                         if (treeDPortList[tree_index][DThreadList_index].clientD == null)
                         {
-                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + ran_port + " exit~\n" });
+                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] D:" + ran_port + " exit~\n" });
                             stream.Close();
                             DPortClient.Close();
                             firstRun = true;
@@ -366,9 +374,9 @@ namespace Client
                 }
                 catch
                 {
-                    clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " D:" + ran_port + " exit\n" });
+                    clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] D:" + ran_port + " exit\n" });
 
-                    if (!localterminate)
+                    if (!localterminate && treeDPortList[tree_index][DThreadList_index].clientD!=null)
                         DOfflineState[(tree_index * max_client) + DThreadList_index] = 1;
 
                     if (stream != null)
@@ -398,7 +406,14 @@ namespace Client
             cp.clientC = null;
             treeCPortList[tree_index].Add(cp);
 
-            treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+          //  try
+           // {
+                treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+          //  }
+            //catch (Exception ex)
+          //  {
+           //     clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] {"T[" + tree_index + "]"+ ex.ToString() });
+           // }
 
             while (true)
             {
@@ -432,13 +447,13 @@ namespace Client
 
                         if (responseString == "Exit" || DOfflineState[(tree_index * max_client) + CThreadList_index] == 1)
                         {
-                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + ran_port + " exit~\n" });
+                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] C:" + ran_port + " exit~ [" + responseString + ":" + DOfflineState[(tree_index * max_client) + CThreadList_index].ToString()+ "]\n" });
                             unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
-                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " unRge \n" });
+                            clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] Peer:" + treeCPortList[tree_index][CThreadList_index].peerId + " unRge~\n" });
                             delClientFromTreeDList(CThreadList_index, tree_index);
                             delClientFromTreeCList(CThreadList_index, tree_index);
                             DOfflineState[(tree_index * max_client) + CThreadList_index] = 0;
-
+                            
                             stream.Close();
                             CPortClient.Close();
                             break;
@@ -455,12 +470,12 @@ namespace Client
                 }
                 catch
                 {
-                    clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " C:" + ran_port + "exit\n" });
+                    clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] C:" + ran_port + "exit\n" });
 
                     if (!localterminate)
                     {
                         unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
-                        clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + " unRge \n" });
+                        clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] Peer:" + treeCPortList[tree_index][CThreadList_index].peerId + " unRge \n" });
                         delClientFromTreeDList(CThreadList_index, tree_index);
                         delClientFromTreeCList(CThreadList_index, tree_index);
                         DOfflineState[(tree_index * max_client) + CThreadList_index] = 0;
@@ -488,26 +503,35 @@ namespace Client
                     connectTracker = new TcpClient(clientFm.tbServerIp.Text, TrackerSLPort);
                     connectTrackerStream = connectTracker.GetStream();
 
+                    
                     //define client message type
-                    Byte[] clienttype = StrToByteArray("<unRegists>");
+                    byte[] clienttype = StrToByteArray("<unRegists>");
                     connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
                     string sendstr = tree + "@" + peerId;
-                    Byte[] sendbyte = StrToByteArray(sendstr);
+                    byte[] sendbyte = StrToByteArray(sendstr);
                     //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
                     byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
                     connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
                     connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-
                     connectTrackerStream.Close();
                     connectTracker.Close();
+                    
+               
+
                 }
                 catch
                 {
-                    connectTrackerStream.Close();
-                    connectTracker.Close();
+                    clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree + "] Peer:"+ peerId+ " unRge fail\n" });
+                       
+                    if(connectTrackerStream!=null)
+                       connectTrackerStream.Close();
+                    if(connectTracker!=null)
+                       connectTracker.Close();
+
+                    return false;
                 }
             }
 

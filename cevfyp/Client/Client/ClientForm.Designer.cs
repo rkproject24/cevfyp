@@ -98,7 +98,8 @@
             this.tbServerIp.Name = "tbServerIp";
             this.tbServerIp.Size = new System.Drawing.Size(83, 22);
             this.tbServerIp.TabIndex = 6;
-            this.tbServerIp.Text = "123.203.249.36";
+            this.tbServerIp.Text = "192.168.0.20";
+            this.tbServerIp.TextChanged += new System.EventHandler(this.tbServerIp_TextChanged);
             // 
             // button2
             // 
@@ -135,7 +136,7 @@
             this.preferenceToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(711, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(777, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -144,13 +145,13 @@
             this.preferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem1});
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.preferenceToolStripMenuItem.Text = "Tools";
             // 
             // preferenceToolStripMenuItem1
             // 
             this.preferenceToolStripMenuItem1.Name = "preferenceToolStripMenuItem1";
-            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
+            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 
@@ -158,7 +159,7 @@
             // 
             this.rtbupload.Location = new System.Drawing.Point(521, 50);
             this.rtbupload.Name = "rtbupload";
-            this.rtbupload.Size = new System.Drawing.Size(185, 241);
+            this.rtbupload.Size = new System.Drawing.Size(244, 241);
             this.rtbupload.TabIndex = 11;
             this.rtbupload.Text = "";
             // 
@@ -242,7 +243,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(711, 386);
+            this.ClientSize = new System.Drawing.Size(777, 386);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);

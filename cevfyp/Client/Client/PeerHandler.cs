@@ -52,6 +52,8 @@ namespace Client
             set { joinPeers = value; }
         }
 
+     
+
         //int D1port = 0;             //video data port number
         int[] Dport;// = new int[TREE_NO];
         int[] Cport;// = new int[TREE_NO];
@@ -95,7 +97,7 @@ namespace Client
         {
             if (File.Exists(Peerlist_name + "0.xml"))
                 File.Delete(Peerlist_name + "0.xml");
-            if (!downloadPeerlist(0))
+            if (!downloadPeerlist(0,0))
                 return -1;
             treeAccessor = new PeerInfoAccessor(Peerlist_name + "0");
             this.TREE_NO = treeAccessor.getTreeSize();
@@ -103,7 +105,7 @@ namespace Client
 
             for (int i = 0; i < TREE_NO; i++)
             {
-                if (!downloadPeerlist(i))
+                if (!downloadPeerlist(i,0))
                 {
                     return -1;
                 }
@@ -175,10 +177,10 @@ namespace Client
             return TREE_NO;
         }
 
-        public bool downloadPeerlist(int tree)
+        public bool downloadPeerlist(int tree,int reConnectUse)
         {
-            TcpClient trackerTcpClient;
-            NetworkStream trackerStream;
+            TcpClient trackerTcpClient=null;
+            NetworkStream trackerStream=null;
             string PeerFileName = Peerlist_name + tree + ".xml";
             try
             {
@@ -209,8 +211,12 @@ namespace Client
 
                 //string[] xmlTrees = xmlContent.Split('@');
 
-                //if (File.Exists(PeerFileName))
-                //    File.Delete(PeerFileName);
+                if (reConnectUse == 1)
+                {
+                    if (File.Exists(PeerFileName))
+                        File.Delete(PeerFileName);
+                }
+
                 // Specify file, instructions, and privelegdes
                 FileStream file = new FileStream(PeerFileName, FileMode.OpenOrCreate, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(file);
@@ -226,9 +232,16 @@ namespace Client
                 //sw.Close();
                 //file.Close();
 
-                treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
-                this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
+                if (reConnectUse != 1)
+                {
+                    treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+                    this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
+                }
 
+                //treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+                //this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString(); //keep old id when reconnect
+                
+                
                 //treeAccessor2 = new PeerInfoAccessor("PeerInfoT2");
                 //this.selfid[1] = (treeAccessor2.getMaxId() + 1).ToString();
 
@@ -243,12 +256,19 @@ namespace Client
             catch (Exception ex)
             {
                 //System.Windows.Forms.MessageBox.Show("Tree:" + tree + "\n" + ex.ToString());
+
+                if(trackerStream!=null)
+                    trackerStream.Close();
+                if(trackerTcpClient!=null)
+                    trackerTcpClient.Close();
+                
+
                 return false;
                
             }
         }
 
-        public bool downloadPeerlist2(int tree)
+       /* public bool downloadPeerlist2(int tree)
         {
             TcpClient trackerTcpClient;
             NetworkStream trackerStream;
@@ -317,6 +337,7 @@ namespace Client
 
             }
         }
+        */
 
 
         // Write for tracker registration.
@@ -379,7 +400,78 @@ namespace Client
             return enc.GetString(bytes);
         }
 
-        public bool connectPeer()  //connect to Peer to get the port no of Cport Dport
+
+        public bool connectPeers(int tree_num)  //connect to Peer to get the port no of Cport Dport
+        {
+            TcpClient connectServerClient=null;
+            NetworkStream connectServerStream=null;
+            int i = tree_num;
+            int total_select_round = 0;
+            bool joined = false;
+
+            try
+            {
+                    while (!joined)
+                    {
+                        if (total_select_round > 2000)
+                            return false;               //or down peer list again 
+
+                        //select a peer to connect
+                        PeerNode conNode = selectPeer(i - 1);
+                        joinPeers[i - 1] = conNode;
+
+                        connectServerClient = new TcpClient(joinPeers[i - 1].Ip, joinPeers[i - 1].ListenPort);
+                        connectServerStream = connectServerClient.GetStream();
+
+                        Byte[] message = BitConverter.GetBytes(1);
+                        connectServerStream.Write(message, 0, message.Length);
+
+                        // getTreePort(connectServerStream, i);
+
+                        byte[] amessage = BitConverter.GetBytes(i);
+                        connectServerStream.Write(amessage, 0, amessage.Length);
+
+                        byte[] responseMessage = new Byte[4];
+
+                        connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
+                        connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
+                        //check whether there is available port in target peer
+                        if (Cport[i - 1] != 0 && Dport[i - 1] != 0 && Cport[i - 1] != 1 && Dport[i - 1] != 1)
+                            joined = true;
+
+                        Cport11 = Cport[i - 1];
+
+                        total_select_round += 1;
+
+                        connectServerStream.Close();
+                        connectServerClient.Close();
+
+                        Thread.Sleep(10);
+                    }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //System.Windows.Forms.MessageBox.Show(ex.ToString());
+
+                if(connectServerStream!=null)
+                    connectServerStream.Close();
+                if(connectServerClient!=null)
+                    connectServerClient.Close();
+
+                return false;
+            }
+
+           
+        }
+
+        
+        /*public bool connectPeer()  //connect to Peer to get the port no of Cport Dport
         {
             TcpClient connectServerClient;
             NetworkStream connectServerStream;
@@ -409,18 +501,32 @@ namespace Client
                         connectServerStream.Write(amessage, 0, amessage.Length);
 
                         byte[] responseMessage = new Byte[4];
+
                         connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        //if (BitConverter.ToInt16(responseMessage, 0) == 1)
+                        //{
+                        //    connectServerStream.Close();
+                        //    connectServerClient.Close();
+                        //    continue;
+                        //}
+                        //else
                         Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
 
                         connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                        //if (BitConverter.ToInt16(responseMessage, 0) == 1)
+                        //{
+                        //    connectServerStream.Close();
+                        //    connectServerClient.Close();
+                        //    continue;
+                        //}
+                        //else
                         Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
 
                         //check whether there is available port in target peer
-                        if (Cport[i - 1] != 0 && Dport[i - 1] != 0)
+                        if (Cport[i - 1] != 0 && Dport[i - 1] != 0 && Cport[i - 1] != 1 && Dport[i - 1] != 1)
                             joined = true;
 
                         Cport11 = Cport[i - 1];
-
 
                         connectServerStream.Close();
                         connectServerClient.Close();
@@ -431,16 +537,17 @@ namespace Client
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
-           
-            return false;
-        }
 
-        public bool connectPeer2(int tree_num)  //connect to Peer to get the port no of Cport Dport
+            // return false;
+        }
+        */
+
+       /* public bool connectPeer2(int tree_num)  //connect to Peer to get the port no of Cport Dport
         {
             TcpClient connectServerClient;
             NetworkStream connectServerStream;
@@ -471,11 +578,20 @@ namespace Client
                     connectServerStream.Write(amessage, 0, amessage.Length);
 
                     byte[] responseMessage = new Byte[4];
-                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
-                    Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
 
                     connectServerStream.Read(responseMessage, 0, responseMessage.Length);
-                    Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+                    if (BitConverter.ToInt16(responseMessage, 0) == 1)
+                        continue;
+                    else
+                        Cport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
+
+                    connectServerStream.Read(responseMessage, 0, responseMessage.Length);
+                    if (BitConverter.ToInt16(responseMessage, 0) == 1)
+                        continue;
+                    else
+                        Dport[i - 1] = BitConverter.ToInt16(responseMessage, 0);
+
 
                     //check whether there is available port in target peer
                     if (Cport[i - 1] != 0 && Dport[i - 1] != 0)
@@ -487,9 +603,8 @@ namespace Client
                     //connectServerStream.Close();
                     //connectServerClient.Close();
 
-                    connectServerStream.Dispose();
+                    connectServerStream.Close();
                     connectServerClient.Close();
-                    connectServerClient = null;
 
                     Thread.Sleep(10);
                 }
@@ -504,8 +619,8 @@ namespace Client
                 return false;
             }
 
-            return false;
-        }
+       
+        }*/
 
         //private void getTreePort(NetworkStream stream,int tree_num)
         //{
@@ -525,70 +640,126 @@ namespace Client
 
         //}
 
-
         public TcpClient getDataConnect(int tree)
         {
+            TcpClient treeclient=null;
+
+            try
+            {
+                treeclient = new TcpClient(joinPeers[tree].Ip, Dport[tree]);
+
+                //send selfId
+                NetworkStream stream = treeclient.GetStream();
+                string sendstr = selfid[tree];
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                stream.Write(sendbyte, 0, sendbyte.Length);
 
 
-            //be modify later
-            //if (Cport != 0 && Dport != 0)
-            //{
-            //    try
-            //    {
-            //        ClientC = new TcpClient(sourceIp, Cport);
-            //    }
-            //    catch
-            //    {
-            //        return "Port " + Cport + " Unreachable!";
-            //    }
+                // clientFrm.rtbdownload.AppendText("T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n");
+                clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n" });
 
-            //    try
-            //    {
-            //        ClientD = new TcpClient(sourceIp, Dport);
-            //    }
-            //    catch
-            //    {
-            //        return "Port " + Dport + " Unreachable!";
-            //    }
+                return treeclient;
+            }
+            catch
+            {
+                treeclient=null;
+                return treeclient;
+            }
 
-            //    return "OK2";
-            //}
-            //else
-            //{
-            //    return "No source can join!";
-            //}
-            TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Dport[tree]);
-
-            //send selfId
-            NetworkStream stream = treeclient.GetStream();
-            string sendstr = selfid[tree];
-            Byte[] sendbyte = StrToByteArray(sendstr);
-            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-            stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-            stream.Write(sendbyte, 0, sendbyte.Length);
-
-          
-           // clientFrm.rtbdownload.AppendText("T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n");
-            clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n" });
-            
-            return treeclient;
         }
 
         public TcpClient getControlConnect(int tree)
         {
-            TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Cport[tree]);
+            TcpClient treeclient=null;
 
-            //send selfId
-            NetworkStream stream = treeclient.GetStream();
-            string sendstr = selfid[tree];
-            Byte[] sendbyte = StrToByteArray(sendstr);
-            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-            stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-            stream.Write(sendbyte, 0, sendbyte.Length);
+            try
+            {
+                treeclient = new TcpClient(joinPeers[tree].Ip, Cport[tree]);
 
-          //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
-            return treeclient;
+                //send selfId
+                NetworkStream stream = treeclient.GetStream();
+                string sendstr = selfid[tree];
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                stream.Write(sendbyte, 0, sendbyte.Length);
+
+                //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
+                return treeclient;
+            }
+            catch
+            {
+                treeclient = null;
+                return treeclient;
+            }
         }
+
+
+        //public TcpClient getDataConnect(int tree)
+        //{
+
+
+        //    //be modify later
+        //    //if (Cport != 0 && Dport != 0)
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        ClientC = new TcpClient(sourceIp, Cport);
+        //    //    }
+        //    //    catch
+        //    //    {
+        //    //        return "Port " + Cport + " Unreachable!";
+        //    //    }
+
+        //    //    try
+        //    //    {
+        //    //        ClientD = new TcpClient(sourceIp, Dport);
+        //    //    }
+        //    //    catch
+        //    //    {
+        //    //        return "Port " + Dport + " Unreachable!";
+        //    //    }
+
+        //    //    return "OK2";
+        //    //}
+        //    //else
+        //    //{
+        //    //    return "No source can join!";
+        //    //}
+        //    TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Dport[tree]);
+
+        //    //send selfId
+        //    NetworkStream stream = treeclient.GetStream();
+        //    string sendstr = selfid[tree];
+        //    Byte[] sendbyte = StrToByteArray(sendstr);
+        //    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+        //    stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+        //    stream.Write(sendbyte, 0, sendbyte.Length);
+
+
+        //    // clientFrm.rtbdownload.AppendText("T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n");
+        //    clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n" });
+
+        //    return treeclient;
+        //}
+
+        //public TcpClient getControlConnect(int tree)
+        //{
+        //    TcpClient treeclient = new TcpClient(joinPeers[tree].Ip, Cport[tree]);
+
+        //    //send selfId
+        //    NetworkStream stream = treeclient.GetStream();
+        //    string sendstr = selfid[tree];
+        //    Byte[] sendbyte = StrToByteArray(sendstr);
+        //    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+        //    stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+        //    stream.Write(sendbyte, 0, sendbyte.Length);
+
+        //  //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
+        //    return treeclient;
+        //}
 
         public bool changeParent(int tree)
         {

@@ -74,7 +74,11 @@ namespace Client
             rtbdownload.AppendText(message);
         }
 
-       
+        public void UpdateMainFmText(string message)
+        {
+            this.Text = message;
+        }
+
 
         public ClientForm()
         {
@@ -133,14 +137,16 @@ namespace Client
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
             btnDisconnect.Enabled = false;
-            btnConnect.Enabled = true;
             clientHandler.closeAllThread();
+
+           
+            btnConnect.Enabled = true;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
            // clientHandler.disconectall();
-            clientHandler.closeAllThread();
+          //  clientHandler.closeAllThread();
         }
 
         private void preferenceToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -155,6 +161,11 @@ namespace Client
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbServerIp_TextChanged(object sender, EventArgs e)
         {
 
         }
