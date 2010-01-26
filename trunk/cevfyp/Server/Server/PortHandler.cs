@@ -267,9 +267,16 @@ namespace Server
             dp.peerId = -1;
             treeDPortList[tree_index].Add(dp);
 
-            //DportListener.Start(1);
-            //treeDPListener[tree_index][DThreadList_index].Start(1);
-            treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+            try
+            {
+                //DportListener.Start(1);
+                //treeDPListener[tree_index][DThreadList_index].Start(1);
+                treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+            }
+            catch (Exception ex)
+            {
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+            }
 
             while (true)
             {
@@ -302,7 +309,7 @@ namespace Server
                         //if control port dead which cause this case happen
                         if (treeDPortList[tree_index][DThreadList_index].clientD == null)
                         {
-                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + ran_port + " exit~\n" });
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] D:" + ran_port + " exit~\n" });
                             stream.Close();
                             DPortClient.Close();
                             firstRun = true;
@@ -366,9 +373,9 @@ namespace Server
                 }
                 catch
                 {
-                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " D:" + ran_port + " exit\n" });
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] D:" + ran_port + " exit\n" });
 
-                    if(!localterminate)
+                    if (!localterminate && treeDPortList[tree_index][DThreadList_index].clientD != null)
                     DOfflineState[(tree_index * max_client) + DThreadList_index] = 1;
 
                     if (stream != null)
@@ -398,7 +405,14 @@ namespace Server
             cp.clientC = null;
             treeCPortList[tree_index].Add(cp);
 
-            treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+            try
+            {
+                treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+            }
+            catch (Exception ex)
+            {
+                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+            }
 
             while (true)
             {
@@ -432,13 +446,13 @@ namespace Server
 
                         if (responseString == "Exit" ||  DOfflineState[(tree_index * max_client) + CThreadList_index] == 1)
                         {
-                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + " exit~\n" });
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] C:" + ran_port + " exit~ [" + responseString + ":" + DOfflineState[(tree_index * max_client) + CThreadList_index].ToString() + "]\n" });
                             unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
-                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " unRge \n" });
+                            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] Peer:" + treeCPortList[tree_index][CThreadList_index].peerId + " unRge~ \n" });
                             delClientFromTreeDList(CThreadList_index, tree_index);
                             delClientFromTreeCList(CThreadList_index, tree_index);
                             DOfflineState[(tree_index * max_client) + CThreadList_index] = 0;
-
+                           
                             stream.Close();
                             CPortClient.Close();
                             break;
@@ -455,12 +469,12 @@ namespace Server
                 }
                 catch
                 {
-                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + ran_port + "exit\n" });
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] C:" + ran_port + "exit\n" });
 
                     if (!localterminate)
                     {
                         unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
-                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " unRge \n" });
+                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index +"] Peer:" + treeCPortList[tree_index][CThreadList_index].peerId + " unRge \n" });
                         delClientFromTreeDList(CThreadList_index, tree_index);
                         delClientFromTreeCList(CThreadList_index, tree_index);
                         DOfflineState[(tree_index * max_client) + CThreadList_index] = 0;
@@ -506,8 +520,14 @@ namespace Server
                 }
                 catch
                 {
-                    connectTrackerStream.Close();
-                    connectTracker.Close();
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree + "] Peer:" + peerId + " unRge fail\n" });
+
+                    if (connectTrackerStream != null)
+                        connectTrackerStream.Close();
+                    if (connectTracker != null)
+                        connectTracker.Close();
+
+                    return false;
                 }
             }
 
