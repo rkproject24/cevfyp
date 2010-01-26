@@ -107,9 +107,19 @@ namespace Client
             ClientC = new List<TcpClient>(treeNO);
             ClientD = new List<TcpClient>(treeNO);
 
+            for (int i = 0; i < treeNO; i++)
+            {
+                ClientC.Add(null);
+                ClientD.Add(null);
+            }
+
 
         }
 
+        public string getSelfID(int tree_index)
+        {
+            return peerh.Selfid[tree_index];
+        }
 
 
         public void getMute()
@@ -132,7 +142,7 @@ namespace Client
             //connect tracker
             response = connectToTracker(tackerIp);
 
-            if (response == "OK")
+            /*if (response == "OK")
                 response = connectToPeer();
             else
                 return response;
@@ -142,6 +152,50 @@ namespace Client
 
             if (response == "OK2")
                 response = connectToSource();
+            else
+                return response;
+
+            if (response == "OK3")
+                return response = "";
+
+            return response;
+            */
+
+            if (response == "OK")
+            {
+                bool check = false;
+                PeerListenPort = TcpApps.RanPort(1100, 1120);
+
+                for (int i = 0; i < treeNO; i++)
+                {
+                    check = connectToSources(i, 0);
+
+                    if (!check)
+                    {
+                        response = "One of Data Ports cannot join!!!!";
+
+                        //unreg. already join tree
+                        for (int k = 0; k <= i; k++)
+                        {
+                            if (ClientC[k] != null)
+                                sendExit(k);
+                        }
+
+                        break;
+                    }
+                }
+
+                if (check)
+                {
+                    virtualServerPort = peerh.Cport11 + cConfig.VlcPortBase;
+                    serverConnect = true;
+                    checkClose = false;
+
+                    startUpload();
+
+                    response = "OK3";
+                }
+            }
             else
                 return response;
 
@@ -171,62 +225,104 @@ namespace Client
 
         }
 
-        private string connectToPeer()
+        //private string connectToPeer()
+        //{
+        //    //if(peerh.PeerIp.Equals("NOPEER"))
+        //    //    return "NO Peer available in Peer list!";
+        //    while(true)
+        //    {
+        //        if (peerh.connectPeer())
+        //        {
+        //            return "OK2";
+        //        }
+        //        Thread.Sleep(50);
+        //    }
+        //    //else
+        //    //{
+        //    //    return "Peer Unreachable!";
+        //    //}
+        //}
+
+        private bool connectToSources(int tree_index,int reconnectUse)
         {
-            //if(peerh.PeerIp.Equals("NOPEER"))
-            //    return "NO Peer available in Peer list!";
-            while(true)
-            {
-                if (peerh.connectPeer())
+            bool conPeer = false;
+          
+                conPeer = peerh.connectPeers(tree_index+1);
+
+                if (conPeer)
                 {
-                    return "OK2";
+
+                        ClientC[tree_index]=peerh.getControlConnect(tree_index);
+                        ClientD[tree_index]=peerh.getDataConnect(tree_index);
+                   
+
+                    if (ClientC[tree_index] == null || ClientD[tree_index] == null)
+                        return false;
+
+                    if (reconnectUse != 1)
+                        peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString()); //by vinci: register To Tree in Tracker
+
+                    
+
+                  
+                     //---reconnection cause cross-thread problem in here.
+
+                        //mainFm.Text = "Client:";
+
+                        //for (int i = 0; i < peerh.Selfid.Length; i++)
+                        //{
+                        //    mainFm.Text += peerh.Selfid[i] + ",";
+                        //}
+
+                    
+
+                    return true;
                 }
-                Thread.Sleep(50);
-            }
-            //else
-            //{
-            //    return "Peer Unreachable!";
-            //}
+               
+            return false;
+        
+        
+
         }
 
-        private string connectToSource()
-        {
-            virtualServerPort = peerh.Cport11+ cConfig.VlcPortBase;
-            serverConnect = true;
-            checkClose = false;
+        //private string connectToSource()
+        //{
+        //    virtualServerPort = peerh.Cport11+ cConfig.VlcPortBase;
+        //    serverConnect = true;
+        //    checkClose = false;
 
-            PeerListenPort = TcpApps.RanPort(1100, 1120);
+        //    PeerListenPort = TcpApps.RanPort(1100, 1120);
   
-            try
-            {
-                for (int i = 0; i < treeNO; i++)
-                {
-                    ClientC.Add(peerh.getControlConnect(i));
-                    ClientD.Add(peerh.getDataConnect(i));
+        //    try
+        //    {
+        //        for (int i = 0; i < treeNO; i++)
+        //        {
+        //            ClientC.Add(peerh.getControlConnect(i));
+        //            ClientD.Add(peerh.getDataConnect(i));
 
-                    //peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
-                    peerh.registerToTracker(i, PeerListenPort, peerh.JoinPeer[i].Layer.ToString()); //by vinci: register To Tree in Tracker
-                }
+        //            //peerh.registerToTracker(i, PeerListenPort, peerh.PeerIp.Layer.ToString()); //by vinci: register To Tree in Tracker
+        //            peerh.registerToTracker(i, PeerListenPort, peerh.JoinPeer[i].Layer.ToString()); //by vinci: register To Tree in Tracker
+        //        }
 
-                mainFm.Text = "Client:";
-                for (int i = 0; i < peerh.Selfid.Length; i++)
-                {
-                    mainFm.Text += peerh.Selfid[i]+ ",";
-                }
+        //        mainFm.Text = "Client:";
+        //        for (int i = 0; i < peerh.Selfid.Length; i++)
+        //        {
+        //            mainFm.Text += peerh.Selfid[i]+ ",";
+        //        }
 
-                //automatic start listen
-                startUpload();
+        //        //automatic start listen
+        //        startUpload();
 
-                return "OK3";
-            }
-            catch
-            {
-                return "One of Data Ports cannot join!!!!";
-            }
+        //        return "OK3";
+        //    }
+        //    catch
+        //    {
+        //        return "One of Data Ports cannot join!!!!";
+        //    }
 
-        }
+        //}
 
-        private bool connectToSource2(int tree_index)
+       /* private bool connectToSource2(int tree_index)
         {
             serverConnect = true;
             checkClose = false;
@@ -252,23 +348,29 @@ namespace Client
             }
 
         }
+        */
 
         private void reconnection(int tree_index)
         {
             bool prlist = false;
-            bool conPeer = false;
+            //bool conPeer = false;
             bool conSource = false;
             bool changeParent = false;
 
-            while(!(prlist && conPeer && conSource && changeParent))
+            while(!(prlist && conSource && changeParent))
             {
-                prlist = peerh.downloadPeerlist2(tree_index);
-                conPeer = peerh.connectPeer2(tree_index + 1);
-                conSource = connectToSource2(tree_index);
+               
+                //prlist = peerh.downloadPeerlist2(tree_index);
+                //conPeer = peerh.connectPeer2(tree_index + 1);
+              // conSource = connectToSource2(tree_index);
+
+                prlist = peerh.downloadPeerlist(tree_index, 1);
+                conSource = connectToSources(tree_index,1);
                 changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
                 Thread.Sleep(10);
             }
             //treeReconnectState[tree_index] = 0;
+            
 
         }
 
@@ -388,7 +490,7 @@ namespace Client
                             if (tree_index == 2)
                                 mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Reconnecting~" });
 
-                            mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " D exit~\n" });
+                            mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] D exit~\n" });
 
                             break;
                         }
@@ -460,7 +562,6 @@ namespace Client
 
                     if (stream != null)
                         stream.Close();
-
                     if (clientD != null)
                         clientD.Close();
 
@@ -479,7 +580,7 @@ namespace Client
                             mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "close ok" });
                     }
 
-                    mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " D exit\n" });
+                    mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] D exit\n" });
                 }
             } //end while loop
 
@@ -545,13 +646,14 @@ namespace Client
                 }
                 catch
                 {
+                    if (stream != null)
+                        stream.Close();
+                    if (clientC != null)
+                        clientC.Close();
+
                     if (!checkClose)
                     {
-                        if (stream != null)
-                            stream.Close();
-                        if (clientC != null)
-                            clientC.Close();
-
+                      
                         if (ClientD[tree_index] != null && ClientC[tree_index] != null)
                         {
                             ClientD[tree_index] = null;
@@ -563,14 +665,8 @@ namespace Client
                         treeReconnectState[tree_index] = 0;
                     }
 
-
-                    if(stream!=null)
-                        stream.Close();
-                    if(clientC!=null)
-                        clientC.Close();
-
                     upPorth.setTreeCLState(tree_index, 0);
-                    mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T:" + tree_index + " C exit\n" });
+                    mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] C exit\n" });
 
                 }
 
@@ -580,18 +676,33 @@ namespace Client
 
         private void sendExit(int tree_index)
         {
-            TcpClient clientC = ClientC[tree_index];
-            NetworkStream stream = clientC.GetStream();
+            TcpClient clientC=null;
+            NetworkStream stream=null;
             byte[] sMessage = new byte[4];
 
-            if (stream != null)
+            try
             {
+                clientC = ClientC[tree_index];
+                stream = clientC.GetStream();
+
                 sMessage = System.Text.Encoding.ASCII.GetBytes("Exit");
                 stream.Write(sMessage, 0, sMessage.Length);
 
-                stream.Close();
-                clientC.Close();
+               
+
             }
+            catch(Exception ex)
+            {
+                //MessageBox.Show(ex.ToString());
+                mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] Send exit err\n" });
+                
+               
+            }
+
+            if (stream != null)
+                stream.Close();
+            if (clientC != null)
+                clientC.Close();
 
             ClientD[tree_index] = null;
             ClientC[tree_index] = null;
@@ -673,11 +784,12 @@ namespace Client
         private void broadcastVlcStreaming()
         {
             TcpClient client = null;
-            server = new TcpListener(localAddr, virtualServerPort);
-            server.Start();
 
             try
             {
+                server = new TcpListener(localAddr, virtualServerPort);
+                server.Start();
+
                 client = server.AcceptTcpClient();
                 localvlcstream = client.GetStream();
 
@@ -708,13 +820,16 @@ namespace Client
                     Thread.Sleep(10);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 if (localvlcstream != null)
                     localvlcstream.Close();
 
                 if (client != null)
                     client.Close();
+
+                mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { ex.ToString() });
+                
             }
            
         }
@@ -850,7 +965,9 @@ namespace Client
                     treeCLReadIndex[i] = 0;
                     treeCLCurrentSeq[i] = 0;
                     treeReconnectState[i] = 0;
-                } 
+                }
+
+                Thread.Sleep(2000);
             }
 
         }
@@ -859,9 +976,20 @@ namespace Client
         {
             TcpClient client = null;
             NetworkStream stream = null;
+            int total_req_num=0;
+            int req_tree_num = 0;
             IPAddress uploadipAddr = IPAddress.Parse(CLIENTIP);
-            listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
-            listenPeer.Start();
+
+            try
+            {
+                listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
+                listenPeer.Start();
+            }
+            catch (Exception ex)
+            {
+                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { ex.ToString()});
+            
+            }
 
             mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "IP:" + uploadipAddr.ToString() + "\nPort[" + PeerListenPort.ToString() + "]:Listening...\n" });
             
@@ -869,59 +997,98 @@ namespace Client
             {
                 try
                 {
-                client = listenPeer.AcceptTcpClient();
-                stream = client.GetStream();
+                    client = listenPeer.AcceptTcpClient();
+                    stream = client.GetStream();
 
-                int total_req_num = 0;
-                int req_tree_num = 0;
-                int tempC_num, tempD_num;
+                    total_req_num = 0;
+                    req_tree_num = 0;
+                    int tempC_num, tempD_num;
 
-                byte[] cMessage;
-                byte[] dMessage;
+                    byte[] cMessage;
+                    byte[] dMessage;
 
-                //client require how many tree
-                byte[] responseMessage = new Byte[4];
-                stream.Read(responseMessage, 0, responseMessage.Length);
-                total_req_num = BitConverter.ToInt16(responseMessage, 0);
-
-                for (int i = 0; i < total_req_num; i++)
-                {
-                    //which tree ,client want to join.
-                    bool sendPort = false;
+                    //client require how many tree
+                    byte[] responseMessage = new Byte[4];
                     stream.Read(responseMessage, 0, responseMessage.Length);
-                    req_tree_num = BitConverter.ToInt16(responseMessage, 0);
+                    total_req_num = BitConverter.ToInt16(responseMessage, 0);
 
-
-                    for (int j = 0; j < max_peer; j++)
+                    for (int i = 0; i < total_req_num; i++)
                     {
-                        if (upPorth.getTreeCListClient(req_tree_num, j) == null && upPorth.getTreeDListClient(req_tree_num, j) == null)
+                        //which tree ,client want to join.
+                        bool sendPort = false;
+                        stream.Read(responseMessage, 0, responseMessage.Length);
+                        req_tree_num = BitConverter.ToInt16(responseMessage, 0);
+
+
+                        for (int j = 0; j < max_peer; j++)
                         {
-                            tempC_num = upPorth.getTreeCListPort(req_tree_num, j);
-                            cMessage = BitConverter.GetBytes(tempC_num);
-                            stream.Write(cMessage, 0, cMessage.Length);
-                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Cport:" + tempC_num.ToString() + " " });
+                            if (upPorth.getTreeCListClient(req_tree_num, j) == null && upPorth.getTreeDListClient(req_tree_num, j) == null)
+                            {
+                                tempC_num = upPorth.getTreeCListPort(req_tree_num, j);
+                                cMessage = BitConverter.GetBytes(tempC_num);
+                                stream.Write(cMessage, 0, cMessage.Length);
+                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "T[" + (req_tree_num - 1) + "] Cport:" + tempC_num.ToString() + " " });
 
-                            tempD_num = upPorth.getTreeDListPort(req_tree_num, j);
-                            dMessage = BitConverter.GetBytes(tempD_num);
-                            stream.Write(dMessage, 0, dMessage.Length);
-                            mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
+                                tempD_num = upPorth.getTreeDListPort(req_tree_num, j);
+                                dMessage = BitConverter.GetBytes(tempD_num);
+                                stream.Write(dMessage, 0, dMessage.Length);
+                                mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
 
-                            sendPort = true;
-                            break;
+                                sendPort = true;
+                                break;
+                            }
                         }
+
+                        if (sendPort != true)
+                        {   // required tree number cant join
+                            byte[] cMessage2 = BitConverter.GetBytes(0000);
+                            stream.Write(cMessage2, 0, cMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:no port" + "\n" });
+
+                            byte[] dMessage2 = BitConverter.GetBytes(0000);
+                            stream.Write(dMessage2, 0, dMessage2.Length);
+                            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:no port" + "\n" });
+                        }
+
                     }
 
-                    if (sendPort != true)
-                    {   // required tree number cant join
-                        Byte[] cMessage2 = BitConverter.GetBytes(0000);
-                        stream.Write(cMessage2, 0, cMessage2.Length);
-                        //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:no port" + "\n" });
+                    //if (stream != null)
+                    //    stream.Close();
+                    //if (client != null)
+                    //    client.Close();
 
-                        Byte[] dMessage2 = BitConverter.GetBytes(0000);
-                        stream.Write(dMessage2, 0, dMessage2.Length);
-                        //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:no port" + "\n" });
+                    //stream=null;
+                    //client=null;
+
+                }
+                catch (Exception ex)
+                {
+                    //System.Windows.Forms.MessageBox.Show(ex.ToString());
+
+
+                    if (!checkClose)
+                    {   //Joining client disconnection cause this case run.
+                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
+                    }
+                    else
+                    {
+                        //confirm the stream in write state,and then send the exit to peer
+                        if (total_req_num != 0 && req_tree_num != 0 && stream!=null && client!=null)
+                        {
+                            byte[] cMessage3 = BitConverter.GetBytes(0001);    
+                            stream.Write(cMessage3, 0, cMessage3.Length);
+                        }
+
+                        mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Listen port close\n" });
                     }
 
+                    //if (stream != null)
+                    //    stream.Close();
+                    //if (client != null)
+                    //    client.Close();
+                    
+                    //stream=null;
+                    //client=null;
                 }
 
                 if (stream != null)
@@ -929,19 +1096,8 @@ namespace Client
                 if (client != null)
                     client.Close();
 
-                }
-                catch (Exception ex)
-                {
-                    //System.Windows.Forms.MessageBox.Show(ex.ToString());
-
-                    mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
-
-                    if (stream != null)
-                        stream.Close();
-                    if (client != null)
-                        client.Close();
-
-                }
+                stream = null;
+                client = null;
 
                 Thread.Sleep(50);
             }
