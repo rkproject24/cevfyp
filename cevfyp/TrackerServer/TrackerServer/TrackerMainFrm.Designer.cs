@@ -45,7 +45,7 @@
             // 
             this.rtbClientlist.Location = new System.Drawing.Point(12, 58);
             this.rtbClientlist.Name = "rtbClientlist";
-            this.rtbClientlist.Size = new System.Drawing.Size(240, 166);
+            this.rtbClientlist.Size = new System.Drawing.Size(256, 166);
             this.rtbClientlist.TabIndex = 0;
             this.rtbClientlist.Text = "";
             // 
@@ -91,12 +91,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(137, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(120, 26);
             // 
             // preferenceToolStripMenuItem
             // 
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.preferenceToolStripMenuItem.Text = "Preference";
             // 
             // btnReset
@@ -112,9 +112,9 @@
             // 
             // TreelistView
             // 
-            this.TreelistView.Location = new System.Drawing.Point(258, 58);
+            this.TreelistView.Location = new System.Drawing.Point(274, 58);
             this.TreelistView.Name = "TreelistView";
-            this.TreelistView.Size = new System.Drawing.Size(234, 166);
+            this.TreelistView.Size = new System.Drawing.Size(239, 166);
             this.TreelistView.TabIndex = 6;
             this.TreelistView.UseCompatibleStateImageBehavior = false;
             // 
@@ -122,10 +122,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 269);
+            this.ClientSize = new System.Drawing.Size(520, 269);
             this.Controls.Add(this.btnReset);
-            this.Controls.Add(this.TreelistView);
             this.Controls.Add(this.btnOn);
+            this.Controls.Add(this.TreelistView);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cbbTree);
