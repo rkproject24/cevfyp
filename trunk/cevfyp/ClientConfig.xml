@@ -6,14 +6,15 @@
   <chunkCapacity>1000</chunkCapacity>
   <ServerSLPort>1234</ServerSLPort>
   <LisPort>1100</LisPort>
-  <LisPortup>1120</LisPortup>
   <Dataport>1200</Dataport>
-<dataportup>1400</dataportup>
   <vlcPortBase>1000</vlcPortBase>
   <ConportBase>1401</ConportBase>
-<conportup>1600</conportup>
   <chunkBuf>10</chunkBuf>
   <startBuf>1</startBuf>
-  <trackerip>192.168.1.3</trackerip>
+  <trackerip>123.203.249.36</trackerip>
   <trackerPort>1500</trackerPort>
+  <LisPortup>1120</LisPortup>
+  <dataportup>1400</dataportup>
+  <conportup>1600</conportup>
+  <display>True</display>
 </client>
