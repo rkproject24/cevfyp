@@ -20,23 +20,29 @@ namespace Analysis
         /// The Starting Point of the Class
         /// It Takes the Hostname parameter
         /// 
-        public PingIP(string[] Input)
+        public PingIP(string Input)
         {
             try{
             if (Input.Length == 0)
             {
                 MessageBox.Show("Please Input IP.");
             }
+                xml PingResult = new xml(Input+".xml","Result",true);
+
                 while (true)
                 {
                     //call the method "PingHost" and pass the HostName as a parameter
-                    int Result = PingHost(Input[0]);
+                    int Result = PingHost(Input);
                     while (File.Exists("Reading"))
                     {
                         while (!File.Exists("Reading"))
                         {
-                            xml PingResult = new xml(Input[0]+".xml", "Time");
-                            PingResult.Add("Time",System.DateTime.Now.ToString(),Result.ToString());
+                            string[] type = {"Time" };
+                            string[] value = {(System.DateTime.Now.Hour*3600+System.DateTime.Now.Minute*60+System.DateTime.Now.Second).ToString()};
+                            string[] attriN = {"RecordSpeed" };
+                            string[] attriV = {Result.ToString() };
+                            PingResult.Add("Result", type, value, attriN, attriV);
+                          
                         }
                     }
                 }
@@ -67,7 +73,7 @@ namespace Analysis
             catch (Exception)
             {
                 Console.WriteLine("Host not found"); // fail
-                return;
+                return 0;
             }
             // Convert the server IP_EndPoint to an EndPoint
             IPEndPoint ipepServer = new IPEndPoint(serverHE.AddressList[0], 0);
@@ -102,7 +108,7 @@ namespace Analysis
             if (Index == -1)
             {
                 Console.WriteLine("Error in Making Packet");
-                return;
+                return 0;
             }
             // now get this critter into a UInt16 array
             //Get the Half size of the Packet
@@ -131,7 +137,7 @@ namespace Analysis
             if (Index == -1)
             {
                 Console.WriteLine("Error in Making Packet");
-                return;
+                return 0;
             }
             dwStart = System.Environment.TickCount; // Start timing
             //send the Pack over the socket
@@ -160,19 +166,21 @@ namespace Analysis
                 {
                     dwStop = System.Environment.TickCount - dwStart; // stop timing
                     //Console.WriteLine("Reply from " + epServer.ToString() + " in " + dwStop + "MS :Bytes Received" + nBytes);
-                    return (nBytes.ToString()/dwStop.ToString());
+                    
                     recd = true;
-                    break;
+                    return (nBytes / dwStop);
                 }
                 timeout = System.Environment.TickCount - dwStart;
                 if (timeout > 1000)
                 {
                     Console.WriteLine("Time Out");
                     recd = true;
+
                 }
             }
             //close the socket
             socket.Close();
+            return 0;
         }
         /// 
         /// This method get the Packet and calculates the total size 

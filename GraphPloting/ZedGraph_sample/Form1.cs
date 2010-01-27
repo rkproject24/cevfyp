@@ -30,21 +30,19 @@ namespace Analysis
 
         private void SetSize()
         {
-            zedGraphControl1.Location = new Point(10, 10);
+            //zedGraphControl1.Location = new Point(10, 10);
             // Leave a small margin around the outside of the control
-            zedGraphControl1.Size = new Size(ClientRectangle.Width - 50,
-                                    ClientRectangle.Height - 400);
+            //zedGraphControl1.Size = new Size(ClientRectangle.Width - 50,ClientRectangle.Height - 400);
 
             zedGraphControl2.Location = new Point(10, 250);
-            zedGraphControl2.Size = new Size(ClientRectangle.Width - 50,
-                                    ClientRectangle.Height - 400);
+            zedGraphControl2.Size = new Size(ClientRectangle.Width - 50, ClientRectangle.Height - 400);
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Setup the graph
-            CreateGraph(zedGraphControl1);
+            CreateGraph(zedGraphControl2);
             // Size the control to fill the form with a margin
             SetSize();
 
@@ -94,12 +92,18 @@ namespace Analysis
             this.zedGraphControl2.GraphPane.XAxis.Title.Text = "Time";
             this.zedGraphControl2.GraphPane.YAxis.Title.Text = "Speed";
             this.zedGraphControl2.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
-            xml ImportData = new xml(this.File, this.ip);
+
+
+            PingIP measure = new PingIP("192.168.0.1");
+            xml ImportData = new xml("192.168.0.1.xml", "Result",false);
             for (int i = 0; i <= 100; i++)
             {
-                double x = (double)new XDate(DateTime.Now.AddSeconds(-(100 - i)));
+                //double x = (double)new XDate(DateTime.Now.AddSeconds(-(100 - i)));
                 //double y = 0;
-                double y = ImportData.Read(this.ip, speed); 
+                //double y = ImportData.Read(this.ip, speed); 
+                double x = Convert.ToInt32(ImportData.Read("Result", "Time"));
+                double y = Convert.ToInt32(ImportData.Read("Result", "RecordSpeed"));
+                
                 list.Add(x, y);
 
             }
