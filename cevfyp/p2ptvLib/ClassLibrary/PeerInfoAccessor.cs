@@ -103,7 +103,7 @@ namespace ClassLibrary
         public void initialize(int treeSize)
         {
             RPI.AddAttribute("Info", "MaxId", "0");
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
             RPI.AddAttribute("Info", "treeSize", treeSize.ToString());
         }
 
