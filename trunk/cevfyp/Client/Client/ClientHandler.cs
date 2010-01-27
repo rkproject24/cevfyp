@@ -84,6 +84,7 @@ namespace Client
             chunkList = new List<Chunk>(cConfig.ChunkCapacity);
 
             mainFm.tbhostIP.Text = TcpApps.LocalIPAddress();
+            mainFm.tbServerIp.Text = cConfig.Trackerip;
 
             string[] xmlList = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml");
             foreach (string xmlfile in xmlList)
@@ -164,11 +165,11 @@ namespace Client
             if (response == "OK")
             {
                 bool check = false;
-                PeerListenPort = TcpApps.RanPort(1100, 1120);
+                PeerListenPort = TcpApps.RanPort(cConfig.LisPort, cConfig.LisPortup);
 
                 for (int i = 0; i < treeNO; i++)
                 {
-                    check = connectToSources(i, 0);
+                    check = connectToSources(i, false);
 
                     if (!check)
                     {
@@ -243,7 +244,7 @@ namespace Client
         //    //}
         //}
 
-        private bool connectToSources(int tree_index,int reconnectUse)
+        private bool connectToSources(int tree_index,bool reconnectUse)
         {
             bool conPeer = false;
           
@@ -259,7 +260,7 @@ namespace Client
                     if (ClientC[tree_index] == null || ClientD[tree_index] == null)
                         return false;
 
-                    if (reconnectUse != 1)
+                    if (!reconnectUse)
                         peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString()); //by vinci: register To Tree in Tracker
 
                     
@@ -274,7 +275,7 @@ namespace Client
                         //    mainFm.Text += peerh.Selfid[i] + ",";
                         //}
 
-                    
+                    //mainFm.Text += peerh.Selfid[tree_index] + ",";
 
                     return true;
                 }
@@ -365,7 +366,7 @@ namespace Client
               // conSource = connectToSource2(tree_index);
 
                 prlist = peerh.downloadPeerlist(tree_index, true);
-                conSource = connectToSources(tree_index,1);
+                conSource = connectToSources(tree_index,true);
                 changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
                 Thread.Sleep(10);
             }
@@ -925,10 +926,11 @@ namespace Client
                 uploading = false;
 
                 server.Stop();
-                broadcastVlcStreamingThread.Join(500);
-                broadcastVlcStreamingThread.Abort();
+                //broadcastVlcStreamingThread.Join(500);
                 vlc.stop();
+                broadcastVlcStreamingThread.Abort();
 
+                updateChunkListThread.Abort();
                 for (int i = 0; i < treeNO; i++)
                 {
                  //   recciveChunkThread[i].Join(1000);
@@ -938,15 +940,12 @@ namespace Client
                     sendExit(i);
                     receiveControlThread[i].Abort();
                 }
-
-                updateChunkListThread.Abort();
-                server.Stop();
-
+    
+                //server.Stop();
                 receiveChunkThread.Clear();
                 receiveControlThread.Clear();
               //  ClientD.Clear();
                 //ClientC.Clear();
-
                 chunkList_wIndex = 0;
                 chunkList_rIndex = 0;
                 virtualServerPort = 0;
@@ -957,7 +956,6 @@ namespace Client
                 //tempResult = 0;
 
                 chunkList.Clear();
-
                 for (int i = 0; i < treeNO; i++)
                 {
                     treeChunkList[i].Clear();
@@ -967,7 +965,7 @@ namespace Client
                     treeReconnectState[i] = 0;
                 }
 
-                Thread.Sleep(2000);
+                //Thread.Sleep(500);
             }
 
         }

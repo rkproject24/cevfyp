@@ -29,7 +29,7 @@ namespace Client
 
     class UploadPortHandler
     {
-        static int TrackerSLPort = 1500;
+        //static int TrackerSLPort = 1500;
         static int CHUNKLIST_CAPACITY = 200;
         int max_client;
         int max_tree;
@@ -253,7 +253,7 @@ namespace Client
             //int resultIndex = 0;
             bool firstRun = true;
 
-            int ran_port = TcpApps.RanPort(1200, 1400);
+            int ran_port = TcpApps.RanPort(cConfig.Dport, cConfig.Dataportup);
 
             NetworkStream stream = null;
             TcpClient DPortClient = null;
@@ -395,7 +395,7 @@ namespace Client
         private void TreePortHandle_Cport(int CThreadList_index, int tree_index)
         {
             byte[] responseMessage = new Byte[4];
-            int ran_port = TcpApps.RanPort(1401, 1600);
+            int ran_port = TcpApps.RanPort(cConfig.CportBase, cConfig.Conportup);
 
             TcpClient CPortClient = null;
             NetworkStream stream = null;
@@ -500,7 +500,7 @@ namespace Client
                 try
                 {
                     // mainFm.tbTracker.Text, TrackerSLPort
-                    connectTracker = new TcpClient(clientFm.tbServerIp.Text, TrackerSLPort);
+                    connectTracker = new TcpClient(clientFm.tbServerIp.Text, cConfig.TrackerPort);
                     connectTrackerStream = connectTracker.GetStream();
 
                     

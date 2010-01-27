@@ -20,7 +20,7 @@ namespace Client
         int TREE_NO;
    
 
-        static int TrackerSLPort = 1500;
+        //static int TrackerSLPort = 1500;
 
         private string trackIp;
         private PeerNode[] joinPeers;
@@ -184,7 +184,7 @@ namespace Client
             string PeerFileName = Peerlist_name + tree + ".xml";
             try
             {
-                trackerTcpClient = new TcpClient(trackIp, TrackerSLPort);
+                trackerTcpClient = new TcpClient(trackIp, cConfig.TrackerPort);
                 trackerStream = trackerTcpClient.GetStream();
 
                 //define client type
@@ -365,7 +365,7 @@ namespace Client
             try
             {
 
-                connectTracker = new TcpClient(trackIp, TrackerSLPort);
+                connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
                 connectTrackerStream = connectTracker.GetStream();
 
                 //define client message type
@@ -785,7 +785,7 @@ namespace Client
             try
             {
 
-                connectTracker = new TcpClient(trackIp, TrackerSLPort);
+                connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
                 connectTrackerStream = connectTracker.GetStream();
 
                 //define client message type
