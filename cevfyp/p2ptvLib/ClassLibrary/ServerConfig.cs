@@ -43,12 +43,14 @@ namespace ClassLibrary
             TreeSize = 0;
             //serverip = "";
             trackerip = "";
+            trackerPort = 0;
             receiveStreamSize = 0;
             chunkSize = 0;
+
         }
 
         //public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int Dataport, int ConportBase, int TreeSizes, string serverip, int receiveStreamSize, int chunkSize, string trackerip)
-        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int sLisPortup, int Dataport, int dataportup, int ConportBase, int conportup, int TreeSizes, int receiveStreamSize, int chunkSize, string trackerip)
+        public ServerConfig(string pluginPath, string streamType, string videoDir, int maxClient, int vlcStreamPort, int SLisPort, int sLisPortup, int Dataport, int dataportup, int ConportBase, int conportup, int TreeSizes, int receiveStreamSize, int chunkSize, string trackerip, int trackerPort)
         {
             this.pluginPath = pluginPath;
             this.streamType = streamType;
@@ -66,6 +68,7 @@ namespace ClassLibrary
             this.chunkSize = chunkSize;
             this.receiveStreamSize = receiveStreamSize;
             this.trackerip = trackerip;
+            this.trackerPort = trackerPort;
         }
 
         public string PluginPath
