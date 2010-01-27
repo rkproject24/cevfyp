@@ -29,12 +29,18 @@ namespace Client
             tbChunkSize.Text = cConfig.ChunkSize.ToString();
             tbControlPort.Text = cConfig.CportBase.ToString();
             tbDataPort.Text = cConfig.Dport.ToString();
-            tbListPort.Text = cConfig.SLPort.ToString();
-            tbServerSLPort.Text = cConfig.ServerSLPort1.ToString();
+            tbListPort.Text = cConfig.LisPort.ToString();
             tbVlcPort.Text = cConfig.VlcPortBase.ToString();
             NudStartBuf.Value = cConfig.StartBuf;
             NudChunkBuf.Value = cConfig.ChunkBuf;
             NudPeers.Value = cConfig.MaxPeer;
+            cbDisplay.Checked = cConfig.Localdisplay;
+            tbListPortup.Text = cConfig.LisPortup.ToString();
+            tbDataPortup.Text = cConfig.Dataportup.ToString();
+            tbControlPortup.Text = cConfig.Conportup.ToString();
+
+            tbTrackerIp.Text = cConfig.Trackerip;
+            tbTrackerPort.Text = cConfig.TrackerPort.ToString();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -49,12 +55,18 @@ namespace Client
             cConfig.ChunkSize = Convert.ToInt32(tbChunkSize.Text);
             cConfig.CportBase= Convert.ToInt32(tbControlPort.Text);
             cConfig.Dport = Convert.ToInt32(tbDataPort.Text);
-            cConfig.SLPort = Convert.ToInt32(tbListPort.Text);
-            cConfig.ServerSLPort1 = Convert.ToInt32(tbServerSLPort.Text);
+            cConfig.LisPort = Convert.ToInt32(tbListPort.Text);
             cConfig.VlcPortBase = Convert.ToInt32(tbVlcPort.Text) ;
             cConfig.StartBuf = Convert.ToInt32(NudStartBuf.Value);
             cConfig.ChunkBuf = Convert.ToInt32(NudChunkBuf.Value);
             cConfig.MaxPeer = Convert.ToInt32(NudPeers.Value);
+
+            cConfig.Trackerip = tbTrackerIp.Text;
+            cConfig.TrackerPort = Convert.ToInt32(tbTrackerPort.Text);
+            cConfig.Localdisplay = cbDisplay.Checked;
+            cConfig.LisPortup = Convert.ToInt32(tbListPortup.Text);
+            cConfig.Dataportup = Convert.ToInt32(tbDataPortup.Text);
+            cConfig.Conportup = Convert.ToInt32(tbControlPortup.Text);
 
             cConfig.save("C:\\ClientConfig");
             this.Close();

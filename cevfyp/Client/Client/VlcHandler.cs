@@ -49,7 +49,8 @@ namespace Client
             //Raise(ref ex);
 
            // LibVlc.libvlc_media_add_option(media, @" :drop-late-frames", ref ex);
-            
+            //LibVlc.libvlc_media_add_option(media, @":dst="+cConfig.Localdisplay, ref ex);
+
             player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
             //Raise(ref ex);
 
