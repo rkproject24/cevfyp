@@ -364,7 +364,7 @@ namespace Client
                 //conPeer = peerh.connectPeer2(tree_index + 1);
               // conSource = connectToSource2(tree_index);
 
-                prlist = peerh.downloadPeerlist(tree_index, 1);
+                prlist = peerh.downloadPeerlist(tree_index, true);
                 conSource = connectToSources(tree_index,1);
                 changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
                 Thread.Sleep(10);
