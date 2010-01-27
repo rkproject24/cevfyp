@@ -103,6 +103,8 @@ namespace Analysis
                 //double y = ImportData.Read(this.ip, speed); 
                 double x = Convert.ToInt32(ImportData.Read("Result", "Time"));
                 double y = Convert.ToInt32(ImportData.Read("Result", "RecordSpeed"));
+
+               // ImportData.ReadAttribute(
                 
                 list.Add(x, y);
 

@@ -35,14 +35,15 @@ namespace Analysis
                     int Result = PingHost(Input);
                     while (File.Exists("Reading"))
                     {
+                        int Record = 0;
                         while (!File.Exists("Reading"))
                         {
-                            string[] type = {"Time" };
-                            string[] value = {(System.DateTime.Now.Hour*3600+System.DateTime.Now.Minute*60+System.DateTime.Now.Second).ToString()};
-                            string[] attriN = {"RecordSpeed" };
-                            string[] attriV = {Result.ToString() };
-                            PingResult.Add("Result", type, value, attriN, attriV);
-                          
+                            string[] type = {"RecordSpeed"};
+                            string[] value = {Result.ToString()};
+                            string[] attriN = {"Time"};
+                            string[] attriV = {(System.DateTime.Now.Hour * 3600 + System.DateTime.Now.Minute * 60 + System.DateTime.Now.Second).ToString()};
+                            PingResult.Add(Record.ToString(), type, value, attriN, attriV);
+                            Record++;                          
                         }
                     }
                 }
