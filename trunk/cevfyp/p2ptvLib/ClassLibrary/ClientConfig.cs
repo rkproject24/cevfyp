@@ -11,41 +11,52 @@ namespace ClassLibrary
         private string pluginPath;
         private int ServerSLPort;
         //private int vlcStreamPortBase;
-        private int LisPort;
+        private int lisPort;
+        private int lisPortup;
         private int Dataport;
+        private int dataportup;
         private int vlcPortBase;
         private int ConportBase;
-
+        private int conportup;
         private int maxPeer;
         private int chunkSize;
         private int chunkCapacity;
         private int chunkBuf;
         private int startBuf;
 
+        private string trackerip;
+        private int trackerPort;
+        private bool localdisplay;
 
         public ClientConfig()
         {
-         this.pluginPath = "";
-         this.maxPeer = 0;
-         this.chunkSize = 0;
-         this.chunkCapacity = 0;
-         this.ServerSLPort = 0;
-         //this.vlcStreamPortBase = 0;
-         this.LisPort = 0;
-         this.Dataport = 0;
-         this.vlcPortBase = 0;
-         this.ConportBase = 0;
-         this.chunkBuf = 0;
-         this.startBuf = 0;
+             this.pluginPath = "";
+             this.maxPeer = 0;
+             this.chunkSize = 0;
+             this.chunkCapacity = 0;
+             this.ServerSLPort = 0;
+             //this.vlcStreamPortBase = 0;
+             this.lisPort = 0;
+             this.Dataport = 0;
+             this.vlcPortBase = 0;
+             this.ConportBase = 0;
+             this.chunkBuf = 0;
+             this.startBuf = 0;
+             trackerip = "";
+             trackerPort = 0;
+             this.lisPortup = 0;
+             this.dataportup = 0;
+             this.conportup = 0;
+             this.localdisplay = true;
         }
 
-        public ClientConfig(string pluginPath, int ServerSLPort, int LisPort, int Dataport, int ConportBase, int vlcPortBase, int maxPeer, int chunkSize, int chunkCapacity, int chunkBuf, int startBuf)
+        public ClientConfig(string pluginPath, int ServerSLPort, int LisPort, int Dataport, int ConportBase, int vlcPortBase, int maxPeer, int chunkSize, int chunkCapacity, int chunkBuf, int startBuf, string trackerip, int trackerPort, int lisPortup, int dataportup, int conportup, bool localdisplay)
         {
             this.pluginPath = pluginPath;
 
             this.ServerSLPort = ServerSLPort;
             //this.vlcStreamPortBase = vlcStreamPortBase;
-            this.LisPort = LisPort;
+            this.lisPort = LisPort;
             this.Dataport = Dataport;
             this.vlcPortBase = vlcPortBase;
             this.ConportBase = ConportBase;
@@ -54,6 +65,13 @@ namespace ClassLibrary
             this.maxPeer = maxPeer;
             this.chunkSize = chunkSize;
             this.chunkCapacity = chunkCapacity;
+            this.trackerip = trackerip;
+            this.trackerPort = trackerPort;
+            this.lisPortup = lisPortup;
+            this.dataportup = dataportup;
+            this.conportup = conportup;
+            this.localdisplay = localdisplay;
+
         }
 
         public string PluginPath
@@ -90,10 +108,10 @@ namespace ClassLibrary
         //    set { vlcStreamPortBase = value; }
         //}
         
-        public int SLPort
+        public int LisPort
         {
-            get { return LisPort; }
-            set { LisPort = value; }
+            get { return lisPort; }
+            set { lisPort = value; }
         }
         
         public int Dport
@@ -130,7 +148,38 @@ namespace ClassLibrary
             get { return startBuf; }
             set { startBuf = value; }
         }
+        public string Trackerip
+        {
+            get { return trackerip; }
+            set { trackerip = value; }
+        }
 
+
+        public int TrackerPort
+        {
+            get { return trackerPort; }
+            set { trackerPort = value; }
+        }
+        public int LisPortup
+        {
+            get { return lisPortup; }
+            set { lisPortup = value; }
+        }
+        public int Dataportup
+        {
+            get { return dataportup; }
+            set { dataportup = value; }
+        }
+        public int Conportup
+        {
+            get { return conportup; }
+            set { conportup = value; }
+        }
+        public bool Localdisplay
+        {
+            get { return localdisplay; }
+            set { localdisplay = value; }
+        }
   /*      public void save_old(string fileName)
         {
             if (File.Exists(fileName))
@@ -163,9 +212,9 @@ namespace ClassLibrary
 
             xml store = new xml(fileName, "client",true);
 
-            string[] type = {"pluginPath", "maxPeer", "chunkSize", "chunkCapacity", "ServerSLPort", "LisPort", "Dataport", "vlcPortBase", "ConportBase", "chunkBuf", "startBuf" };
+            string[] type = { "pluginPath", "maxPeer", "chunkSize", "chunkCapacity", "ServerSLPort", "LisPort", "Dataport", "vlcPortBase", "ConportBase", "chunkBuf", "startBuf", "trackerip", "trackerPort", "LisPortup", "dataportup", "conportup", "display"};
 
-            string[] value = {this.pluginPath, this.maxPeer.ToString(), this.chunkSize.ToString(), this.chunkCapacity.ToString(), this.ServerSLPort.ToString(), this.LisPort.ToString(), this.Dataport.ToString(), this.vlcPortBase.ToString(), this.ConportBase.ToString(), this.chunkBuf.ToString(), this.startBuf.ToString()};
+            string[] value = { this.pluginPath, this.maxPeer.ToString(), this.chunkSize.ToString(), this.chunkCapacity.ToString(), this.ServerSLPort.ToString(), this.lisPort.ToString(), this.Dataport.ToString(), this.vlcPortBase.ToString(), this.ConportBase.ToString(), this.chunkBuf.ToString(), this.startBuf.ToString(), this.trackerip, this.trackerPort.ToString(), this.lisPortup.ToString(), dataportup.ToString(), conportup.ToString(), localdisplay.ToString()};
 
             store.Add(type, value);
         }
@@ -180,12 +229,19 @@ namespace ClassLibrary
             this.chunkCapacity = Convert.ToInt32(load.Read("client", "chunkCapacity"));
             this.ServerSLPort = Convert.ToInt32(load.Read("client", "ServerSLPort"));
             //this.vlcStreamPortBase = Convert.ToInt32(load.Read("client", "vlcStreamPortBase"));
-            this.LisPort = Convert.ToInt32(load.Read("client", "LisPort"));
+            this.lisPort = Convert.ToInt32(load.Read("client", "LisPort"));
             this.Dataport = Convert.ToInt32(load.Read("client", "Dataport"));
             this.vlcPortBase = Convert.ToInt32(load.Read("client", "vlcPortBase"));
             this.ConportBase = Convert.ToInt32(load.Read("client", "ConportBase"));
             this.chunkBuf = Convert.ToInt32(load.Read("client", "chunkBuf"));
             this.startBuf = Convert.ToInt32(load.Read("client", "startBuf"));
+            
+            this.trackerip = load.Read("client", "trackerip");
+            this.trackerPort = Convert.ToInt32(load.Read("client", "trackerPort"));
+            this.lisPortup = Convert.ToInt32(load.Read("client", "LisPortup"));
+            this.dataportup = Convert.ToInt32(load.Read("client", "dataportup"));
+            this.conportup = Convert.ToInt32(load.Read("client", "conportup"));
+            this.localdisplay = Convert.ToBoolean(load.Read("client", "display"));
         }
 
     }
