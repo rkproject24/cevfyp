@@ -98,7 +98,7 @@
             this.tbServerIp.Name = "tbServerIp";
             this.tbServerIp.Size = new System.Drawing.Size(83, 22);
             this.tbServerIp.TabIndex = 6;
-            this.tbServerIp.Text = "192.168.0.20";
+            this.tbServerIp.Text = "192.168.1.3";
             this.tbServerIp.TextChanged += new System.EventHandler(this.tbServerIp_TextChanged);
             // 
             // button2
@@ -145,13 +145,13 @@
             this.preferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem1});
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.preferenceToolStripMenuItem.Text = "Tools";
             // 
             // preferenceToolStripMenuItem1
             // 
             this.preferenceToolStripMenuItem1.Name = "preferenceToolStripMenuItem1";
-            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
+            this.preferenceToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
             this.preferenceToolStripMenuItem1.Text = "Preference";
             this.preferenceToolStripMenuItem1.Click += new System.EventHandler(this.preferenceToolStripMenuItem1_Click);
             // 

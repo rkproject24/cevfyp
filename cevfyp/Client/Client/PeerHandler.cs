@@ -97,7 +97,7 @@ namespace Client
         {
             if (File.Exists(Peerlist_name + "0.xml"))
                 File.Delete(Peerlist_name + "0.xml");
-            if (!downloadPeerlist(0,0))
+            if (!downloadPeerlist(0,false))
                 return -1;
             treeAccessor = new PeerInfoAccessor(Peerlist_name + "0");
             this.TREE_NO = treeAccessor.getTreeSize();
@@ -105,7 +105,7 @@ namespace Client
 
             for (int i = 0; i < TREE_NO; i++)
             {
-                if (!downloadPeerlist(i,0))
+                if (!downloadPeerlist(i,false))
                 {
                     return -1;
                 }
@@ -177,7 +177,7 @@ namespace Client
             return TREE_NO;
         }
 
-        public bool downloadPeerlist(int tree,int reConnectUse)
+        public bool downloadPeerlist(int tree,bool reConnectUse)
         {
             TcpClient trackerTcpClient=null;
             NetworkStream trackerStream=null;
@@ -194,9 +194,26 @@ namespace Client
                 byte[] treeNo = BitConverter.GetBytes(tree);
                 trackerStream.Write(treeNo, 0, treeNo.Length);
 
+                byte[] reconnect;
+                if (reConnectUse)
+                {
+                    reconnect = BitConverter.GetBytes(true);
+                    trackerStream.Write(reconnect, 0, reconnect.Length);
+                    //By Vinci: Reconnect=====================================================
+                    Byte[] sendbyte = StrToByteArray(Selfid[tree]);
+                    //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                byte[] reconnect = BitConverter.GetBytes(false);
-                trackerStream.Write(reconnect, 0, reconnect.Length);
+                    byte[] MsgLength = BitConverter.GetBytes(Selfid[tree].Length);
+                    trackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                    trackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                    //=========================================================================
+                }
+                else
+                {
+                    reconnect = BitConverter.GetBytes(false);
+                    trackerStream.Write(reconnect, 0, reconnect.Length);
+                }
 
                 byte[] responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -211,7 +228,7 @@ namespace Client
 
                 //string[] xmlTrees = xmlContent.Split('@');
 
-                if (reConnectUse == 1)
+                if (reConnectUse)
                 {
                     if (File.Exists(PeerFileName))
                         File.Delete(PeerFileName);
@@ -232,7 +249,7 @@ namespace Client
                 //sw.Close();
                 //file.Close();
 
-                if (reConnectUse != 1)
+                if (!reConnectUse)
                 {
                     treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
                     this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
