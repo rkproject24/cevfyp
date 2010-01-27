@@ -6,19 +6,19 @@ using ClassLibrary;
 
 namespace Analysis
 {
-    public interface GraphInterface
+    public interface graphinterface
     {
-        void importData(string IP);
-        void exportData(string File);
+        void importData(string ip);
+        //void exportGraph(string file);
     }
 
-    public class PlotGraph : GraphInterface
+    public class plotgraph : graphinterface
     {
-        private List<Data> DataList;
+        //private list<data> datalist;
 
-        public PlotGraph(string [] IP)
+        public plotgraph(string [] ip)
         {
-            PingIP Target;
+            //PingIP Target;
             do
             {
 
@@ -42,23 +42,27 @@ namespace Analysis
 
             try
             {
-                Data import;
-                xml GetValue = new xml(IP + ".xml", "Time");
-                import.IP = IP;
-                import.time = GetValue.Read("Time", "value");
-                import.Speed = GetValue.Read("Time", "speed");
+                //Data import;
+                //xml GetValue = new xml(IP + ".xml", "Time",false);
+                //import.IP = IP;
+                //import.time = GetValue.Read("Time", "value");
+                //import.Speed = GetValue.Read("Time", "speed");
+                PingIP measure = new PingIP(IP);
+
             }
-            finally
+            catch
             {
-                read.Close();
+            //    read.Close();
             }
         }
 
-        public void SpeedTestExportData(string FileN)
+        
+       /* public void exportGraph(string FileN)
         {
-            FileStream read = new FileStream(@File, FileMode.open, FileAccess.Write);
+            //FileStream read = new FileStream(@File, FileMode.open, FileAccess.Write);
             if (!File.Exists("Reading"))
             {
+                xml readFile = new xml(FileN, "Result", false);
                 try
                 {
 
@@ -69,6 +73,7 @@ namespace Analysis
                 }
             }
 
-        }
+        }*/
+        
     }
 }
