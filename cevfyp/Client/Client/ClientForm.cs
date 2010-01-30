@@ -11,13 +11,13 @@ using System.Windows.Forms;
 //using System.Threading;
 //using System.Runtime.Serialization;
 //using System.Runtime.Serialization.Formatters.Binary;
-//using System.IO;
+using System.IO;
 //using System.Runtime.InteropServices;
 using ClassLibrary;
 
 namespace Client
 {
-    public partial class ClientForm : Form
+    public partial class ClientForm : XCoolForm.XCoolForm
     {
        // static int chunkList_capacity = 1000;  //0-xxx
        // static int SERVER_PORT = 1100;  //server listen port
@@ -26,7 +26,7 @@ namespace Client
         //IPAddress localAddr = IPAddress.Parse("127.0.0.1");
        // List<Chunk> chunkList = new List<Chunk>(chunkList_capacity);
 
-       
+       // XmlThemeLoader xtl =new XmlThemeLoader();
 
         ClientHandler clientHandler;
 
@@ -84,45 +84,48 @@ namespace Client
         {
             InitializeComponent();
             clientHandler = new ClientHandler(this);
+        
         }
+
+       
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
            
         }
 
-        private void button1_Click(object sender, EventArgs e)  //Connect
-        {
-            string response = clientHandler.establishConnect(tbServerIp.Text);
-            if (!response.Equals(""))
-            {
-                MessageBox.Show(response);
-            }
-            else
-            {
-                btnDisconnect.Enabled = true;
-                btnConnect.Enabled = false;
-                clientHandler.startThread();
-            }
-            //string response;
+        //private void button1_Click(object sender, EventArgs e)  //Connect
+        //{
+        //    string response = clientHandler.establishConnect(tbServerIp.Text);
+        //    if (!response.Equals(""))
+        //    {
+        //        MessageBox.Show(response);
+        //    }
+        //    else
+        //    {
+        //        btnDisconnect.Enabled = true;
+        //        btnConnect.Enabled = false;
+        //        clientHandler.startThread();
+        //    }
+        //    //string response;
 
-            ////connect tracker
-            //response = clientHandler.connectToTracker(tbServerIp.Text);
+        //    ////connect tracker
+        //    //response = clientHandler.connectToTracker(tbServerIp.Text);
 
-            //if (response == "OK")
-            //    response = clientHandler.connectToSource();
-            //else
-            //    MessageBox.Show(response);
-            ////=======================================
+        //    //if (response == "OK")
+        //    //    response = clientHandler.connectToSource();
+        //    //else
+        //    //    MessageBox.Show(response);
+        //    ////=======================================
 
-            //if (response == "OK2")
-            //{
-            //    btnDisconnect.Enabled = true;
-            //    clientHandler.startThread();
-            //}
-            //else
-            //    MessageBox.Show(response);
-        }
+        //    //if (response == "OK2")
+        //    //{
+        //    //    btnDisconnect.Enabled = true;
+        //    //    clientHandler.startThread();
+        //    //}
+        //    //else
+        //    //    MessageBox.Show(response);
+        //}
          
         private void button2_Click(object sender, EventArgs e)
         {
@@ -131,29 +134,52 @@ namespace Client
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.IconHolder.HolderButtons.Add(new XCoolForm.XTitleBarIconHolder.XHolderButton(Client.Properties.Resources.System_Registry_48x48.GetThumbnailImage(20, 20, null, IntPtr.Zero), "Preference"));
+            //this.IconHolder.HolderButtons[0].FrameBackImage = Client.Properties.Resources.System_Registry_48x48;
+            this.IconHolder.HolderButtons[0].XHolderButtonCaptionColor=Color.Yellow;
+            this.IconHolder.HolderButtons[0].XHolderButtonDescription = "";
+            
+            //this.StatusBar.BarHeight = 40;
+            this.StatusBar.BarItems.Add(new XCoolForm.XStatusBar.XBarItem(60, "ver. xxx"));
+            this.XCoolFormHolderButtonClick += new XCoolFormHolderButtonClickHandler(ClientForm_XCoolFormHolderButtonClick);
+            this.TitleBar.TitleBarCaption = "Client";
+            this.TitleBar.TitleBarType = XCoolForm.XTitleBar.XTitleBarType.Rounded;
+            
             btnDisconnect.Enabled = false;
         }
 
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        private void ClientForm_XCoolFormHolderButtonClick(XCoolForm.XCoolForm.XCoolFormHolderButtonClickArgs e)
         {
-            btnDisconnect.Enabled = false;
-            clientHandler.closeAllThread();
+              switch (e.ButtonIndex)
+              {
+                  case 0:
+                      Preference serverPre = new Preference();
+                      serverPre.Show();
+                      break;
+             }
+        }
+
+        //private void btnDisconnect_Click(object sender, EventArgs e)
+        //{
+        //    btnDisconnect.Enabled = false;
+        //    clientHandler.closeAllThread();
 
            
-            btnConnect.Enabled = true;
-        }
+        //    btnConnect.Enabled = true;
+        //}
+
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-           // clientHandler.disconectall();
-          //  clientHandler.closeAllThread();
+          
+            //clientHandler.closeAllThread();
         }
 
-        private void preferenceToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            Preference serverPre = new Preference();
-            serverPre.Show();
-        }
+        //private void preferenceToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    Preference serverPre = new Preference();
+        //    serverPre.Show();
+        //}
 
         private void btnListenPeer_Click(object sender, EventArgs e)
         {
@@ -169,6 +195,36 @@ namespace Client
         {
 
         }
+
+       
+
+   
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            string response = clientHandler.establishConnect(tbServerIp.Text);
+            if (!response.Equals(""))
+            {
+                MessageBox.Show(response);
+            }
+            else
+            {
+               
+                btnDisconnect.Enabled = true;
+                btnConnect.Enabled = false;
+                clientHandler.startThread();
+            }
+        }
+
+        private void btnDisconnect_Click(object sender, EventArgs e)
+        {
+            btnDisconnect.Enabled = false;
+            clientHandler.closeAllThread();
+            btnConnect.Enabled = true;
+        }
+
+  
+       
 
       
 

@@ -16,8 +16,10 @@ namespace Client
 
         public Preference()
         {
+           // this.TitleBar.TitleBarCaption = "Preference";
             InitializeComponent();
             loadConfig();
+          
         }
 
         private void loadConfig()
@@ -79,5 +81,10 @@ namespace Client
             if (!path.SelectedPath.Equals(""))
                 tbPlugin.Text = path.SelectedPath;
         }
+
+
+      
+
+        
     }
 }

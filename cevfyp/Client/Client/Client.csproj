@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Andy.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="ClassLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
@@ -42,9 +43,11 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="XCoolForm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChunkHandler.cs" />
+    <Compile Include="XmlThemeLoader.cs" />
     <Compile Include="ClientHandler.cs">
     </Compile>
     <Compile Include="ClientForm.cs">
@@ -78,6 +81,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Client.manifest" />
     <None Include="Properties\Settings.settings">
@@ -91,6 +95,33 @@
     </Compile>
     <Compile Include="UploadPortHandler.cs" />
     <Compile Include="VlcHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\System-Registry-48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Play-Disabled-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Play-Hot-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Play-Normal-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Play-Pressed-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop-Disabled-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop-Hot-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop-Normal-Blue-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop-Pressed-Blue-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
