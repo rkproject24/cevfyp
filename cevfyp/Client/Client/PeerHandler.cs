@@ -800,8 +800,15 @@ namespace Client
                 connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
                 connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
+                byte[] recoonectMsg = new byte[1];
+                connectTrackerStream.Read(recoonectMsg, 0, recoonectMsg.Length);
+                bool changeSucess = BitConverter.ToBoolean(recoonectMsg, 0);
+
                 connectTracker.Close();
                 connectTrackerStream.Close();
+
+                if (!changeSucess)
+                    return false;
 
             }
             catch
