@@ -353,22 +353,36 @@ namespace Client
 
         private void reconnection(int tree_index)
         {
-            bool prlist = false;
-            //bool conPeer = false;
-            bool conSource = false;
-            bool changeParent = false;
+            //bool prlist = false;
+            ////bool conPeer = false;
+            //bool conSource = false;
+            //bool changeParent = false;
 
-            while(!(prlist && conSource && changeParent))
+            while(true)
             {
                
                 //prlist = peerh.downloadPeerlist2(tree_index);
                 //conPeer = peerh.connectPeer2(tree_index + 1);
               // conSource = connectToSource2(tree_index);
 
-                prlist = peerh.downloadPeerlist(tree_index, true);
-                conSource = connectToSources(tree_index,true);
-                changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
-                Thread.Sleep(10);
+                //prlist = peerh.downloadPeerlist(tree_index, true);
+                //conSource = connectToSources(tree_index,true);
+                //changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
+
+                if (!peerh.downloadPeerlist(tree_index, true))
+                {
+                    Thread.Sleep(10);
+                    continue;
+                }
+                if (!connectToSources(tree_index, true))
+                {
+                    Thread.Sleep(10);
+                    continue;
+                }
+                if (!peerh.changeParent(tree_index))//register to tracker for new parent
+                    peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString());
+                break;
+                
             }
             //treeReconnectState[tree_index] = 0;
             
@@ -926,9 +940,10 @@ namespace Client
                 uploading = false;
 
                 server.Stop();
-                //broadcastVlcStreamingThread.Join(500);
                 vlc.stop();
                 broadcastVlcStreamingThread.Abort();
+                vlcConnect = false;
+                
 
                 updateChunkListThread.Abort();
                 for (int i = 0; i < treeNO; i++)
