@@ -103,6 +103,8 @@ namespace TrackerServer
                             string peerId = ByteArrayToString(responsePeerMsg2);
 
                             changeParent(treeNo.ToString(), peerId, "-2"); //-2 indicate the peer is reconnecting
+                            
+                            //Not yet handle change parent not sucess
                         }
 
                         byte[] peeripMsg;
@@ -280,9 +282,11 @@ namespace TrackerServer
                         string tree = messages[0];
                         string peerId = messages[1];
                         string newParentId = messages[2];
-                        //==incompleted
 
-                        changeParent(tree, peerId, newParentId);
+
+                        bool changed = changeParent(tree, peerId, newParentId); //reply whether change parent sucess
+                        byte[] changedbyte = BitConverter.GetBytes(changed);
+                        cstream.Write(changedbyte, 0, changedbyte.Length);
 
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " change to Parent:" + newParentId + " in tree:" + tree + "\n" });
                     }
@@ -408,13 +412,22 @@ namespace TrackerServer
             updateTreelistView(cbbTree.SelectedIndex);
         }
 
-        public void changeParent(string tree, string peerId, string newParentId)
+        public bool changeParent(string tree, string peerId, string newParentId)
         {
-            PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
-            PeerNode p1 = TreeAccess.getPeer(peerId);
-            TreeAccess.deletePeer(p1);
-            p1.Parentid = newParentId;
-            TreeAccess.addPeer(p1);
+            try
+            {
+                PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                PeerNode p1 = TreeAccess.getPeer(peerId);
+                TreeAccess.deletePeer(p1);
+                p1.Parentid = newParentId;
+                TreeAccess.addPeer(p1);
+            }
+            catch (Exception ex)
+            {
+                this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Replay Change Parent fail " });
+                return false;
+            }
+            return true;
         }
 
     }
