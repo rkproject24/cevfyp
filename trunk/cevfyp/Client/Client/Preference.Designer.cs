@@ -40,12 +40,20 @@
             this.tbChunkLenght = new System.Windows.Forms.TextBox();
             this.tbTrackerIp = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbDisplay = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.btnVLClib = new System.Windows.Forms.Button();
             this.NudChunkBuf = new System.Windows.Forms.NumericUpDown();
             this.NudStartBuf = new System.Windows.Forms.NumericUpDown();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tbControlPortup = new System.Windows.Forms.TextBox();
+            this.tbDataPortup = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.tbListPortup = new System.Windows.Forms.TextBox();
             this.tbControlPort = new System.Windows.Forms.TextBox();
             this.tbDataPort = new System.Windows.Forms.TextBox();
             this.tbListPort = new System.Windows.Forms.TextBox();
@@ -58,14 +66,6 @@
             this.tbTrackerPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.cbDisplay = new System.Windows.Forms.CheckBox();
-            this.tbListPortup = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.tbDataPortup = new System.Windows.Forms.TextBox();
-            this.tbControlPortup = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).BeginInit();
@@ -166,6 +166,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Controls.Add(this.cbDisplay);
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.btnVLClib);
@@ -177,12 +178,32 @@
             this.groupBox1.Controls.Add(this.tbPlugin);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(13, 14);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(195, 163);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Local Play";
+            // 
+            // cbDisplay
+            // 
+            this.cbDisplay.AutoSize = true;
+            this.cbDisplay.Location = new System.Drawing.Point(85, 133);
+            this.cbDisplay.Name = "cbDisplay";
+            this.cbDisplay.Size = new System.Drawing.Size(42, 16);
+            this.cbDisplay.TabIndex = 14;
+            this.cbDisplay.Text = "true";
+            this.cbDisplay.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(8, 134);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(72, 12);
+            this.label11.TabIndex = 13;
+            this.label11.Text = "local playback";
             // 
             // btnVLClib
             // 
@@ -238,6 +259,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.BackColor = System.Drawing.Color.Transparent;
             this.groupBox2.Controls.Add(this.tbControlPortup);
             this.groupBox2.Controls.Add(this.tbDataPortup);
             this.groupBox2.Controls.Add(this.label16);
@@ -252,12 +274,61 @@
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(214, 14);
+            this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox2.Location = new System.Drawing.Point(213, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(214, 128);
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Upload";
+            // 
+            // tbControlPortup
+            // 
+            this.tbControlPortup.Location = new System.Drawing.Point(161, 68);
+            this.tbControlPortup.Name = "tbControlPortup";
+            this.tbControlPortup.Size = new System.Drawing.Size(44, 22);
+            this.tbControlPortup.TabIndex = 21;
+            // 
+            // tbDataPortup
+            // 
+            this.tbDataPortup.Location = new System.Drawing.Point(161, 41);
+            this.tbDataPortup.Name = "tbDataPortup";
+            this.tbDataPortup.Size = new System.Drawing.Size(44, 22);
+            this.tbDataPortup.TabIndex = 20;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(142, 71);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(14, 12);
+            this.label16.TabIndex = 19;
+            this.label16.Text = "to";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(142, 41);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(14, 12);
+            this.label15.TabIndex = 18;
+            this.label15.Text = "to";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(141, 12);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(14, 12);
+            this.label14.TabIndex = 17;
+            this.label14.Text = "to";
+            // 
+            // tbListPortup
+            // 
+            this.tbListPortup.Location = new System.Drawing.Point(161, 9);
+            this.tbListPortup.Name = "tbListPortup";
+            this.tbListPortup.Size = new System.Drawing.Size(44, 22);
+            this.tbListPortup.TabIndex = 16;
             // 
             // tbControlPort
             // 
@@ -326,6 +397,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.BackColor = System.Drawing.Color.Transparent;
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.tbTrackerPort);
             this.groupBox3.Controls.Add(this.tbTrackerIp);
@@ -334,7 +406,8 @@
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Location = new System.Drawing.Point(214, 148);
+            this.groupBox3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox3.Location = new System.Drawing.Point(213, 146);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(201, 127);
             this.groupBox3.TabIndex = 14;
@@ -359,17 +432,20 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(21, 193);
+            this.btnSave.BackColor = System.Drawing.Color.White;
+            this.btnSave.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnSave.Location = new System.Drawing.Point(20, 191);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 15;
             this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(105, 193);
+            this.btnReset.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnReset.Location = new System.Drawing.Point(104, 191);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
             this.btnReset.TabIndex = 16;
@@ -377,85 +453,21 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(8, 134);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(72, 12);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "local playback";
-            // 
-            // cbDisplay
-            // 
-            this.cbDisplay.AutoSize = true;
-            this.cbDisplay.Location = new System.Drawing.Point(85, 133);
-            this.cbDisplay.Name = "cbDisplay";
-            this.cbDisplay.Size = new System.Drawing.Size(42, 16);
-            this.cbDisplay.TabIndex = 14;
-            this.cbDisplay.Text = "true";
-            this.cbDisplay.UseVisualStyleBackColor = true;
-            // 
-            // tbListPortup
-            // 
-            this.tbListPortup.Location = new System.Drawing.Point(161, 9);
-            this.tbListPortup.Name = "tbListPortup";
-            this.tbListPortup.Size = new System.Drawing.Size(44, 22);
-            this.tbListPortup.TabIndex = 16;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(141, 12);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(14, 12);
-            this.label14.TabIndex = 17;
-            this.label14.Text = "to";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(142, 41);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(14, 12);
-            this.label15.TabIndex = 18;
-            this.label15.Text = "to";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(142, 71);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(14, 12);
-            this.label16.TabIndex = 19;
-            this.label16.Text = "to";
-            // 
-            // tbDataPortup
-            // 
-            this.tbDataPortup.Location = new System.Drawing.Point(161, 41);
-            this.tbDataPortup.Name = "tbDataPortup";
-            this.tbDataPortup.Size = new System.Drawing.Size(44, 22);
-            this.tbDataPortup.TabIndex = 20;
-            // 
-            // tbControlPortup
-            // 
-            this.tbControlPortup.Location = new System.Drawing.Point(161, 68);
-            this.tbControlPortup.Name = "tbControlPortup";
-            this.tbControlPortup.Size = new System.Drawing.Size(44, 22);
-            this.tbControlPortup.TabIndex = 21;
-            // 
             // Preference
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 281);
+            this.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.ClientSize = new System.Drawing.Size(435, 286);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "Preference";
             this.Text = "Preference";
+            this.TopMost = true;
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).EndInit();
