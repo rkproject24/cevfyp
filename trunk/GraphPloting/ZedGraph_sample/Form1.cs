@@ -111,8 +111,8 @@ namespace Analysis
                 //double y = 0;
                 //list.Add(x, y);
 
-                double x = Convert.ToInt32(ImportData.Read("Result", "Time"));
-                double y = Convert.ToInt32(ImportData.Read("Result", "RecordSpeed"));
+                double y = Convert.ToInt32(ImportData.Read("Record","id","0","RecordSpeed"));
+                double x = Convert.ToInt32(ImportData.Read("Record", "id", "0", "Time"));
 
                // ImportData.ReadAttribute(
 

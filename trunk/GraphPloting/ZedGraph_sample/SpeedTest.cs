@@ -66,10 +66,10 @@ namespace Analysis
                     int Record = 0;
                     while (!File.Exists("Reading"))
                     {
-                        string[] type = { "RecordSpeed" };
-                        string[] value = { result.ToString() };
-                        string[] attriN = { "id" };
-                        // string[] attriV = {(System.DateTime.Now.Hour * 3600 + System.DateTime.Now.Minute * 60 + System.DateTime.Now.Second).ToString()};
+                        string[] type = { "RecordSpeed", "Time" };
+                        string[] value = { result.ToString(), (System.DateTime.Now.Hour * 10000 + System.DateTime.Now.Minute * 100 + System.DateTime.Now.Second).ToString() };
+                        string[] attriN = { "id"};
+                        //string[] attriV = {(System.DateTime.Now.Hour * 3600 + System.DateTime.Now.Minute * 60 + System.DateTime.Now.Second).ToString()};
                         string[] attriV = { Record.ToString() };
 
                         PingResult.Add("Record", type, value, attriN, attriV);
