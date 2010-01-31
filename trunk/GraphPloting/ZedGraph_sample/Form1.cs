@@ -97,10 +97,11 @@ namespace Analysis
 
 
 
-            PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "Result", false);
+
             for (int i = 0; i <= 100; i++)
             {
+                PingIP measure = new PingIP("yahoo.com");
+                xml ImportData = new xml("yahoo.com", "Result", false);
                 //Style one
                 //double x = (double)new XDate(DateTime.Now.AddSeconds(-(100 - i)));
                 //double y = ran.NextDouble();
