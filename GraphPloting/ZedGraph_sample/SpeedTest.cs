@@ -5,6 +5,9 @@ using System.Windows.Forms;
 using ClassLibrary;
 using System.Threading;
 using System.IO;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Text;
 
 namespace Analysis
 {
@@ -22,30 +25,59 @@ namespace Analysis
         /// 
         public PingIP(string Input)
         {
+            long result;
             try{
             if (Input.Length == 0)
             {
                 MessageBox.Show("Please Input IP.");
             }
-                xml PingResult = new xml(Input+".xml","Result",true);
+                xml PingResult = new xml(Input,"Result",true);
 
                 while (true)
                 {
                     //call the method "PingHost" and pass the HostName as a parameter
-                    int Result = PingHost(Input);
-                    while (File.Exists("Reading"))
+                    //int Result = PingHost(Input);
+                    
+                    Ping SpeedTest = new Ping();
+                    PingOptions choice = new PingOptions();
+                    
+                    string data = "";
+                    for (int g=0; g<1024; g++)
                     {
-                        int Record = 0;
-                        while (!File.Exists("Reading"))
-                        {
-                            string[] type = {"RecordSpeed"};
-                            string[] value = {Result.ToString()};
-                            string[] attriN = {"Time"};
-                            string[] attriV = {(System.DateTime.Now.Hour * 3600 + System.DateTime.Now.Minute * 60 + System.DateTime.Now.Second).ToString()};
-                            PingResult.Add(Record.ToString(), type, value, attriN, attriV);
-                            Record++;                          
-                        }
+                        data = data + "a";
                     }
+
+                    choice.DontFragment = true;
+                    byte[] buffer = Encoding.ASCII.GetBytes(data);
+                    int timeout = 120;
+                    PingReply respond = SpeedTest.Send(Input, timeout, buffer, choice);
+                    
+                    
+                        //MessageBox.Show("Address: {0}", respond.Address.ToString());
+                        //MessageBox.Show("RoundTrip time: {0}", respond.RoundtripTime.ToString());
+                        //MessageBox.Show("Time to live: {0}", respond.Options.Ttl.ToString());
+                        //MessageBox.Show("Don't fragment: {0}", respond.Options.DontFragment.ToString());
+                        //MessageBox.Show("Buffer size: {0}", respond.Buffer.Length.ToString());
+                    if (respond.Status == IPStatus.Success)
+                    {
+                        result = respond.Options.Ttl * 1024 * 1024 / respond.RoundtripTime;
+                    }
+                    else result = 0;
+                    int Record = 0;
+                    while (!File.Exists("Reading"))
+                    {
+                        string[] type = { "RecordSpeed" };
+                        string[] value = { result.ToString() };
+                        string[] attriN = { "id" };
+                        // string[] attriV = {(System.DateTime.Now.Hour * 3600 + System.DateTime.Now.Minute * 60 + System.DateTime.Now.Second).ToString()};
+                        string[] attriV = { Record.ToString() };
+
+                        PingResult.Add("Record", type, value, attriN, attriV);
+
+                        break;
+                    }
+                    break;
+
                 }
             }
             catch
@@ -64,8 +96,7 @@ namespace Analysis
             int nBytes = 0;
             int dwStart = 0, dwStop = 0;
             //Initilize a Socket of the Type ICMP
-            Socket socket =
-            new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
             // Get the server endpoint
             try
             {

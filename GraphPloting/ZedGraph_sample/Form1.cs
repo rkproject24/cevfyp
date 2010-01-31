@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using ZedGraph;
 using ClassLibrary;
 
-
 namespace Analysis
 {
     public partial class Form1 : Form
@@ -30,19 +29,21 @@ namespace Analysis
 
         private void SetSize()
         {
-            //zedGraphControl1.Location = new Point(10, 10);
+            zedGraphControl1.Location = new Point(10, 10);
             // Leave a small margin around the outside of the control
-            //zedGraphControl1.Size = new Size(ClientRectangle.Width - 50,ClientRectangle.Height - 400);
+            zedGraphControl1.Size = new Size(ClientRectangle.Width - 50,
+                                    ClientRectangle.Height - 400);
 
             zedGraphControl2.Location = new Point(10, 250);
-            zedGraphControl2.Size = new Size(ClientRectangle.Width - 50, ClientRectangle.Height - 400);
+            zedGraphControl2.Size = new Size(ClientRectangle.Width - 50,
+                                    ClientRectangle.Height - 400);
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Setup the graph
-            CreateGraph(zedGraphControl2);
+            CreateGraph(zedGraphControl1);
             // Size the control to fill the form with a margin
             SetSize();
 
@@ -50,7 +51,7 @@ namespace Analysis
 
         private void CreateGraph(ZedGraphControl zgc)
         {
-            /***************Panel One**************
+            //***************Panel One**************
 
             // get a reference to the GraphPane
             GraphPane myPane = zgc.GraphPane;
@@ -86,7 +87,7 @@ namespace Analysis
             // Tell ZedGraph to refigure the
             // axes since the data have changed
             zgc.AxisChange();
-            */
+            
             /***************Panel two***************/
             this.zedGraphControl2.GraphPane.Title.Text = "Speed Versus Time";
             this.zedGraphControl2.GraphPane.XAxis.Title.Text = "Time";
@@ -94,26 +95,34 @@ namespace Analysis
             this.zedGraphControl2.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
 
 
-            PingIP measure = new PingIP("192.168.0.1");
-            xml ImportData = new xml("192.168.0.1.xml", "Result",false);
+
+
+            PingIP measure = new PingIP("218.250.54.17");
+            xml ImportData = new xml("218.250.54.17", "Result", false);
             for (int i = 0; i <= 100; i++)
             {
+                //Style one
+                //double x = (double)new XDate(DateTime.Now.AddSeconds(-(100 - i)));
+                //double y = ran.NextDouble();
+                //list.Add(x, y);
+
+                //Style two
                 //double x = (double)new XDate(DateTime.Now.AddSeconds(-(100 - i)));
                 //double y = 0;
-                //double y = ImportData.Read(this.ip, speed); 
+                //list.Add(x, y);
+
                 double x = Convert.ToInt32(ImportData.Read("Result", "Time"));
                 double y = Convert.ToInt32(ImportData.Read("Result", "RecordSpeed"));
 
                // ImportData.ReadAttribute(
-                
+
                 list.Add(x, y);
 
             }
 
             DateTime dt = DateTime.Now;
 
-            myCurve = zedGraphControl2.GraphPane.AddCurve("My Curve",
-                list, Color.DarkGreen, SymbolType.None);
+            myCurve = zedGraphControl2.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
 
             this.zedGraphControl2.AxisChange();
             this.zedGraphControl2.Refresh();
