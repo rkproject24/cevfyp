@@ -49,7 +49,7 @@ namespace Analysis
 
                     choice.DontFragment = true;
                     byte[] buffer = Encoding.ASCII.GetBytes(data);
-                    int timeout = 120;
+                    int timeout = 1200;
                     PingReply respond = SpeedTest.Send(Input, timeout, buffer, choice);
                     
                     
@@ -60,7 +60,7 @@ namespace Analysis
                         //MessageBox.Show("Buffer size: {0}", respond.Buffer.Length.ToString());
                     if (respond.Status == IPStatus.Success)
                     {
-                        result = respond.Options.Ttl * 1024 * 1024 / respond.RoundtripTime;
+                        result = respond.Options.Ttl * 1024/8 / respond.RoundtripTime;
                     }
                     else result = 0;
                     int Record = 0;

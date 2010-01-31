@@ -97,8 +97,8 @@ namespace Analysis
 
 
 
-            PingIP measure = new PingIP("218.250.54.17");
-            xml ImportData = new xml("218.250.54.17", "Result", false);
+            PingIP measure = new PingIP("yahoo.com");
+            xml ImportData = new xml("yahoo.com", "Result", false);
             for (int i = 0; i <= 100; i++)
             {
                 //Style one
