@@ -40,6 +40,7 @@ namespace Client
         bool serverConnect = false;
         bool vlcConnect = false;
         bool checkClose = false;
+        bool idChange = false;
 
        
         string trackerIp = null;
@@ -64,6 +65,7 @@ namespace Client
         List<Thread> receiveControlThread;
         Thread broadcastVlcStreamingThread;
         Thread updateChunkListThread;
+        Thread updateFmIDThread;
 
         TcpListener server;
         NetworkStream localvlcstream=null;
@@ -191,6 +193,7 @@ namespace Client
                     virtualServerPort = peerh.Cport11 + cConfig.VlcPortBase;
                     serverConnect = true;
                     checkClose = false;
+                    idChange = true;
 
                     startUpload();
 
@@ -385,7 +388,8 @@ namespace Client
                 
             }
             //treeReconnectState[tree_index] = 0;
-            
+
+            idChange = true;
 
         }
 
@@ -426,6 +430,12 @@ namespace Client
                 broadcastVlcStreamingThread.Name = "broadcast_VlcStreaming";
                 broadcastVlcStreamingThread.Start();
 
+                updateFmIDThread = new Thread(new ThreadStart(updateFmID));
+                updateFmIDThread.IsBackground = true;
+                updateFmIDThread.Name = "update_FMID";
+                updateFmIDThread.Start();
+
+
                 vlc.play(mainFm.panel1, virtualServerPort);
         }
 
@@ -450,6 +460,34 @@ namespace Client
 
                 uploading = true;
             }
+        }
+
+        private void updateFmID()
+        {
+            while (true)
+            {
+                if (idChange)
+                {
+                    string idStr="";
+                    //mainFm.Text = "Client:";
+                    mainFm.label5.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "" });
+                    for (int i = 0; i < peerh.Selfid.Length; i++)
+                    {
+                        idStr += peerh.Selfid[i] + ",";
+                    }
+
+                    mainFm.label5.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] {idStr });
+
+                   // mainFm.Text += peerh.Selfid[0] + ",";
+
+                    idChange = false;
+                }
+
+                Thread.Sleep(50);
+
+            }
+
+
         }
 
 
@@ -995,6 +1033,7 @@ namespace Client
 
             try
             {
+               // mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { PeerListenPort.ToString() +"\n"});
                 listenPeer = new TcpListener(uploadipAddr, PeerListenPort);
                 listenPeer.Start();
             }

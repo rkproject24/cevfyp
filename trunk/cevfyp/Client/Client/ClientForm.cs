@@ -79,6 +79,11 @@ namespace Client
             this.Text = message;
         }
 
+        public void UpdateLabel5(string message)
+        {
+            label5.Text = message;
+        }
+
 
         public ClientForm()
         {
@@ -222,6 +227,8 @@ namespace Client
             clientHandler.closeAllThread();
             btnConnect.Enabled = true;
         }
+
+       
 
   
        
