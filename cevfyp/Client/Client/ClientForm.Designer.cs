@@ -49,6 +49,7 @@
             this.btnConnect = new Andy.UI.ImageButton();
             this.btnDisconnect = new Andy.UI.ImageButton();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label5 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -274,12 +275,24 @@
             this.flowLayoutPanel2.Size = new System.Drawing.Size(160, 86);
             this.flowLayoutPanel2.TabIndex = 22;
             // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label5.Location = new System.Drawing.Point(222, 38);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 12);
+            this.label5.TabIndex = 23;
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.ClientSize = new System.Drawing.Size(769, 427);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label4);
@@ -324,6 +337,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private Andy.UI.ImageButton btnConnect;
         private Andy.UI.ImageButton btnDisconnect;
+        public System.Windows.Forms.Label label5;
     }
 }
 
