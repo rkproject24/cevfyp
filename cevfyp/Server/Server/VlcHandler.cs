@@ -13,6 +13,8 @@ namespace Server
         IntPtr instance, player,media;
         libvlc_exception_t ex = new libvlc_exception_t();
         ServerConfig sConfig = new ServerConfig();
+        bool firstplay = true;
+        Panel playPanel;
 
         public VlcHandler()
         {
@@ -27,35 +29,40 @@ namespace Server
 
         public void streaming(Panel p, string filesrc)//, string libsrc)
         {
-            LibVlc.libvlc_exception_init(ref ex);
-
-            string[] args = new string[]
+            if (firstplay)
             {
-            "-I", "dummy", "--ignore-config",
-            @"--plugin-path="+sConfig.PluginPath +"\\plugins",
-            "--vout-filter=deinterlace", "--deinterlace-mode=blend"
-            };
+                this.playPanel = p;
+                LibVlc.libvlc_exception_init(ref ex);
 
-            instance = LibVlc.libvlc_new(args.Length, args, ref ex);
-            Raise(ref ex);
+                string[] args = new string[]
+                {
+                "-I", "dummy", "--ignore-config",
+                @"--plugin-path="+sConfig.PluginPath +"\\plugins",
+                "--vout-filter=deinterlace", "--deinterlace-mode=blend"
+                };
 
-             media = LibVlc.libvlc_media_new(instance, @""+filesrc, ref ex);
-             Raise(ref ex);
+                instance = LibVlc.libvlc_new(args.Length, args, ref ex);
+                Raise(ref ex);
 
-             LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=127.0.0.1:" + sConfig.VlcStreamPort + "}} :sout-all", ref ex);
-           
-            player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
-            Raise(ref ex);
+                media = LibVlc.libvlc_media_new(instance, @"" + filesrc, ref ex);
+                Raise(ref ex);
 
-           
+                LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=127.0.0.1:" + sConfig.VlcStreamPort + "}} :sout-all", ref ex);
+                //LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=127.0.0.1:" + sConfig.VlcStreamPort + "}} :sout-keep :input-repeat=999", ref ex);
 
-            LibVlc.libvlc_media_release(media);
+                player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
+                Raise(ref ex);
 
-           
 
-            LibVlc.libvlc_media_player_set_drawable(player, p.Handle, ref ex);
-            Raise(ref ex);
 
+                LibVlc.libvlc_media_release(media);
+
+
+
+                LibVlc.libvlc_media_player_set_drawable(player, p.Handle, ref ex);
+                firstplay = false;
+                Raise(ref ex);
+            }
             
             LibVlc.libvlc_media_player_play(player, ref ex);
             Raise(ref ex);
@@ -71,13 +78,14 @@ namespace Server
           
         }
 
-        public void stop()
+        public void stop(bool manualStop)
         {
+            firstplay = manualStop;
             LibVlc.libvlc_exception_init(ref ex);
             LibVlc.libvlc_media_player_stop(player, ref ex);
             Raise(ref ex);
-            LibVlc.libvlc_media_player_release(player);
-            LibVlc.libvlc_release(instance);
+            //LibVlc.libvlc_media_player_release(player);
+            //LibVlc.libvlc_release(instance);
         }
 
         public void setMute(int status)

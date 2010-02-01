@@ -22,6 +22,7 @@ namespace Server
         //static int TREE_NO = 2;             //number of tree
 
         //static int TrackerSLPort = 1500;
+        //const bool loop = true;
 
         int slPort;
         int max_client;
@@ -31,6 +32,7 @@ namespace Server
         TcpListener listenServer;
         Thread listenerThread;
         Thread getStreamingThread;
+        Thread reStreamingThread;
 
         VlcHandler vlc = new VlcHandler();
         PortHandler ph;
@@ -98,14 +100,34 @@ namespace Server
            
         }
 
-        public void stop()
+        public void stop(bool manualStop)
         {
-            vlc.stop();
+            vlc.stop(manualStop);
             //seqNumber = 1;
            // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             //mainFm.richTextBox1.Clear();
             getStreamingThread.Abort(); //by vinci
         }
+
+        public void replay()
+        {
+            while (true)
+            {
+                if (checkEnd && mainFm.cbRepeat.Checked)
+                {
+                    stop(false);
+                    //vlc = new VlcHandler();
+                    //Thread.Sleep(3000);
+                    //mainFm.panel1 = new System.Windows.Forms.Panel();
+                    play();
+                    checkEnd = false;
+                }
+
+                Thread.Sleep(100);
+            }
+
+        }
+
 
         public bool start()
         {
@@ -133,6 +155,14 @@ namespace Server
                 listenerThread.IsBackground = true;
                 listenerThread.Name = " listen_for_clients";
                 listenerThread.Start();
+
+                reStreamingThread = new Thread(new ThreadStart(replay));
+                reStreamingThread.IsBackground = true;
+                reStreamingThread.Name = "re_Streaming";
+                Thread.Sleep(100);
+                reStreamingThread.Start();
+
+
                 return true;
             }
             return false;
@@ -311,7 +341,9 @@ namespace Server
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
             return enc.GetString(bytes);
         }
-       
+
+        bool checkEnd = false;
+
         private void getStreaming()
         {
             TcpClient getClient = new TcpClient("127.0.0.1", sConfig.VlcStreamPort);
@@ -337,7 +369,7 @@ namespace Server
                 while (responseMessageBytes1 != 0)
                 {
                     // If read timeout(5 sec.) , we assume the movie has finished playing
-                    vlcStream.ReadTimeout = 2000; 
+                    vlcStream.ReadTimeout = 1000; 
 
                     byte[] responseData = new byte[sConfig.ReceiveStreamSize];
                     responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
@@ -366,7 +398,7 @@ namespace Server
                     Thread.Sleep(20);
                 }
             }
-            catch
+            catch(IOException ex)
             {
                 for (int i = 0; i < max_tree; i++)
                 {
@@ -376,17 +408,19 @@ namespace Server
                 vlcStream.Close();
                 getClient.Close();
 
+                checkEnd = true;
+                //vlc.stop();
             }
         }
 
-        public void closeThread()
-        {
-            listenServer.Stop();
-            listenerThread.Abort();
+        //public void closeThread()
+        //{
+        //    listenServer.Stop();
+        //    listenerThread.Abort();
 
-            vlc.stop();
-            getStreamingThread.Abort();
-        }
+        //    vlc.stop();
+        //    getStreamingThread.Abort();
+        //}
 
 
     }
