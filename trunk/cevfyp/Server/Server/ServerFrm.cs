@@ -72,7 +72,7 @@ namespace Server
 
         private void button3_Click(object sender, EventArgs e) //Stop
         {
-            sevhandle.stop();
+            sevhandle.stop(true);
             button1.Enabled = true;
         }
 
