@@ -195,6 +195,7 @@ namespace Client
                 trackerStream.Write(treeNo, 0, treeNo.Length);
 
                 byte[] reconnect;
+                byte[] responsePeerMsg;
                 if (reConnectUse)
                 {
                     reconnect = BitConverter.GetBytes(true);
@@ -213,9 +214,13 @@ namespace Client
                 {
                     reconnect = BitConverter.GetBytes(false);
                     trackerStream.Write(reconnect, 0, reconnect.Length);
+
+                    responsePeerMsg = new byte[4];
+                    trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                    this.selfid[tree] = BitConverter.ToInt32(responsePeerMsg, 0).ToString();
                 }
 
-                byte[] responsePeerMsg = new byte[4];
+                responsePeerMsg = new byte[4];
                 trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
 
                 int xmlsize = BitConverter.ToInt16(responsePeerMsg, 0);
@@ -249,11 +254,11 @@ namespace Client
                 //sw.Close();
                 //file.Close();
 
-                if (!reConnectUse)
-                {
-                    treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
-                    this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
-                }
+                //if (!reConnectUse)
+                //{
+                //    treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+                //    this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
+                //}
 
                 //treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
                 //this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString(); //keep old id when reconnect
@@ -369,7 +374,7 @@ namespace Client
                 connectTrackerStream = connectTracker.GetStream();
 
                 //define client message type
-                Byte[] clienttype = StrToByteArray("<clientReg>");
+                Byte[] clienttype = StrToByteArray("<cRegister>");
                 connectTrackerStream.Write(clienttype, 0, clienttype.Length);
                 
                 ////send id
@@ -660,13 +665,13 @@ namespace Client
         public TcpClient getDataConnect(int tree)
         {
             TcpClient treeclient=null;
-
+            NetworkStream stream = null;
             try
             {
                 treeclient = new TcpClient(joinPeers[tree].Ip, Dport[tree]);
 
                 //send selfId
-                NetworkStream stream = treeclient.GetStream();
+                stream = treeclient.GetStream();
                 string sendstr = selfid[tree];
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
@@ -676,11 +681,17 @@ namespace Client
 
                 // clientFrm.rtbdownload.AppendText("T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n");
                 clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "T[" + tree + "] ID:" + joinPeers[tree].Id + " " + joinPeers[tree].Ip + ":" + Dport[tree] + "\n" });
-
+                
+               // stream.Close();
                 return treeclient;
             }
             catch
             {
+                if (stream != null)
+                    stream.Close();
+                if (treeclient != null)
+                    treeclient.Close();
+
                 treeclient=null;
                 return treeclient;
             }
@@ -690,13 +701,13 @@ namespace Client
         public TcpClient getControlConnect(int tree)
         {
             TcpClient treeclient=null;
-
+            NetworkStream stream = null;
             try
             {
                 treeclient = new TcpClient(joinPeers[tree].Ip, Cport[tree]);
 
                 //send selfId
-                NetworkStream stream = treeclient.GetStream();
+                stream = treeclient.GetStream();
                 string sendstr = selfid[tree];
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
@@ -704,10 +715,16 @@ namespace Client
                 stream.Write(sendbyte, 0, sendbyte.Length);
 
                 //  clientFrm.rtbdownload.AppendText("tree[" + tree + "] " + joinPeer + ":" + Cport[tree] + "\n");
+               // stream.Close();
                 return treeclient;
             }
             catch
             {
+                if (stream != null)
+                    stream.Close();
+                if (treeclient != null)
+                    treeclient.Close();
+
                 treeclient = null;
                 return treeclient;
             }
@@ -778,34 +795,47 @@ namespace Client
         //    return treeclient;
         //}
 
-        public bool changeParent(int tree)
+        public bool changeParent(int tree, string errType)
         {
             TcpClient connectTracker;
             NetworkStream connectTrackerStream;
             try
             {
+                //if (errType.Equals("timeout"))
+                //{
+                //    clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent ERR: timeout\n" });
+                //    Thread.Sleep(1000);
+                //}
 
-                connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
-                connectTrackerStream = connectTracker.GetStream();
+                bool changeSucess;
+                while (true)
+                {
+                    connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
+                    connectTrackerStream = connectTracker.GetStream();
 
-                //define client message type
-                Byte[] clienttype = StrToByteArray("<changePar>");
+                    //define client message type
+                    Byte[] clienttype = StrToByteArray("<changePar>");
 
-                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
-                string sendstr =tree+"@"+ Selfid[tree] + "@" + joinPeers[tree].Id;
-                Byte[] sendbyte = StrToByteArray(sendstr);
-                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                    connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+                    string sendstr = tree + "@" + Selfid[tree] + "@" + joinPeers[tree].Id;
+                    Byte[] sendbyte = StrToByteArray(sendstr);
+                    //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                    connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                    connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                byte[] recoonectMsg = new byte[1];
-                connectTrackerStream.Read(recoonectMsg, 0, recoonectMsg.Length);
-                bool changeSucess = BitConverter.ToBoolean(recoonectMsg, 0);
+                    byte[] recoonectMsg = new byte[1];
+                    connectTrackerStream.Read(recoonectMsg, 0, recoonectMsg.Length);
+                    changeSucess = BitConverter.ToBoolean(recoonectMsg, 0);
 
-                connectTracker.Close();
-                connectTrackerStream.Close();
+                    connectTracker.Close();
+                    connectTrackerStream.Close();
+                    //clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent loop ERR:"+errType+"\n" });
+                    if (errType.Equals("other") || !changeSucess)//if it is local timeout err, then it must changePar until its parent unreg it
+                        break;
+                    Thread.Sleep(500);
+                }
 
                 if (!changeSucess)
                     return false;

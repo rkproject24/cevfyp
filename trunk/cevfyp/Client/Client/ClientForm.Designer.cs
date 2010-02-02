@@ -60,9 +60,9 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Location = new System.Drawing.Point(224, 53);
+            this.panel1.Location = new System.Drawing.Point(224, 57);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(319, 222);
+            this.panel1.Size = new System.Drawing.Size(319, 241);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -70,48 +70,49 @@
             // 
             this.tbWriteStatus.Location = new System.Drawing.Point(103, 3);
             this.tbWriteStatus.Name = "tbWriteStatus";
-            this.tbWriteStatus.Size = new System.Drawing.Size(83, 22);
+            this.tbWriteStatus.Size = new System.Drawing.Size(83, 20);
             this.tbWriteStatus.TabIndex = 3;
             // 
             // tbReadStatus
             // 
             this.tbReadStatus.Location = new System.Drawing.Point(192, 3);
             this.tbReadStatus.Name = "tbReadStatus";
-            this.tbReadStatus.Size = new System.Drawing.Size(100, 22);
+            this.tbReadStatus.Size = new System.Drawing.Size(100, 20);
             this.tbReadStatus.TabIndex = 4;
             // 
             // tbStatus
             // 
-            this.tbStatus.Location = new System.Drawing.Point(200, 38);
+            this.tbStatus.Location = new System.Drawing.Point(202, 40);
             this.tbStatus.Name = "tbStatus";
-            this.tbStatus.Size = new System.Drawing.Size(100, 22);
+            this.tbStatus.Size = new System.Drawing.Size(100, 20);
             this.tbStatus.TabIndex = 5;
             // 
             // tbServerIp
             // 
-            this.tbServerIp.Location = new System.Drawing.Point(111, 38);
+            this.tbServerIp.Location = new System.Drawing.Point(113, 40);
             this.tbServerIp.Name = "tbServerIp";
-            this.tbServerIp.Size = new System.Drawing.Size(83, 22);
+            this.tbServerIp.Size = new System.Drawing.Size(83, 20);
             this.tbServerIp.TabIndex = 6;
             this.tbServerIp.TextChanged += new System.EventHandler(this.tbServerIp_TextChanged);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(3, 38);
+            this.button2.BackColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(3, 40);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(43, 23);
+            this.button2.Size = new System.Drawing.Size(43, 25);
             this.button2.TabIndex = 7;
             this.button2.Text = "mute";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label1.Location = new System.Drawing.Point(52, 35);
+            this.label1.Location = new System.Drawing.Point(52, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "Tracker ip";
             // 
@@ -122,29 +123,30 @@
             this.rtbupload.BackColor = System.Drawing.SystemColors.Menu;
             this.rtbupload.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbupload.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rtbupload.Location = new System.Drawing.Point(549, 53);
+            this.rtbupload.Location = new System.Drawing.Point(549, 57);
             this.rtbupload.Name = "rtbupload";
-            this.rtbupload.Size = new System.Drawing.Size(212, 241);
+            this.rtbupload.Size = new System.Drawing.Size(212, 261);
             this.rtbupload.TabIndex = 11;
             this.rtbupload.Text = "";
             // 
             // btnListenPeer
             // 
+            this.btnListenPeer.BackColor = System.Drawing.Color.White;
             this.btnListenPeer.Enabled = false;
-            this.btnListenPeer.Location = new System.Drawing.Point(3, 31);
+            this.btnListenPeer.Location = new System.Drawing.Point(3, 29);
             this.btnListenPeer.Name = "btnListenPeer";
-            this.btnListenPeer.Size = new System.Drawing.Size(75, 23);
+            this.btnListenPeer.Size = new System.Drawing.Size(75, 25);
             this.btnListenPeer.TabIndex = 12;
             this.btnListenPeer.Text = "ListenPeer";
-            this.btnListenPeer.UseVisualStyleBackColor = true;
+            this.btnListenPeer.UseVisualStyleBackColor = false;
             this.btnListenPeer.Click += new System.EventHandler(this.btnListenPeer_Click);
             // 
             // tbhostIP
             // 
-            this.tbhostIP.Location = new System.Drawing.Point(60, 3);
+            this.tbhostIP.Location = new System.Drawing.Point(62, 3);
             this.tbhostIP.Name = "tbhostIP";
             this.tbhostIP.ReadOnly = true;
-            this.tbhostIP.Size = new System.Drawing.Size(94, 22);
+            this.tbhostIP.Size = new System.Drawing.Size(94, 20);
             this.tbhostIP.TabIndex = 13;
             // 
             // label2
@@ -153,7 +155,7 @@
             this.label2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(51, 12);
+            this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 14;
             this.label2.Text = "HostingIP";
             // 
@@ -163,32 +165,32 @@
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label3.Location = new System.Drawing.Point(549, 38);
+            this.label3.Location = new System.Drawing.Point(549, 41);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 12);
+            this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 15;
             this.label3.Text = "Upload log";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(3, 67);
+            this.textBox1.Location = new System.Drawing.Point(3, 71);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(83, 22);
+            this.textBox1.Size = new System.Drawing.Size(83, 20);
             this.textBox1.TabIndex = 18;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(92, 67);
+            this.textBox2.Location = new System.Drawing.Point(92, 71);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(83, 22);
+            this.textBox2.Size = new System.Drawing.Size(83, 20);
             this.textBox2.TabIndex = 19;
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(181, 67);
+            this.textBox3.Location = new System.Drawing.Point(181, 71);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(83, 22);
+            this.textBox3.Size = new System.Drawing.Size(83, 20);
             this.textBox3.TabIndex = 20;
             // 
             // rtbdownload
@@ -198,9 +200,9 @@
             this.rtbdownload.BackColor = System.Drawing.SystemColors.Menu;
             this.rtbdownload.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbdownload.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rtbdownload.Location = new System.Drawing.Point(11, 53);
+            this.rtbdownload.Location = new System.Drawing.Point(11, 57);
             this.rtbdownload.Name = "rtbdownload";
-            this.rtbdownload.Size = new System.Drawing.Size(207, 241);
+            this.rtbdownload.Size = new System.Drawing.Size(207, 261);
             this.rtbdownload.TabIndex = 17;
             this.rtbdownload.Text = "";
             // 
@@ -209,9 +211,9 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label4.Location = new System.Drawing.Point(11, 38);
+            this.label4.Location = new System.Drawing.Point(11, 41);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(71, 12);
+            this.label4.Size = new System.Drawing.Size(72, 13);
             this.label4.TabIndex = 16;
             this.label4.Text = "Download log";
             // 
@@ -230,9 +232,9 @@
             this.flowLayoutPanel1.Controls.Add(this.textBox1);
             this.flowLayoutPanel1.Controls.Add(this.textBox2);
             this.flowLayoutPanel1.Controls.Add(this.textBox3);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(13, 293);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(13, 317);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(332, 99);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(332, 107);
             this.flowLayoutPanel1.TabIndex = 21;
             // 
             // btnConnect
@@ -244,7 +246,7 @@
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.NormalImage = global::Client.Properties.Resources.Play_Normal_icon;
             this.btnConnect.PushedImage = global::Client.Properties.Resources.Play_Pressed_icon;
-            this.btnConnect.Size = new System.Drawing.Size(43, 29);
+            this.btnConnect.Size = new System.Drawing.Size(43, 31);
             this.btnConnect.TabIndex = 23;
             this.btnConnect.Text = "imageButton1";
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
@@ -258,7 +260,7 @@
             this.btnDisconnect.Name = "btnDisconnect";
             this.btnDisconnect.NormalImage = global::Client.Properties.Resources.Stop_Normal_Blue_icon;
             this.btnDisconnect.PushedImage = global::Client.Properties.Resources.Stop_Pressed_Blue_icon;
-            this.btnDisconnect.Size = new System.Drawing.Size(45, 27);
+            this.btnDisconnect.Size = new System.Drawing.Size(45, 29);
             this.btnDisconnect.TabIndex = 23;
             this.btnDisconnect.Text = "imageButton1";
             this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
@@ -270,9 +272,9 @@
             this.flowLayoutPanel2.Controls.Add(this.label2);
             this.flowLayoutPanel2.Controls.Add(this.tbhostIP);
             this.flowLayoutPanel2.Controls.Add(this.btnListenPeer);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(549, 300);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(549, 325);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(160, 86);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(160, 93);
             this.flowLayoutPanel2.TabIndex = 22;
             // 
             // label5
@@ -281,17 +283,17 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label5.Location = new System.Drawing.Point(222, 38);
+            this.label5.Location = new System.Drawing.Point(222, 41);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 12);
+            this.label5.Size = new System.Drawing.Size(0, 13);
             this.label5.TabIndex = 23;
             // 
             // ClientForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.ClientSize = new System.Drawing.Size(769, 427);
+            this.ClientSize = new System.Drawing.Size(769, 463);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
@@ -302,6 +304,7 @@
             this.Controls.Add(this.panel1);
             this.MinimumSize = new System.Drawing.Size(0, 0);
             this.Name = "ClientForm";
+            this.Padding = new System.Windows.Forms.Padding(8, 9, 8, 9);
             this.Text = "Client";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
