@@ -52,7 +52,10 @@ namespace Server
             sConfig = new ServerConfig();
             sConfig.load("C:\\ServerConfig");
             reloadUI();
-
+            //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
+            this.max_client = sConfig.MaxClient;
+            this.max_tree = sConfig.TreeSize;
+            ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
           
         }
 
@@ -142,11 +145,11 @@ namespace Server
                 //mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
                 //mainFm.tbServerIp.Text = sConfig.Serverip;
                 
-                reloadUI();
-                //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
-                this.max_client = sConfig.MaxClient;
-                this.max_tree = sConfig.TreeSize;
-                ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
+                //reloadUI();
+                ////mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
+                //this.max_client = sConfig.MaxClient;
+                //this.max_tree = sConfig.TreeSize;
+                //ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
                 ph.startTreePort();
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
 
@@ -369,7 +372,7 @@ namespace Server
                 while (responseMessageBytes1 != 0)
                 {
                     // If read timeout(5 sec.) , we assume the movie has finished playing
-                    vlcStream.ReadTimeout = 1000; 
+                    vlcStream.ReadTimeout = 500; 
 
                     byte[] responseData = new byte[sConfig.ReceiveStreamSize];
                     responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
@@ -398,7 +401,7 @@ namespace Server
                     Thread.Sleep(20);
                 }
             }
-            catch(IOException ex)
+            catch(Exception ex)
             {
                 for (int i = 0; i < max_tree; i++)
                 {
