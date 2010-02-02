@@ -2,15 +2,18 @@
 <server>
   <pluginPath>C:\vlc-0.9.9</pluginPath>
   <streamType>ts</streamType>
-  <videoDir>C:\jacky.mpg</videoDir>
-  <maxClient>9</maxClient>
+  <videoDir>D:\jacky.mpg</videoDir>
+  <maxClient>2</maxClient>
   <vlcStreamPort>1234</vlcStreamPort>
   <SLisPort>1100</SLisPort>
+  <sLisPortup>1120</sLisPortup>
   <Dataport>1200</Dataport>
-  <ConportBase>1301</ConportBase>
-  <TreeSize>2</TreeSize>
-  <serverip>192.168.1.3</serverip>
-  <trackerip>192.168.1.3</trackerip>
+  <dataportup>1400</dataportup>
+  <ConportBase>1401</ConportBase>
+  <conportup>1600</conportup>
+  <TreeSize>3</TreeSize>
+  <trackerip>143.89.47.132</trackerip>
+  <trackerPort>1500</trackerPort>
   <chunkSize>3942</chunkSize>
   <receiveStreamSize>3760</receiveStreamSize>
 </server>
