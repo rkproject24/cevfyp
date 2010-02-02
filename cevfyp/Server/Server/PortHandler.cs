@@ -376,8 +376,21 @@ namespace Server
                     mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] D:" + ran_port + " exit\n" });
 
                     if (!localterminate && treeDPortList[tree_index][DThreadList_index].clientD != null)
-                    DOfflineState[(tree_index * max_client) + DThreadList_index] = 1;
+                    {
+                        DOfflineState[(tree_index * max_client) + DThreadList_index] = 1;
+                        //treeCPListener[(tree_index * max_client) + DThreadList_index].Stop();
+                        //CThreadList[(tree_index * max_client) + DThreadList_index].Abort();
 
+
+                        //Thread CPortThread = new Thread(delegate() { TreePortHandle_Cport(DThreadList_index, tree_index); });
+                        //CPortThread.IsBackground = true;
+                        //CPortThread.Name = " Cport_handle_" + tree_index + "_" + DThreadList_index;
+                        //CPortThread.Start();
+                        //Thread.Sleep(20);
+                        //CThreadList[(tree_index * max_client) + DThreadList_index]=CPortThread;
+
+
+                    }
                     if (stream != null)
                      stream.Close();
                     
@@ -439,13 +452,16 @@ namespace Server
 
                     while (true)
                     {
-
+                        stream.ReadTimeout = 10000;
                         int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
 
 
                         if (responseString == "Exit" ||  DOfflineState[(tree_index * max_client) + CThreadList_index] == 1)
                         {
+                           // if (DOfflineState[(tree_index * max_client) + CThreadList_index] == 1)
+                                //Thread.Sleep(800);
+
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] C:" + ran_port + " exit~ [" + responseString + ":" + DOfflineState[(tree_index * max_client) + CThreadList_index].ToString() + "]\n" });
                             unregister(tree_index, treeCPortList[tree_index][CThreadList_index].peerId);
                             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "] Peer:" + treeCPortList[tree_index][CThreadList_index].peerId + " unRge~ \n" });
