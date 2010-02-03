@@ -23,30 +23,11 @@ namespace Analysis
             InitializeComponent();
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            SetSize();
-        }
-
-        private void SetSize()
+        private void zedGraphControl2_Load(object sender, EventArgs e)
         {
             zedGraphControl2.Location = new Point(10, 10);
             zedGraphControl2.Size = new Size(ClientRectangle.Width - 50, ClientRectangle.Height - 400);
-        }
 
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Setup the graph
-            CreateGraph(zedGraphControl2);
-            // Size the control to fill the form with a margin
-            SetSize();
-
-        }
-
-        private void CreateGraph(ZedGraphControl zgc)
-        {
-            /***************Panel two***************/
             this.zedGraphControl2.GraphPane.Title.Text = "Speed Versus Time";
             this.zedGraphControl2.GraphPane.XAxis.Title.Text = "Time";
             this.zedGraphControl2.GraphPane.YAxis.Title.Text = "Speed";
@@ -55,7 +36,7 @@ namespace Analysis
 
 
             //PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "Result", false);
+            xml ImportData = new xml("yahoo.com", "Record", false);
 
             for (int i = 0; i <= 100; i++)
             {
@@ -70,13 +51,13 @@ namespace Analysis
                 //double y = 0;
                 //list.Add(x, y);
 
-                double y = Convert.ToInt32(ImportData.Read("Record", "id", i.ToString(), "RecordSpeed"));
-                double x = Convert.ToInt32(ImportData.Read("Record", "id",i.ToString(), "Time"));
+                double y = Convert.ToInt32(ImportData.Read("Record", "id", i.ToString(), "Speed"));
+                double x = Convert.ToInt32(ImportData.Read("Record", "id", i.ToString(), "RecordTime"));
 
                 // ImportData.ReadAttribute(
 
                 list.Add(x, y);
-                
+
 
             }
 
@@ -97,9 +78,9 @@ namespace Analysis
             double x = (double)new XDate(DateTime.Now);
             double y = ran.NextDouble();
             //PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "Result", false);
-            y = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "RecordSpeed"));
-            x = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "Time"));
+            xml ImportData = new xml("yahoo.com", "Record", false);
+            y = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "Speed"));
+            x = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "RecordTime"));
             list.Add(x, y);
 
             CurrentIndex++;
@@ -112,6 +93,8 @@ namespace Analysis
             this.zedGraphControl2.Refresh();
 
         }
+
+
 
     }
 }
