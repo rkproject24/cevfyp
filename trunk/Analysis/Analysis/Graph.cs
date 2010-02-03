@@ -37,7 +37,7 @@ namespace Analysis
 
 
             //PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "DataBate", false);
+            xml ImportData = new xml("yahoo.com", "DataBase", false);
 
             for (int i = 0; i <= 100; i++)
             {
