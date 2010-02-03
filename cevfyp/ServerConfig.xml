@@ -2,7 +2,7 @@
 <server>
   <pluginPath>C:\vlc-0.9.9</pluginPath>
   <streamType>ts</streamType>
-  <videoDir>D:\jacky.mpg</videoDir>
+  <videoDir>D:\ftp\7years.mpg</videoDir>
   <maxClient>2</maxClient>
   <vlcStreamPort>1234</vlcStreamPort>
   <SLisPort>1100</SLisPort>
