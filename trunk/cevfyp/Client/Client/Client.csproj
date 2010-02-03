@@ -37,6 +37,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="Crom.Controls, Version=2.0.5.21, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -47,6 +48,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChunkHandler.cs" />
+    <Compile Include="LoggerFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoggerFrm.Designer.cs">
+      <DependentUpon>LoggerFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlaybackFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlaybackFrm.Designer.cs">
+      <DependentUpon>PlaybackFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="XmlThemeLoader.cs" />
     <Compile Include="ClientHandler.cs">
     </Compile>
@@ -67,6 +80,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ClientForm.resx">
       <DependentUpon>ClientForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoggerFrm.resx">
+      <DependentUpon>LoggerFrm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlaybackFrm.resx">
+      <DependentUpon>PlaybackFrm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">

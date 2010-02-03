@@ -44,6 +44,8 @@ namespace Client
 
             tbTrackerIp.Text = cConfig.Trackerip;
             tbTrackerPort.Text = cConfig.TrackerPort.ToString();
+            nudNullChunk.Value = cConfig.MaxNullChunk;
+            nudTimeout.Value = cConfig.ReadStreamTimeout;
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -71,6 +73,8 @@ namespace Client
             cConfig.LisPortup = Convert.ToInt32(tbListPortup.Text);
             cConfig.Dataportup = Convert.ToInt32(tbDataPortup.Text);
             cConfig.Conportup = Convert.ToInt32(tbControlPortup.Text);
+            cConfig.MaxNullChunk = Convert.ToInt32(nudNullChunk.Value);
+            cConfig.ReadStreamTimeout = Convert.ToInt32(nudTimeout.Value);
 
             cConfig.save("C:\\ClientConfig");
             this.Close();
