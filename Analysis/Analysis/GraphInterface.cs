@@ -31,7 +31,7 @@ namespace Analysis
             id = 0;
             //PingIP Target;
             HostName = host;
-            xml Target = new xml(host,"Record",true);
+            xml Target = new xml(host,"DataBase",true);
         }
 
         public string GetHostName()
@@ -41,7 +41,7 @@ namespace Analysis
 
         public void AddRecord(DateTime startTime, DateTime end, int size)
         {
-            xml Target = new xml(HostName,"Record",false);
+            xml Target = new xml(HostName, "DataBate", false);
             string record_time = end.ToString();
             int speed = speedCalculate(startTime, end,size);
 
