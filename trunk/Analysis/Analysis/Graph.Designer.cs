@@ -46,6 +46,7 @@
             this.zedGraphControl2.ScrollMinY2 = 0;
             this.zedGraphControl2.Size = new System.Drawing.Size(408, 288);
             this.zedGraphControl2.TabIndex = 2;
+            this.zedGraphControl2.Load += new System.EventHandler(this.zedGraphControl2_Load);
             // 
             // timer1
             // 
