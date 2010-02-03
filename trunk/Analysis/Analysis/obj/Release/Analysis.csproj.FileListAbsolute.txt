@@ -1,0 +1,12 @@
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\ResolveAssemblyReference.cache
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\Analysis.Graph.resources
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\Analysis.Properties.Resources.resources
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\Analysis.csproj.GenerateResource.Cache
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\Analysis.dll
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\Analysis.pdb
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\ClassLibrary.dll
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\ZedGraph.dll
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\ZedGraph.pdb
+C:\Users\fuji\Desktop\Analysis\Analysis\bin\Release\ClassLibrary.pdb
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\Analysis.dll
+C:\Users\fuji\Desktop\Analysis\Analysis\obj\Release\Analysis.pdb
