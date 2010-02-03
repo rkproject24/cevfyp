@@ -16,6 +16,7 @@ namespace Client
 
         string[] args;
         int boardcastport;
+        public bool playing = false;
 
         public VlcHandler()
         {
@@ -36,6 +37,8 @@ namespace Client
 
         public void play(Panel p,int port)
         {
+            playing = true;
+
             boardcastport = port;
 
             LibVlc.libvlc_exception_init(ref ex);
@@ -43,24 +46,24 @@ namespace Client
             //"--http-caching=2000"
 
             instance = LibVlc.libvlc_new(args.Length, args, ref ex);
-            //Raise(ref ex);
+            Raise(ref ex);
 
             IntPtr media = LibVlc.libvlc_media_new(instance, @"http://127.0.0.1:"+ boardcastport.ToString(), ref ex);
-            //Raise(ref ex);
+            Raise(ref ex);
 
            // LibVlc.libvlc_media_add_option(media, @" :drop-late-frames", ref ex);
             //LibVlc.libvlc_media_add_option(media, @":dst="+cConfig.Localdisplay, ref ex);
 
             player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
-            //Raise(ref ex);
+            Raise(ref ex);
 
             LibVlc.libvlc_media_release(media);
 
             LibVlc.libvlc_media_player_set_drawable(player, p.Handle, ref ex);
-            //Raise(ref ex);
+            Raise(ref ex);
 
             LibVlc.libvlc_media_player_play(player, ref ex);
-            //Raise(ref ex);
+            Raise(ref ex);
 
             setMute(1);
         }
@@ -80,6 +83,7 @@ namespace Client
             Raise(ref ex);
             LibVlc.libvlc_media_player_release(player);
             LibVlc.libvlc_release(instance);
+            playing = false;
         }
         
 

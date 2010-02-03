@@ -40,6 +40,8 @@
             this.tbChunkLenght = new System.Windows.Forms.TextBox();
             this.tbTrackerIp = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbvlcPortup = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.cbDisplay = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.btnVLClib = new System.Windows.Forms.Button();
@@ -66,14 +68,18 @@
             this.tbTrackerPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.label17 = new System.Windows.Forms.Label();
-            this.tbvlcPortup = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.nudNullChunk = new System.Windows.Forms.NumericUpDown();
+            this.nudTimeout = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -106,11 +112,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 49);
+            this.label4.Location = new System.Drawing.Point(137, 18);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 13);
+            this.label4.Size = new System.Drawing.Size(36, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Chunk lenght";
+            this.label4.Text = "lenght";
             // 
             // label5
             // 
@@ -124,7 +130,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 79);
+            this.label6.Location = new System.Drawing.Point(6, 49);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(57, 13);
             this.label6.TabIndex = 5;
@@ -149,21 +155,21 @@
             // 
             this.tbChunkSize.Location = new System.Drawing.Point(86, 15);
             this.tbChunkSize.Name = "tbChunkSize";
-            this.tbChunkSize.Size = new System.Drawing.Size(100, 20);
+            this.tbChunkSize.Size = new System.Drawing.Size(50, 20);
             this.tbChunkSize.TabIndex = 8;
             // 
             // tbChunkLenght
             // 
-            this.tbChunkLenght.Location = new System.Drawing.Point(86, 46);
+            this.tbChunkLenght.Location = new System.Drawing.Point(179, 15);
             this.tbChunkLenght.Name = "tbChunkLenght";
-            this.tbChunkLenght.Size = new System.Drawing.Size(100, 20);
+            this.tbChunkLenght.Size = new System.Drawing.Size(47, 20);
             this.tbChunkLenght.TabIndex = 9;
             // 
             // tbTrackerIp
             // 
-            this.tbTrackerIp.Location = new System.Drawing.Point(86, 76);
+            this.tbTrackerIp.Location = new System.Drawing.Point(85, 46);
             this.tbTrackerIp.Name = "tbTrackerIp";
-            this.tbTrackerIp.Size = new System.Drawing.Size(100, 20);
+            this.tbTrackerIp.Size = new System.Drawing.Size(120, 20);
             this.tbTrackerIp.TabIndex = 11;
             // 
             // groupBox1
@@ -189,6 +195,22 @@
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Local Play";
+            // 
+            // tbvlcPortup
+            // 
+            this.tbvlcPortup.Location = new System.Drawing.Point(149, 41);
+            this.tbvlcPortup.Name = "tbvlcPortup";
+            this.tbvlcPortup.Size = new System.Drawing.Size(40, 20);
+            this.tbvlcPortup.TabIndex = 16;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(130, 44);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(16, 13);
+            this.label17.TabIndex = 15;
+            this.label17.Text = "to";
             // 
             // cbDisplay
             // 
@@ -281,7 +303,7 @@
             this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox2.Location = new System.Drawing.Point(213, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(214, 139);
+            this.groupBox2.Size = new System.Drawing.Size(232, 139);
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Upload";
@@ -402,6 +424,10 @@
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox3.Controls.Add(this.nudTimeout);
+            this.groupBox3.Controls.Add(this.nudNullChunk);
+            this.groupBox3.Controls.Add(this.label19);
+            this.groupBox3.Controls.Add(this.label18);
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.tbTrackerPort);
             this.groupBox3.Controls.Add(this.tbTrackerIp);
@@ -413,7 +439,7 @@
             this.groupBox3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox3.Location = new System.Drawing.Point(213, 158);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(201, 138);
+            this.groupBox3.Size = new System.Drawing.Size(232, 151);
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Download";
@@ -421,17 +447,17 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(8, 106);
+            this.label10.Location = new System.Drawing.Point(6, 76);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(63, 13);
+            this.label10.Size = new System.Drawing.Size(66, 13);
             this.label10.TabIndex = 13;
-            this.label10.Text = "TrackerPort";
+            this.label10.Text = "Tracker Port";
             // 
             // tbTrackerPort
             // 
-            this.tbTrackerPort.Location = new System.Drawing.Point(86, 106);
+            this.tbTrackerPort.Location = new System.Drawing.Point(85, 73);
             this.tbTrackerPort.Name = "tbTrackerPort";
-            this.tbTrackerPort.Size = new System.Drawing.Size(100, 20);
+            this.tbTrackerPort.Size = new System.Drawing.Size(120, 20);
             this.tbTrackerPort.TabIndex = 12;
             // 
             // btnSave
@@ -457,28 +483,59 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // label17
+            // label18
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(130, 44);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(16, 13);
-            this.label17.TabIndex = 15;
-            this.label17.Text = "to";
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 130);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(117, 13);
+            this.label18.TabIndex = 14;
+            this.label18.Text = "Connection timeout(ms)";
             // 
-            // tbvlcPortup
+            // label19
             // 
-            this.tbvlcPortup.Location = new System.Drawing.Point(149, 41);
-            this.tbvlcPortup.Name = "tbvlcPortup";
-            this.tbvlcPortup.Size = new System.Drawing.Size(40, 20);
-            this.tbvlcPortup.TabIndex = 16;
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 102);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(79, 13);
+            this.label19.TabIndex = 17;
+            this.label19.Text = "Max NullChunk";
+            // 
+            // nudNullChunk
+            // 
+            this.nudNullChunk.Location = new System.Drawing.Point(86, 102);
+            this.nudNullChunk.Name = "nudNullChunk";
+            this.nudNullChunk.Size = new System.Drawing.Size(120, 20);
+            this.nudNullChunk.TabIndex = 18;
+            // 
+            // nudTimeout
+            // 
+            this.nudTimeout.Location = new System.Drawing.Point(129, 128);
+            this.nudTimeout.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudTimeout.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudTimeout.Name = "nudTimeout";
+            this.nudTimeout.Size = new System.Drawing.Size(75, 20);
+            this.nudTimeout.TabIndex = 19;
+            this.nudTimeout.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             // 
             // Preference
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.MenuBar;
-            this.ClientSize = new System.Drawing.Size(435, 310);
+            this.ClientSize = new System.Drawing.Size(448, 310);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox3);
@@ -497,6 +554,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTimeout)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -543,5 +602,9 @@
         private System.Windows.Forms.TextBox tbDataPortup;
         private System.Windows.Forms.TextBox tbvlcPortup;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown nudTimeout;
+        private System.Windows.Forms.NumericUpDown nudNullChunk;
     }
 }
