@@ -112,6 +112,7 @@ namespace Client
             DockableFormInfo info1 = _docker.Add(downloadFrm, zAllowedDock.All, new Guid(code));
             info1.ShowContextMenuButton = false;
             info1.ShowCloseButton = false;
+
             _docker.DockForm(info1, DockStyle.Left, zDockMode.Outer);
             _docker.SetHeight(info1, 310);
       
@@ -119,17 +120,20 @@ namespace Client
             //form1.Show();
             DockableFormInfo info2 = _docker.Add(uploadFrm, zAllowedDock.All, new Guid(code2));
             info2.ShowContextMenuButton = false;
+
             _docker.DockForm(info2, DockStyle.Right, zDockMode.Outer);
             _docker.SetHeight(info2, 310);
             info2.ShowCloseButton = false;
 
-            this.playFrm = CreateTestForm(new Guid(code3));
-            //form1.Show();
-            DockableFormInfo info3 = _docker.Add(playFrm, zAllowedDock.All, new Guid(code3));
-            info3.ShowContextMenuButton = false;
-            _docker.DockForm(info3, DockStyle.Fill, zDockMode.Outer);
-            _docker.SetHeight(info3, 310);
-            info3.ShowCloseButton = false;
+            //this.playFrm = CreateTestForm(new Guid(code3));
+            ////form1.Show();
+            //DockableFormInfo info3 = _docker.Add(playFrm, zAllowedDock.All, new Guid(code3));
+            //info3.ShowContextMenuButton = false;
+            //_docker.DockForm(info3, DockStyle.Fill, zDockMode.Outer);
+            //_docker.SetHeight(info3, 310);
+            _docker.SetAutoHide(info1, true);
+            _docker.SetAutoHide(info2, true);
+            //info3.ShowCloseButton = false;
         }
 
 
@@ -165,13 +169,13 @@ namespace Client
                 result.Text = "download";
                 return result;
             }
-            else if (identifier == new Guid(code3))
-            {
-                PlaybackFrm result = new PlaybackFrm();
-                result.Bounds = new Rectangle(200, 0, 640, 480);
-                result.Text = "video";
-                return result;
-            }
+            //else if (identifier == new Guid(code3))
+            //{
+            //    PlaybackFrm result = new PlaybackFrm();
+            //    result.Bounds = new Rectangle(200, 0, 640, 480);
+            //    result.Text = "video";
+            //    return result;
+            //}
 
             throw new InvalidOperationException();
         }
