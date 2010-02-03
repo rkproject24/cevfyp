@@ -28,6 +28,9 @@ namespace ClassLibrary
         private string trackerip;
         private int trackerPort;
         private bool localdisplay;
+        private int maxNullChunk;
+        private int readStreamTimeout;
+
 
         public ClientConfig()
         {
@@ -50,9 +53,12 @@ namespace ClassLibrary
             this.dataportup = 0;
             this.conportup = 0;
             this.localdisplay = true;
+
+            this.maxNullChunk = 9999;
+            this.readStreamTimeout = 9999;
         }
 
-        public ClientConfig(string pluginPath, int ServerSLPort, int LisPort, int Dataport, int ConportBase, int vlcPortBase, int vlcPortup, int maxPeer, int chunkSize, int chunkCapacity, int chunkBuf, int startBuf, string trackerip, int trackerPort, int lisPortup, int dataportup, int conportup, bool localdisplay)
+        public ClientConfig(string pluginPath, int ServerSLPort, int LisPort, int Dataport, int ConportBase, int vlcPortBase, int vlcPortup, int maxPeer, int chunkSize, int chunkCapacity, int chunkBuf, int startBuf, string trackerip, int trackerPort, int lisPortup, int dataportup, int conportup, bool localdisplay, int maxNullChunk, int readStreamTimeout)
         {
             this.pluginPath = pluginPath;
 
@@ -75,6 +81,8 @@ namespace ClassLibrary
             this.conportup = conportup;
             this.localdisplay = localdisplay;
 
+            this.maxNullChunk = maxNullChunk;
+            this.readStreamTimeout = readStreamTimeout;
         }
 
         public string PluginPath
@@ -187,6 +195,16 @@ namespace ClassLibrary
             get { return localdisplay; }
             set { localdisplay = value; }
         }
+        public int MaxNullChunk
+        {
+            get { return maxNullChunk; }
+            set { maxNullChunk = value; }
+        }
+        public int ReadStreamTimeout
+        {
+            get { return readStreamTimeout; }
+            set { readStreamTimeout = value; }
+        }
         /*      public void save_old(string fileName)
               {
                   if (File.Exists(fileName))
@@ -219,9 +237,10 @@ namespace ClassLibrary
 
             xml store = new xml(fileName, "client", true);
 
-            string[] type = { "pluginPath", "maxPeer", "chunkSize", "chunkCapacity", "ServerSLPort", "LisPort", "Dataport", "vlcPortBase", "vlcPortUp", "ConportBase", "chunkBuf", "startBuf", "trackerip", "trackerPort", "LisPortup", "dataportup", "conportup", "display" };
+            string[] type = { "pluginPath", "maxPeer", "chunkSize", "chunkCapacity", "ServerSLPort", "LisPort", "Dataport", "vlcPortBase", "vlcPortUp", "ConportBase", "chunkBuf", "startBuf", "trackerip", "trackerPort", "LisPortup", "dataportup", "conportup", "display", "readStreamTimeout", "maxNullChunk" };
 
-            string[] value = { this.pluginPath, this.maxPeer.ToString(), this.chunkSize.ToString(), this.chunkCapacity.ToString(), this.ServerSLPort.ToString(), this.lisPort.ToString(), this.Dataport.ToString(), this.vlcPortBase.ToString(), this.vlcPortup.ToString(), this.ConportBase.ToString(), this.chunkBuf.ToString(), this.startBuf.ToString(), this.trackerip, this.trackerPort.ToString(), this.lisPortup.ToString(), dataportup.ToString(), conportup.ToString(), localdisplay.ToString() };
+            string[] value = { this.pluginPath, this.maxPeer.ToString(), this.chunkSize.ToString(), this.chunkCapacity.ToString(), this.ServerSLPort.ToString(), this.lisPort.ToString(), this.Dataport.ToString(), this.vlcPortBase.ToString(), this.vlcPortup.ToString(), this.ConportBase.ToString(), 
+                                 this.chunkBuf.ToString(), this.startBuf.ToString(), this.trackerip, this.trackerPort.ToString(), this.lisPortup.ToString(), dataportup.ToString(), conportup.ToString(), localdisplay.ToString(), this.readStreamTimeout.ToString(), this.maxNullChunk.ToString() };
 
             store.Add(type, value);
         }
@@ -250,6 +269,9 @@ namespace ClassLibrary
             this.dataportup = Convert.ToInt32(load.Read("client", "dataportup"));
             this.conportup = Convert.ToInt32(load.Read("client", "conportup"));
             this.localdisplay = Convert.ToBoolean(load.Read("client", "display"));
+
+            this.maxNullChunk = Convert.ToInt32(load.Read("client", "maxNullChunk"));
+            this.readStreamTimeout = Convert.ToInt32(load.Read("client", "readStreamTimeout"));
         }
 
     }
