@@ -72,9 +72,8 @@ namespace Analysis
 
         public void CreateGraph()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Graph());
+            Graph G1 = new Graph();
+            G1.Show();
         }
 
         
