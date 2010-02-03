@@ -23,20 +23,21 @@ namespace Analysis
             InitializeComponent();
         }
 
-        private void zedGraphControl2_Load(object sender, EventArgs e)
-        {
-            zedGraphControl2.Location = new Point(10, 10);
-            zedGraphControl2.Size = new Size(ClientRectangle.Width - 50, ClientRectangle.Height - 400);
 
-            this.zedGraphControl2.GraphPane.Title.Text = "Speed Versus Time";
-            this.zedGraphControl2.GraphPane.XAxis.Title.Text = "Time";
-            this.zedGraphControl2.GraphPane.YAxis.Title.Text = "Speed";
-            this.zedGraphControl2.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
+        private void Graph_Load(object sender, EventArgs e)
+        {
+            display.Location = new Point(10, 10);
+            display.Size = new Size(ClientRectangle.Width - 50, ClientRectangle.Height - 400);
+
+            this.display.GraphPane.Title.Text = "Speed Versus Time";
+            this.display.GraphPane.XAxis.Title.Text = "Time";
+            this.display.GraphPane.YAxis.Title.Text = "Speed";
+            this.display.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
 
 
 
             //PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "Record", false);
+            xml ImportData = new xml("yahoo.com", "DataBate", false);
 
             for (int i = 0; i <= 100; i++)
             {
@@ -65,16 +66,16 @@ namespace Analysis
 
             DateTime dt = DateTime.Now;
 
-            myCurve = zedGraphControl2.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
+            myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
 
-            this.zedGraphControl2.AxisChange();
-            this.zedGraphControl2.Refresh();
+            this.display.AxisChange();
+            this.display.Refresh();
 
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            zedGraphControl2.GraphPane.XAxis.Scale.MaxAuto = true;
+            display.GraphPane.XAxis.Scale.MaxAuto = true;
             double x = (double)new XDate(DateTime.Now);
             double y = ran.NextDouble();
             //PingIP measure = new PingIP("yahoo.com");
@@ -89,8 +90,8 @@ namespace Analysis
             if (list.Count >= 100)
                 list.RemoveAt(0);
 
-            this.zedGraphControl2.AxisChange();
-            this.zedGraphControl2.Refresh();
+            this.display.AxisChange();
+            this.display.Refresh();
 
         }
 

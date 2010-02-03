@@ -29,45 +29,44 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.zedGraphControl2 = new ZedGraph.ZedGraphControl();
+            this.display = new ZedGraph.ZedGraphControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // zedGraphControl2
-            // 
-            this.zedGraphControl2.Location = new System.Drawing.Point(12, 12);
-            this.zedGraphControl2.Name = "zedGraphControl2";
-            this.zedGraphControl2.ScrollGrace = 0;
-            this.zedGraphControl2.ScrollMaxX = 0;
-            this.zedGraphControl2.ScrollMaxY = 0;
-            this.zedGraphControl2.ScrollMaxY2 = 0;
-            this.zedGraphControl2.ScrollMinX = 0;
-            this.zedGraphControl2.ScrollMinY = 0;
-            this.zedGraphControl2.ScrollMinY2 = 0;
-            this.zedGraphControl2.Size = new System.Drawing.Size(408, 288);
-            this.zedGraphControl2.TabIndex = 2;
-            this.zedGraphControl2.Load += new System.EventHandler(this.zedGraphControl2_Load);
             // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Graph
             // 
+            this.display.Location = new System.Drawing.Point(12, 12);
+            this.display.Name = "display";
+            this.display.ScrollGrace = 0;
+            this.display.ScrollMaxX = 0;
+            this.display.ScrollMaxY = 0;
+            this.display.ScrollMaxY2 = 0;
+            this.display.ScrollMinX = 0;
+            this.display.ScrollMinY = 0;
+            this.display.ScrollMinY2 = 0;
+            this.display.Size = new System.Drawing.Size(408, 288);
+            this.display.TabIndex = 0;
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(435, 321);
-            this.Controls.Add(this.zedGraphControl2);
+            this.Controls.Add(this.display);
             this.Name = "Graph";
             this.Text = "Graph";
+            this.Load += new System.EventHandler(this.Graph_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private ZedGraph.ZedGraphControl zedGraphControl2;
+        private ZedGraph.ZedGraphControl display;
         private System.Windows.Forms.Timer timer1;
 
     }
