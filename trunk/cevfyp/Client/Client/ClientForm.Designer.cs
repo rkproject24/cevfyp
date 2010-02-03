@@ -42,6 +42,7 @@
             this.btnDisconnect = new Andy.UI.ImageButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +53,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this._docker.BackColor = System.Drawing.Color.Transparent;
             this._docker.CanMoveByMouseFilledForms = true;
+            this._docker.ForeColor = System.Drawing.Color.Transparent;
             this._docker.Location = new System.Drawing.Point(11, 34);
             this._docker.Name = "_docker";
             this._docker.Size = new System.Drawing.Size(750, 352);
@@ -196,14 +198,26 @@
             this.label5.TabIndex = 24;
             this.label5.Text = "label3";
             // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Location = new System.Drawing.Point(188, 34);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(409, 352);
+            this.panel2.TabIndex = 23;
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.ClientSize = new System.Drawing.Size(769, 463);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this._docker);
+            this.Controls.Add(this.panel1);
             this.Name = "ClientForm";
             this.Padding = new System.Windows.Forms.Padding(8, 9, 8, 9);
             this.Text = "Client";
@@ -230,6 +244,7 @@
         private Andy.UI.ImageButton btnDisconnect;
         private System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.Label label5;
+        public System.Windows.Forms.Panel panel2;
     }
 }
 

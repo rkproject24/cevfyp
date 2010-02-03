@@ -459,8 +459,8 @@ namespace Client
                 updateFmIDThread.Start();
 
 
-                //vlc.play(mainFm.panel1, virtualServerPort);
-                vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
+                vlc.play(mainFm.panel2, virtualServerPort);
+                //vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
         }
 
         public void startUpload()
