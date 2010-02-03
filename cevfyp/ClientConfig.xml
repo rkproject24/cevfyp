@@ -18,4 +18,6 @@
   <dataportup>1400</dataportup>
   <conportup>1600</conportup>
   <display>True</display>
+  <readStreamTimeout>2000</readStreamTimeout>
+  <maxNullChunk>10</maxNullChunk>
 </client>
