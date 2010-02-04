@@ -85,7 +85,7 @@ namespace Server
         {
             OpenFileDialog file = new OpenFileDialog();
             file.Title = "Select streaming file";
-            file.Filter = "mpg files (*.avi,*.mpg)|*.avi;*.mpg";// |All files (*.*)|*.*";
+            file.Filter = "mpg files (*.avi,*.mpg,*.mp4)|*.avi;*.mpg;*.mp4";// |All files (*.*)|*.*";
             file.ShowDialog();
             tbvideodir.Text = file.FileName;
         }

@@ -349,7 +349,7 @@ namespace Server
 
         private void getStreaming()
         {
-            TcpClient getClient = new TcpClient("127.0.0.1", sConfig.VlcStreamPort);
+            TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
             NetworkStream vlcStream = getClient.GetStream();
 
             try
