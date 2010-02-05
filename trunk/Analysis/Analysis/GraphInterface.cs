@@ -58,8 +58,13 @@ namespace Analysis
 
         public int speedCalculate(DateTime starttime ,DateTime end, int size)
         {
-            int time = (end.Hour - starttime.Hour)*3600+(end.Minute-starttime.Minute)*60+(end.Second-starttime.Second);
-            return size/time; 
+            try
+            {
+                int time = (end.Hour - starttime.Hour) * 3600 + (end.Minute - starttime.Minute) * 60 + (end.Second - starttime.Second);
+                return size / time;
+            }
+            catch
+            { return 0; }
         }
 
         public void RefreshGraph()

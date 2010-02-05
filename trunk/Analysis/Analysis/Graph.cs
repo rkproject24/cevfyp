@@ -39,7 +39,7 @@ namespace Analysis
             //PingIP measure = new PingIP("yahoo.com");
             xml ImportData = new xml("yahoo.com", "DataBase", false);
 
-            for (int i = 0; i <= 100; i++)
+            for (int i = 0; i < 100; i++)
             {
 
                 //Style one
@@ -53,8 +53,10 @@ namespace Analysis
                 //list.Add(x, y);
 
                 double y = Convert.ToInt32(ImportData.Read("Record", "id", i.ToString(), "Speed"));
-                double x = Convert.ToInt32(ImportData.Read("Record", "id", i.ToString(), "RecordTime"));
 
+                double x = (double) new XDate(Convert.ToDateTime(ImportData.Read("Record", "id", i.ToString(), "RecordTime")));
+                //MessageBox.Show("X:"+x.ToString());
+                //MessageBox.Show("Y:"+y.ToString());
                 // ImportData.ReadAttribute(
 
                 list.Add(x, y);
@@ -76,12 +78,13 @@ namespace Analysis
         private void timer1_Tick(object sender, EventArgs e)
         {
             display.GraphPane.XAxis.Scale.MaxAuto = true;
-            double x = (double)new XDate(DateTime.Now);
-            double y = ran.NextDouble();
+            //double x = (double)new XDate(DateTime.Now);
+            //double y = ran.NextDouble();
             //PingIP measure = new PingIP("yahoo.com");
-            xml ImportData = new xml("yahoo.com", "Record", false);
-            y = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "Speed"));
-            x = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "RecordTime"));
+            xml ImportData = new xml("yahoo.com", "DataBase", false);
+            double y = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "Speed"));
+
+            double x = (double)new XDate(Convert.ToDateTime(ImportData.Read("Record", "id", CurrentIndex.ToString(), "RecordTime")));
             list.Add(x, y);
 
             CurrentIndex++;
