@@ -103,12 +103,15 @@ namespace Server
            
         }
 
+        
+
         public void stop(bool manualStop)
         {
             vlc.stop(manualStop);
             //seqNumber = 1;
            // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             //mainFm.richTextBox1.Clear();
+
             getStreamingThread.Abort(); //by vinci
         }
 
@@ -349,6 +352,8 @@ namespace Server
 
         private void getStreaming()
         {
+            bool checkFirst = true;
+
             TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
             NetworkStream vlcStream = getClient.GetStream();
 
@@ -371,8 +376,13 @@ namespace Server
 
                 while (responseMessageBytes1 != 0)
                 {
-                    // If read timeout(5 sec.) , we assume the movie has finished playing
-                    vlcStream.ReadTimeout = 500; 
+                    if (checkFirst)
+                    {
+                        vlcStream.ReadTimeout = 8000;// If read timeout(5 sec.) , we assume the movie has finished playing
+                        checkFirst = false;
+                    }
+                    else
+                        vlcStream.ReadTimeout = 500;// If read timeout(500) , we assume the movie has finished playing and then throw catch
 
                     byte[] responseData = new byte[sConfig.ReceiveStreamSize];
                     responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
