@@ -459,8 +459,8 @@ namespace Client
                 updateFmIDThread.Start();
 
 
-                vlc.play(mainFm.panel2, virtualServerPort);
-                //vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
+               // vlc.play(mainFm.panel2, virtualServerPort);
+                vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
         }
 
         public void startUpload()
@@ -606,7 +606,8 @@ namespace Client
                             }
 
 
-                            ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] chunk null\n" });
+                            //(LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] chunk null\n" });
+                            
                             upPorth.setTreeCLState(tree_index, 0);
                             Thread.Sleep(10);
                             checkNullCount++;
