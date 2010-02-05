@@ -22,3 +22,16 @@ C:\Users\eddy\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.Form1.resources
 C:\Users\eddy\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.Properties.Resources.resources
 C:\Users\eddy\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.csproj.GenerateResource.Cache
 C:\Users\eddy\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\Analysis.dll
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.exe
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.pdb
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\Test.exe
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\Test.pdb
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\Analysis.dll
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\ZedGraph.dll
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\ClassLibrary.dll
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\Analysis.pdb
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\bin\Debug\ClassLibrary.pdb
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.Form1.resources
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.Properties.Resources.resources
+C:\Users\fuji\Desktop\cevfyp\cevfyp\Test\Test\obj\Debug\Test.csproj.GenerateResource.Cache
