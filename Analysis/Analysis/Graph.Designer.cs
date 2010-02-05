@@ -33,13 +33,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // Graph
+            // display
             // 
             this.display.Location = new System.Drawing.Point(12, 12);
             this.display.Name = "display";
@@ -52,7 +46,15 @@
             this.display.ScrollMinY2 = 0;
             this.display.Size = new System.Drawing.Size(408, 288);
             this.display.TabIndex = 0;
-
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // Graph
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(435, 321);
