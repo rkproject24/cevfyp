@@ -59,7 +59,12 @@ namespace Client
 
             LibVlc.libvlc_media_release(media);
 
-            LibVlc.libvlc_media_player_set_drawable(player, p.Handle, ref ex);
+
+            ////vlc-0.9.9 version
+            //LibVlc.libvlc_media_player_set_drawable(player, p.Handle, ref ex);
+
+            //vlc-1.0.0 version
+            LibVlc.libvlc_media_player_set_hwnd(player, p.Handle, ref ex);
             Raise(ref ex);
 
             LibVlc.libvlc_media_player_play(player, ref ex);
