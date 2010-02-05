@@ -63,9 +63,14 @@ namespace ClassLibrary
         [DllImport("libvlc")]
         public static extern void libvlc_media_player_release(IntPtr player);
 
+        ////vlc-0.9.9 version
+        //[DllImport("libvlc")]
+        //public static extern void libvlc_media_player_set_drawable(IntPtr player, IntPtr drawable,
+        //  ref libvlc_exception_t p_e);
+
+        //vlc-1.0.0 version
         [DllImport("libvlc")]
-        public static extern void libvlc_media_player_set_drawable(IntPtr player, IntPtr drawable,
-          ref libvlc_exception_t p_e);
+        public static extern void libvlc_media_player_set_hwnd(IntPtr player, IntPtr drawable,ref libvlc_exception_t p_e);
 
         [DllImport("libvlc")]
         public static extern void libvlc_media_player_play(IntPtr player, ref libvlc_exception_t ex);
