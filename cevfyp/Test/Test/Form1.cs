@@ -20,10 +20,9 @@ namespace Test
         private void button1_Click(object sender, EventArgs e)
         {
             plotgraph test = new plotgraph("yahoo.com");
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 120; i++)
             {
-                test.AddRecord(DateTime.Now, DateTime.Now.AddMinutes(5), 512000);
-                test.AddRecord(DateTime.Now.AddMinutes(11), DateTime.Now.AddMinutes(18), 512000);
+                test.AddRecord(DateTime.Now.AddHours(-20), DateTime.Now.AddMinutes(i+1).AddHours(-20), 512000);
             }
             test.CreateGraph();
         }

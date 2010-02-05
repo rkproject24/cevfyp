@@ -1,403 +1,483 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <DataBase>
   <Record id="0" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:43:00</RecordTime>
+    <Speed>8533</Speed>
   </Record>
   <Record id="1" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:44:00</RecordTime>
+    <Speed>4266</Speed>
   </Record>
   <Record id="2" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:45:00</RecordTime>
+    <Speed>2844</Speed>
   </Record>
   <Record id="3" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:46:00</RecordTime>
+    <Speed>2133</Speed>
   </Record>
   <Record id="4" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
+    <RecordTime>2010/2/4 18:47:00</RecordTime>
     <Speed>1706</Speed>
   </Record>
   <Record id="5" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:48:00</RecordTime>
+    <Speed>1422</Speed>
   </Record>
   <Record id="6" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:49:00</RecordTime>
+    <Speed>1219</Speed>
   </Record>
   <Record id="7" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:50:00</RecordTime>
+    <Speed>1066</Speed>
   </Record>
   <Record id="8" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:51:00</RecordTime>
+    <Speed>948</Speed>
   </Record>
   <Record id="9" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:52:00</RecordTime>
+    <Speed>853</Speed>
   </Record>
   <Record id="10" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:53:00</RecordTime>
+    <Speed>775</Speed>
   </Record>
   <Record id="11" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:54:00</RecordTime>
+    <Speed>711</Speed>
   </Record>
   <Record id="12" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:55:00</RecordTime>
+    <Speed>656</Speed>
   </Record>
   <Record id="13" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:56:00</RecordTime>
+    <Speed>609</Speed>
   </Record>
   <Record id="14" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:57:00</RecordTime>
+    <Speed>568</Speed>
   </Record>
   <Record id="15" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 18:58:00</RecordTime>
+    <Speed>533</Speed>
   </Record>
   <Record id="16" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 18:59:00</RecordTime>
+    <Speed>501</Speed>
   </Record>
   <Record id="17" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:00:00</RecordTime>
+    <Speed>474</Speed>
   </Record>
   <Record id="18" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:01:00</RecordTime>
+    <Speed>449</Speed>
   </Record>
   <Record id="19" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:02:00</RecordTime>
+    <Speed>426</Speed>
   </Record>
   <Record id="20" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:03:00</RecordTime>
+    <Speed>406</Speed>
   </Record>
   <Record id="21" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:04:00</RecordTime>
+    <Speed>387</Speed>
   </Record>
   <Record id="22" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:05:00</RecordTime>
+    <Speed>371</Speed>
   </Record>
   <Record id="23" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:06:00</RecordTime>
+    <Speed>355</Speed>
   </Record>
   <Record id="24" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:07:00</RecordTime>
+    <Speed>341</Speed>
   </Record>
   <Record id="25" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:08:00</RecordTime>
+    <Speed>328</Speed>
   </Record>
   <Record id="26" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:09:00</RecordTime>
+    <Speed>316</Speed>
   </Record>
   <Record id="27" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:10:00</RecordTime>
+    <Speed>304</Speed>
   </Record>
   <Record id="28" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:11:00</RecordTime>
+    <Speed>294</Speed>
   </Record>
   <Record id="29" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:12:00</RecordTime>
+    <Speed>284</Speed>
   </Record>
   <Record id="30" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:13:00</RecordTime>
+    <Speed>275</Speed>
   </Record>
   <Record id="31" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:14:00</RecordTime>
+    <Speed>266</Speed>
   </Record>
   <Record id="32" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:15:00</RecordTime>
+    <Speed>258</Speed>
   </Record>
   <Record id="33" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:16:00</RecordTime>
+    <Speed>250</Speed>
   </Record>
   <Record id="34" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:17:00</RecordTime>
+    <Speed>243</Speed>
   </Record>
   <Record id="35" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:18:00</RecordTime>
+    <Speed>237</Speed>
   </Record>
   <Record id="36" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:19:00</RecordTime>
+    <Speed>230</Speed>
   </Record>
   <Record id="37" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:20:00</RecordTime>
+    <Speed>224</Speed>
   </Record>
   <Record id="38" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:21:00</RecordTime>
+    <Speed>218</Speed>
   </Record>
   <Record id="39" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:22:00</RecordTime>
+    <Speed>213</Speed>
   </Record>
   <Record id="40" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:23:00</RecordTime>
+    <Speed>208</Speed>
   </Record>
   <Record id="41" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:24:00</RecordTime>
+    <Speed>203</Speed>
   </Record>
   <Record id="42" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:25:00</RecordTime>
+    <Speed>198</Speed>
   </Record>
   <Record id="43" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:26:00</RecordTime>
+    <Speed>193</Speed>
   </Record>
   <Record id="44" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:27:00</RecordTime>
+    <Speed>189</Speed>
   </Record>
   <Record id="45" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:28:00</RecordTime>
+    <Speed>185</Speed>
   </Record>
   <Record id="46" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:29:00</RecordTime>
+    <Speed>181</Speed>
   </Record>
   <Record id="47" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:30:00</RecordTime>
+    <Speed>177</Speed>
   </Record>
   <Record id="48" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:31:00</RecordTime>
+    <Speed>174</Speed>
   </Record>
   <Record id="49" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:32:00</RecordTime>
+    <Speed>170</Speed>
   </Record>
   <Record id="50" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:33:00</RecordTime>
+    <Speed>167</Speed>
   </Record>
   <Record id="51" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:34:00</RecordTime>
+    <Speed>164</Speed>
   </Record>
   <Record id="52" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:35:00</RecordTime>
+    <Speed>161</Speed>
   </Record>
   <Record id="53" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:36:00</RecordTime>
+    <Speed>158</Speed>
   </Record>
   <Record id="54" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:37:00</RecordTime>
+    <Speed>155</Speed>
   </Record>
   <Record id="55" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:38:00</RecordTime>
+    <Speed>152</Speed>
   </Record>
   <Record id="56" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:39:00</RecordTime>
+    <Speed>149</Speed>
   </Record>
   <Record id="57" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:40:00</RecordTime>
+    <Speed>147</Speed>
   </Record>
   <Record id="58" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:41:00</RecordTime>
+    <Speed>144</Speed>
   </Record>
   <Record id="59" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:42:00</RecordTime>
+    <Speed>142</Speed>
   </Record>
   <Record id="60" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:43:00</RecordTime>
+    <Speed>139</Speed>
   </Record>
   <Record id="61" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:44:00</RecordTime>
+    <Speed>137</Speed>
   </Record>
   <Record id="62" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:45:00</RecordTime>
+    <Speed>135</Speed>
   </Record>
   <Record id="63" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:46:00</RecordTime>
+    <Speed>133</Speed>
   </Record>
   <Record id="64" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:47:00</RecordTime>
+    <Speed>131</Speed>
   </Record>
   <Record id="65" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:48:00</RecordTime>
+    <Speed>129</Speed>
   </Record>
   <Record id="66" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:49:00</RecordTime>
+    <Speed>127</Speed>
   </Record>
   <Record id="67" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:50:00</RecordTime>
+    <Speed>125</Speed>
   </Record>
   <Record id="68" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:51:00</RecordTime>
+    <Speed>123</Speed>
   </Record>
   <Record id="69" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:52:00</RecordTime>
+    <Speed>121</Speed>
   </Record>
   <Record id="70" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:53:00</RecordTime>
+    <Speed>120</Speed>
   </Record>
   <Record id="71" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:54:00</RecordTime>
+    <Speed>118</Speed>
   </Record>
   <Record id="72" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:55:00</RecordTime>
+    <Speed>116</Speed>
   </Record>
   <Record id="73" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:56:00</RecordTime>
+    <Speed>115</Speed>
   </Record>
   <Record id="74" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:57:00</RecordTime>
+    <Speed>113</Speed>
   </Record>
   <Record id="75" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 19:58:00</RecordTime>
+    <Speed>112</Speed>
   </Record>
   <Record id="76" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 19:59:00</RecordTime>
+    <Speed>110</Speed>
   </Record>
   <Record id="77" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:00:00</RecordTime>
+    <Speed>109</Speed>
   </Record>
   <Record id="78" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:01:00</RecordTime>
+    <Speed>108</Speed>
   </Record>
   <Record id="79" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:02:00</RecordTime>
+    <Speed>106</Speed>
   </Record>
   <Record id="80" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:03:00</RecordTime>
+    <Speed>105</Speed>
   </Record>
   <Record id="81" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:04:00</RecordTime>
+    <Speed>104</Speed>
   </Record>
   <Record id="82" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:05:00</RecordTime>
+    <Speed>102</Speed>
   </Record>
   <Record id="83" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:06:00</RecordTime>
+    <Speed>101</Speed>
   </Record>
   <Record id="84" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:07:00</RecordTime>
+    <Speed>100</Speed>
   </Record>
   <Record id="85" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:08:00</RecordTime>
+    <Speed>99</Speed>
   </Record>
   <Record id="86" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:09:00</RecordTime>
+    <Speed>98</Speed>
   </Record>
   <Record id="87" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:10:00</RecordTime>
+    <Speed>96</Speed>
   </Record>
   <Record id="88" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:11:00</RecordTime>
+    <Speed>95</Speed>
   </Record>
   <Record id="89" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:12:00</RecordTime>
+    <Speed>94</Speed>
   </Record>
   <Record id="90" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:13:00</RecordTime>
+    <Speed>93</Speed>
   </Record>
   <Record id="91" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:14:00</RecordTime>
+    <Speed>92</Speed>
   </Record>
   <Record id="92" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:15:00</RecordTime>
+    <Speed>91</Speed>
   </Record>
   <Record id="93" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:16:00</RecordTime>
+    <Speed>90</Speed>
   </Record>
   <Record id="94" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:17:00</RecordTime>
+    <Speed>89</Speed>
   </Record>
   <Record id="95" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:18:00</RecordTime>
+    <Speed>88</Speed>
   </Record>
   <Record id="96" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:19:00</RecordTime>
+    <Speed>87</Speed>
   </Record>
   <Record id="97" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:20:00</RecordTime>
+    <Speed>87</Speed>
   </Record>
   <Record id="98" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:07:46</RecordTime>
-    <Speed>1706</Speed>
+    <RecordTime>2010/2/4 20:21:00</RecordTime>
+    <Speed>86</Speed>
   </Record>
   <Record id="99" Host="yahoo.com">
-    <RecordTime>3/2/2010 22:20:46</RecordTime>
-    <Speed>1219</Speed>
+    <RecordTime>2010/2/4 20:22:00</RecordTime>
+    <Speed>85</Speed>
+  </Record>
+  <Record id="100" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:23:00</RecordTime>
+    <Speed>84</Speed>
+  </Record>
+  <Record id="101" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:24:00</RecordTime>
+    <Speed>83</Speed>
+  </Record>
+  <Record id="102" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:25:00</RecordTime>
+    <Speed>82</Speed>
+  </Record>
+  <Record id="103" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:26:00</RecordTime>
+    <Speed>82</Speed>
+  </Record>
+  <Record id="104" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:27:00</RecordTime>
+    <Speed>81</Speed>
+  </Record>
+  <Record id="105" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:28:00</RecordTime>
+    <Speed>80</Speed>
+  </Record>
+  <Record id="106" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:29:00</RecordTime>
+    <Speed>79</Speed>
+  </Record>
+  <Record id="107" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:30:00</RecordTime>
+    <Speed>79</Speed>
+  </Record>
+  <Record id="108" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:31:00</RecordTime>
+    <Speed>78</Speed>
+  </Record>
+  <Record id="109" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:32:00</RecordTime>
+    <Speed>77</Speed>
+  </Record>
+  <Record id="110" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:33:00</RecordTime>
+    <Speed>76</Speed>
+  </Record>
+  <Record id="111" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:34:00</RecordTime>
+    <Speed>76</Speed>
+  </Record>
+  <Record id="112" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:35:00</RecordTime>
+    <Speed>75</Speed>
+  </Record>
+  <Record id="113" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:36:00</RecordTime>
+    <Speed>74</Speed>
+  </Record>
+  <Record id="114" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:37:00</RecordTime>
+    <Speed>74</Speed>
+  </Record>
+  <Record id="115" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:38:00</RecordTime>
+    <Speed>73</Speed>
+  </Record>
+  <Record id="116" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:39:00</RecordTime>
+    <Speed>72</Speed>
+  </Record>
+  <Record id="117" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:40:00</RecordTime>
+    <Speed>72</Speed>
+  </Record>
+  <Record id="118" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:41:00</RecordTime>
+    <Speed>71</Speed>
+  </Record>
+  <Record id="119" Host="yahoo.com">
+    <RecordTime>2010/2/4 20:42:00</RecordTime>
+    <Speed>71</Speed>
   </Record>
 </DataBase>
