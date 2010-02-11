@@ -69,7 +69,21 @@ namespace ClassLibrary
         //{
 
         //}
-
+        public List<PeerNode> getPeersByParent(string parentid)
+        {
+            List<PeerNode> childPeers = new List<PeerNode>();
+            int maxid = getMaxId();
+            for (int i = 1; i <= maxid; i++)
+            {
+                string fileParentid = RPI.Read("Peer", "ID", i.ToString(), "Parentid");
+                if (fileParentid.Equals(parentid))
+                {
+                    childPeers.Add(getPeer(i.ToString()));
+                }
+                    
+            }
+            return childPeers;
+        }
         public PeerNode getPeer(string id)
         {
             string ip = getIP(id);
