@@ -289,13 +289,21 @@ namespace Server
                     DPortClient = treeDPListener[(tree_index * max_client) + DThreadList_index].AcceptTcpClient();
                     stream = DPortClient.GetStream();
 
+                    //get peer ip
+                    IPAddress childAddress = ((IPEndPoint)DPortClient.Client.RemoteEndPoint).Address;
+
                     //get the peer id
                     byte[] responsePeerMsg = new byte[4];
                     stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                     int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
                     byte[] responsePeerMsg2 = new byte[MsgSize];
                     stream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-                    string peerId = ByteArrayToString(responsePeerMsg2);
+                    string str = ByteArrayToString(responsePeerMsg2);
+                    string[] messages = str.Split('@');
+
+                    string peerId = messages[0];
+                    int listenPort = Int32.Parse(messages[1]);
+                    int maxPeer = Int32.Parse(messages[2]);
 
                     dPort dpt = new dPort();
                     dpt.clientD = DPortClient;
@@ -303,6 +311,12 @@ namespace Server
                     dpt.peerId = Int32.Parse(peerId);
                     treeDPortList[tree_index][DThreadList_index] = dpt;
 
+                    //register the child
+                    while (!registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer))
+                    {
+                        registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer);
+                        Thread.Sleep(100);
+                    }
 
                     while (true)
                     {
@@ -522,7 +536,7 @@ namespace Server
                     Byte[] clienttype = StrToByteArray("<unRegists>");
                     connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
-                    string sendstr = tree + "@" + peerId;
+                    string sendstr = tree + "@" + peerId + "@0";
                     Byte[] sendbyte = StrToByteArray(sendstr);
                     //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -620,7 +634,56 @@ namespace Server
             }
 
         }
-     
+        // Write for tracker registration.
+        private bool registerToTracker(int tree, string peerId, IPAddress childAddress, int listenPort, string layer, int maxPeer)
+        {
+            TcpClient connectTracker;
+            NetworkStream connectTrackerStream;
+            try
+            {
+                connectTracker = new TcpClient(mainFm.tbTracker.Text, sConfig.TrackerPort);
+                //connectTracker = new TcpClient(clientFm.tbServerIp.Text, cConfig.TrackerPort);
+                connectTrackerStream = connectTracker.GetStream();
+
+                //define client message type
+                Byte[] clienttype = StrToByteArray("<cRegister>");
+                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+
+                ////send id
+                //Byte[] idbyte = StrToByteArray(selfid);
+                //connectTrackerStream.Write(idbyte, 0, idbyte.Length);
+
+                //Byte[] maxClient = StrToByteArray(this.cConfig.MaxPeer.ToString());
+                //connectTrackerStream.Write(maxClient, 0, maxClient.Length);
+
+                ////connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
+                //Byte[] clientLayer = StrToByteArray(layerT1);
+                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+
+                //clientLayer = StrToByteArray(layerT2);
+                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+
+
+                //string sendstr = listenPort + "@" + tree + "@" + peerId + "@" + this.cConfig.MaxPeer + "@" + layer;
+                string sendstr = childAddress.ToString() + "@" + listenPort + "@" + tree + "@" + peerId + "@" + maxPeer + "@" + layer + "@0";
+                Byte[] sendbyte = StrToByteArray(sendstr);
+                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+
+                connectTracker.Close();
+                connectTrackerStream.Close();
+
+            }
+            catch
+            {
+            }
+
+            return true;
+        }
+
 
       
     }//end class
