@@ -17,8 +17,8 @@ namespace Analysis
        void AddRecord(DateTime startTime, DateTime end, int size);
        // void importData(string ip);
        //GraphPane CreateGraph(GraphPane newpanel);
-       void CreateGraph(ZedGraphControl newpanel);
-       void UpdateGraph(ZedGraphControl newpanel);
+       void CreateGraph(ZedGraphControl newpanel, int totalTree);
+       void UpdateGraph(ZedGraphControl newpanel, int tree);
        //void cleanGraphScreen();
        void RefreshGraph();
        int MaxSpeed();
@@ -26,19 +26,23 @@ namespace Analysis
 
     public class plotgraph : graphinterface
     {
+        private Color[] curveColor = { Color.Red, Color.Blue, Color.SpringGreen, Color.Yellow, Color.Silver,Color.Purple };
+
         private string HostName;
         private int id;
-        PointPairList list;
-        int CurrentIndex;
-        LineItem myCurve;
+        PointPairList[] list;
+        //int CurrentIndex;
+        LineItem[] myCurve;
+        int[] previousPrint;
 
         public plotgraph(string host, Boolean refresh)
         {
             //PingIP Target;
             HostName = host;
-            list = new PointPairList();
+            //list = new PointPairList();
             //myCurve = new LineItem("Speed");
-            CurrentIndex = 0;
+            //CurrentIndex = 0;
+            //previousPrint = -1;
             if (refresh)
             {
                 xml Target = new xml(host, "DataBase", refresh);
@@ -47,9 +51,19 @@ namespace Analysis
             }
             else
             {
-                xml Target = new xml(host, "DataBase", refresh);
+                xml Target = new xml(HostName, "DataBase", refresh);
                 id = Int32.Parse(Target.ReadAttribute("DataBase", "Maxid"));
             }
+        }
+
+        public plotgraph(string host)
+        {
+            //PingIP Target;
+            HostName = host;
+            //list = new PointPairList();
+            //myCurve = new LineItem("Speed");
+            //CurrentIndex = 0;
+            //previousPrint = -1;
         }
 
         public string GetHostName()
@@ -61,7 +75,7 @@ namespace Analysis
         {
             xml Target = new xml(HostName, "DataBase", false);
             string record_time = end.ToString();
-            int speed = speedCalculate(startTime, end,size);
+            double speed = speedCalculate(startTime, end,size);
 
             string[] type = { "RecordTime", "Speed"};
             string[] value = { record_time, speed.ToString()};
@@ -70,17 +84,21 @@ namespace Analysis
             string[] attriV = { id.ToString(),HostName};
 
             Target.Add("Record", type, value, attriN, attriV);
-            id++;
             Target.modifyAttribute("DataBase", "Maxid", id.ToString());
+            id++;
+            //Target.modifyAttribute("DataBase", "Maxid", id.ToString());
         }
 
 
-        public int speedCalculate(DateTime starttime ,DateTime end, int size)
+        public int speedCalculate(DateTime starttime ,DateTime end, int sizeInBit)
         {
             try
             {
                 int time = (end.Hour - starttime.Hour) * 3600 + (end.Minute - starttime.Minute) * 60 + (end.Second - starttime.Second);
-                return size / time;
+                int result = sizeInBit / time;
+                Console.WriteLine(result);
+                //double time = (end.Hour - starttime.Hour) * 3600 + (end.Minute - starttime.Minute) * 60 + (end.Second - starttime.Second) + (end.Millisecond - starttime.Millisecond)*0.001;
+                return result;
             }
             catch
             { return 0; }
@@ -94,7 +112,7 @@ namespace Analysis
             return 0;
         }
 
-        public void CreateGraph(ZedGraphControl display)
+        public void CreateGraph(ZedGraphControl display, int totalTree)
         {
             //for (int i = 0; i < 100; i++)
             //{
@@ -105,11 +123,20 @@ namespace Analysis
             //CurrentIndex = 100;
 
             display.GraphPane.Title.Text = "Speed Versus Time";
-            display.GraphPane.XAxis.Title.Text = "Time";
-            display.GraphPane.YAxis.Title.Text = "Speed";
+            display.GraphPane.XAxis.Title.Text = "Time(sec)";
+            display.GraphPane.YAxis.Title.Text = "Speed(bit/s)";
             display.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
 
-            myCurve = display.GraphPane.AddCurve("Speed Curve", list, Color.DarkGreen, SymbolType.None);
+            list = new PointPairList[totalTree];
+            myCurve = new LineItem[totalTree];
+            previousPrint = new int[totalTree];
+            for (int i = 0; i < totalTree; i++)
+            {
+                previousPrint[i] = -1;
+                list[i] = new PointPairList();
+                myCurve[i] = display.GraphPane.AddCurve("Tree"+i, list[i], curveColor[(i%6)], SymbolType.None);
+            }
+            
             //PingIP measure = new PingIP("yahoo.com");
             //xml ImportData = new xml("yahoo.com", "DataBase", false);
             //for (int i = 0; i < 100; i++)
@@ -120,28 +147,42 @@ namespace Analysis
             //    double x = (double)new XDate(Convert.ToDateTime(ImportData.Read("Record", "id", i.ToString(), "RecordTime")));
             //    list.Add(x, y);
             //}
-            //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
-            
+            //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);         
         }
 
-        public void UpdateGraph(ZedGraphControl display)
+        public void UpdateGraph(ZedGraphControl display, int tree)
         {
             //AddRecord(DateTime.Now.AddHours(-20), DateTime.Now.AddMinutes(CurrentIndex).AddHours(-20), 512000);
 
             display.GraphPane.XAxis.Scale.MaxAuto = true;
-
-            xml ImportData = new xml("yahoo.com", "DataBase", false);
-            double y = Convert.ToInt32(ImportData.Read("Record", "id", CurrentIndex.ToString(), "Speed"));
-            double x = (double)new XDate(Convert.ToDateTime(ImportData.Read("Record", "id", CurrentIndex.ToString(), "RecordTime")));
-            list.Add(x, y);
-            //myCurve.AddPoint(new PointPair(x, y));
-            //remove the first data
-            if (list.Count >= 50)
-                list.RemoveAt(0);
-            //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
-            myCurve.AddPoint(new PointPair(x, y));
-            CurrentIndex++;
-
+            
+            xml ImportData = new xml("Tree"+tree, "DataBase", false);
+            int index = Int32.Parse(ImportData.ReadAttribute("DataBase", "Maxid"));
+            if (index > previousPrint[tree])
+            {
+                try
+                {
+                    previousPrint[tree]++;// = index;
+                    int y = Convert.ToInt32(ImportData.Read("Record", "id", previousPrint[tree].ToString(), "Speed"));
+                    double x = (double)new XDate(Convert.ToDateTime(ImportData.Read("Record", "id", previousPrint[tree].ToString(), "RecordTime")));
+                    list[tree].Add(x, y);
+                    //myCurve.AddPoint(new PointPair(x, y));
+                    //remove the first data
+                    if (list[tree].Count >= 50)
+                    {
+                        list[tree].RemoveAt(0);
+                        ImportData.deleteInnerNode("Record", "id", previousPrint[tree].ToString());
+                    }
+                    //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
+                    myCurve[tree].AddPoint(new PointPair(x, y));
+                    //CurrentIndex++;
+                }
+                catch(Exception ex)
+                {
+                    //MessageBox.Show(ex.ToString());
+                    //Console.WriteLine(ex);
+                }
+            }
 
 
             //this.display.AxisChange();
