@@ -32,8 +32,7 @@ namespace Client
         //ServerConfig sConfig = new ServerConfig();
         PeerInfoAccessor treeAccessor;
 
-        
-
+        int peerListenPort=0;
 
         /*public int Cport11
         {
@@ -50,6 +49,11 @@ namespace Client
         {
             get { return joinPeers; }
             set { joinPeers = value; }
+        }
+        public int PeerListenPort
+        {
+            get { return peerListenPort; }
+            set { peerListenPort = value; }
         }
 
      
@@ -362,53 +366,53 @@ namespace Client
         */
 
 
-        // Write for tracker registration.
-        public bool registerToTracker(int tree, int listenPort, string layer)
-        {
-            TcpClient connectTracker;
-            NetworkStream connectTrackerStream;
-            try
-            {
+        //// Write for tracker registration.
+        //public bool registerToTracker(int tree, int listenPort, string layer)
+        //{
+        //    TcpClient connectTracker;
+        //    NetworkStream connectTrackerStream;
+        //    try
+        //    {
 
-                connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
-                connectTrackerStream = connectTracker.GetStream();
+        //        connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
+        //        connectTrackerStream = connectTracker.GetStream();
 
-                //define client message type
-                Byte[] clienttype = StrToByteArray("<cRegister>");
-                connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+        //        //define client message type
+        //        Byte[] clienttype = StrToByteArray("<cRegister>");
+        //        connectTrackerStream.Write(clienttype, 0, clienttype.Length);
                 
-                ////send id
-                //Byte[] idbyte = StrToByteArray(selfid);
-                //connectTrackerStream.Write(idbyte, 0, idbyte.Length);
+        //        ////send id
+        //        //Byte[] idbyte = StrToByteArray(selfid);
+        //        //connectTrackerStream.Write(idbyte, 0, idbyte.Length);
 
-                //Byte[] maxClient = StrToByteArray(this.cConfig.MaxPeer.ToString());
-                //connectTrackerStream.Write(maxClient, 0, maxClient.Length);
+        //        //Byte[] maxClient = StrToByteArray(this.cConfig.MaxPeer.ToString());
+        //        //connectTrackerStream.Write(maxClient, 0, maxClient.Length);
 
-                ////connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
-                //Byte[] clientLayer = StrToByteArray(layerT1);
-                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+        //        ////connectTrackerStream.Write(MsgLength, 0, MsgLength.Length);
+        //        //Byte[] clientLayer = StrToByteArray(layerT1);
+        //        //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                //clientLayer = StrToByteArray(layerT2);
-                //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
+        //        //clientLayer = StrToByteArray(layerT2);
+        //        //connectTrackerStream.Write(clientLayer, 0, clientLayer.Length);
 
-                string sendstr = listenPort + "@" + tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer + "@" + joinPeers[tree].Id;
-                Byte[] sendbyte = StrToByteArray(sendstr);
-                //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+        //        string sendstr = listenPort + "@" + tree + "@" + selfid[tree] + "@" + this.cConfig.MaxPeer + "@" + layer + "@" + joinPeers[tree].Id;
+        //        Byte[] sendbyte = StrToByteArray(sendstr);
+        //        //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+        //        byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+        //        connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+        //        connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                connectTracker.Close();
-                connectTrackerStream.Close();
+        //        connectTracker.Close();
+        //        connectTrackerStream.Close();
 
-            }
-            catch
-            {
-            }
+        //    }
+        //    catch
+        //    {
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
 
         public static byte[] StrToByteArray(string str)
@@ -672,7 +676,7 @@ namespace Client
 
                 //send selfId
                 stream = treeclient.GetStream();
-                string sendstr = selfid[tree];
+                string sendstr = selfid[tree] + "@" + PeerListenPort + "@" + this.cConfig.MaxPeer;
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
                 stream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
@@ -795,58 +799,58 @@ namespace Client
         //    return treeclient;
         //}
 
-        public bool changeParent(int tree, string errType)
-        {
-            TcpClient connectTracker;
-            NetworkStream connectTrackerStream;
-            try
-            {
-                //if (errType.Equals("timeout"))
-                //{
-                //    clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent ERR: timeout\n" });
-                //    Thread.Sleep(1000);
-                //}
+        //public bool changeParent(int tree, string errType)
+        //{
+        //    TcpClient connectTracker;
+        //    NetworkStream connectTrackerStream;
+        //    try
+        //    {
+        //        //if (errType.Equals("timeout"))
+        //        //{
+        //        //    clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent ERR: timeout\n" });
+        //        //    Thread.Sleep(1000);
+        //        //}
 
-                bool changeSucess;
-                while (true)
-                {
-                    connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
-                    connectTrackerStream = connectTracker.GetStream();
+        //        bool changeSucess;
+        //        while (true)
+        //        {
+        //            connectTracker = new TcpClient(trackIp, cConfig.TrackerPort);
+        //            connectTrackerStream = connectTracker.GetStream();
 
-                    //define client message type
-                    Byte[] clienttype = StrToByteArray("<changePar>");
+        //            //define client message type
+        //            Byte[] clienttype = StrToByteArray("<changePar>");
 
-                    connectTrackerStream.Write(clienttype, 0, clienttype.Length);
-                    string sendstr = tree + "@" + Selfid[tree] + "@" + joinPeers[tree].Id;
-                    Byte[] sendbyte = StrToByteArray(sendstr);
-                    //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+        //            connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+        //            string sendstr = tree + "@" + Selfid[tree] + "@" + joinPeers[tree].Id;
+        //            Byte[] sendbyte = StrToByteArray(sendstr);
+        //            //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                    connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                    connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+        //            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+        //            connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+        //            connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                    byte[] recoonectMsg = new byte[1];
-                    connectTrackerStream.Read(recoonectMsg, 0, recoonectMsg.Length);
-                    changeSucess = BitConverter.ToBoolean(recoonectMsg, 0);
+        //            byte[] recoonectMsg = new byte[1];
+        //            connectTrackerStream.Read(recoonectMsg, 0, recoonectMsg.Length);
+        //            changeSucess = BitConverter.ToBoolean(recoonectMsg, 0);
 
-                    connectTracker.Close();
-                    connectTrackerStream.Close();
-                    //clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent loop ERR:"+errType+"\n" });
-                    if (errType.Equals("other") || !changeSucess)//if it is local timeout err, then it must changePar until its parent unreg it
-                        break;
-                    Thread.Sleep(500);
-                }
+        //            connectTracker.Close();
+        //            connectTrackerStream.Close();
+        //            //clientFrm.rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "changeParent loop ERR:"+errType+"\n" });
+        //            if (errType.Equals("other") || !changeSucess)//if it is local timeout err, then it must changePar until its parent unreg it
+        //                break;
+        //            Thread.Sleep(500);
+        //        }
 
-                if (!changeSucess)
-                    return false;
+        //        if (!changeSucess)
+        //            return false;
 
-            }
-            catch
-            {
-            }
+        //    }
+        //    catch
+        //    {
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         private int RandomNumber(int min, int max)
         {

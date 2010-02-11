@@ -14,9 +14,5 @@ namespace Client
         {
             InitializeComponent();
         }
-        public System.Windows.Forms.RichTextBox getdowloadUI()
-        {
-            return rtbdownload;
-        }
     }
 }

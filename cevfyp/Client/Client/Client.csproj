@@ -32,19 +32,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analysis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Analysis\Analysis\bin\Debug\Analysis.dll</HintPath>
+    </Reference>
     <Reference Include="Andy.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="ClassLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Crom.Controls, Version=2.0.5.21, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TeamSystem.Data.UnitTesting, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="XCoolForm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="ZedGraph, Version=5.0.6.18416, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Analysis\Analysis\bin\Debug\ZedGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChunkHandler.cs" />
@@ -60,6 +71,7 @@
     <Compile Include="PlaybackFrm.Designer.cs">
       <DependentUpon>PlaybackFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StatisticHandler.cs" />
     <Compile Include="XmlThemeLoader.cs" />
     <Compile Include="ClientHandler.cs">
     </Compile>
