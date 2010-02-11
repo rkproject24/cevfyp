@@ -1195,7 +1195,7 @@ namespace Client
                 listenerThread.Abort();
                 upPorth.closeCDPortThread();
 
-                serverConnect = false;
+                //serverConnect = false;
                 vlcConnect = false;
                 uploading = false;
 
@@ -1215,7 +1215,8 @@ namespace Client
                     sendExit(i);
                     receiveControlThread[i].Abort();
                 }
-    
+                serverConnect = false;
+
                 //server.Stop();
                 receiveChunkThread.Clear();
                 receiveControlThread.Clear();
