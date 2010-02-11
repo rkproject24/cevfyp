@@ -43,44 +43,47 @@
             // 
             // rtbClientlist
             // 
-            this.rtbClientlist.Location = new System.Drawing.Point(12, 58);
+            this.rtbClientlist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.rtbClientlist.Location = new System.Drawing.Point(12, 63);
             this.rtbClientlist.Name = "rtbClientlist";
-            this.rtbClientlist.Size = new System.Drawing.Size(256, 166);
+            this.rtbClientlist.Size = new System.Drawing.Size(256, 180);
             this.rtbClientlist.TabIndex = 0;
             this.rtbClientlist.Text = "";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 43);
+            this.label1.Location = new System.Drawing.Point(8, 47);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 12);
+            this.label1.Size = new System.Drawing.Size(66, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Online Client";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(256, 43);
+            this.label2.Location = new System.Drawing.Point(256, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(26, 12);
+            this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Tree";
             // 
             // cbbTree
             // 
             this.cbbTree.FormattingEnabled = true;
-            this.cbbTree.Location = new System.Drawing.Point(288, 35);
+            this.cbbTree.Location = new System.Drawing.Point(288, 38);
             this.cbbTree.Name = "cbbTree";
-            this.cbbTree.Size = new System.Drawing.Size(77, 20);
+            this.cbbTree.Size = new System.Drawing.Size(77, 21);
             this.cbbTree.TabIndex = 3;
             this.cbbTree.SelectedIndexChanged += new System.EventHandler(this.cbbTree_SelectedIndexChanged);
             // 
             // btnOn
             // 
-            this.btnOn.Location = new System.Drawing.Point(12, 230);
+            this.btnOn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOn.Location = new System.Drawing.Point(12, 249);
             this.btnOn.Name = "btnOn";
-            this.btnOn.Size = new System.Drawing.Size(75, 21);
+            this.btnOn.Size = new System.Drawing.Size(75, 23);
             this.btnOn.TabIndex = 4;
             this.btnOn.Text = "On";
             this.btnOn.UseVisualStyleBackColor = true;
@@ -91,20 +94,21 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.preferenceToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(120, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(128, 26);
             // 
             // preferenceToolStripMenuItem
             // 
             this.preferenceToolStripMenuItem.Name = "preferenceToolStripMenuItem";
-            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.preferenceToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.preferenceToolStripMenuItem.Text = "Preference";
             // 
             // btnReset
             // 
+            this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnReset.Enabled = false;
-            this.btnReset.Location = new System.Drawing.Point(94, 230);
+            this.btnReset.Location = new System.Drawing.Point(94, 249);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.Size = new System.Drawing.Size(75, 25);
             this.btnReset.TabIndex = 5;
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
@@ -112,17 +116,19 @@
             // 
             // TreelistView
             // 
-            this.TreelistView.Location = new System.Drawing.Point(274, 58);
+            this.TreelistView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.TreelistView.Location = new System.Drawing.Point(274, 63);
             this.TreelistView.Name = "TreelistView";
-            this.TreelistView.Size = new System.Drawing.Size(239, 166);
+            this.TreelistView.Size = new System.Drawing.Size(239, 180);
             this.TreelistView.TabIndex = 6;
             this.TreelistView.UseCompatibleStateImageBehavior = false;
             // 
             // TrackerMainFrm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(520, 269);
+            this.ClientSize = new System.Drawing.Size(520, 291);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnOn);
             this.Controls.Add(this.TreelistView);
@@ -140,7 +146,7 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox rtbClientlist;
+        public System.Windows.Forms.RichTextBox rtbClientlist;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbbTree;
