@@ -12,6 +12,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using ClassLibrary;
 
+using Analysis;
+
 namespace Client
 {
     class ClientHandler
@@ -65,6 +67,7 @@ namespace Client
 
         List<Thread> receiveChunkThread;
         List<Thread> receiveControlThread;
+        List<Thread> graphThreads;
         Thread broadcastVlcStreamingThread;
         Thread updateChunkListThread;
         Thread updateFmIDThread;
@@ -74,15 +77,21 @@ namespace Client
 
         private ClientForm mainFm;
         public delegate void UpdateTextCallback(string message);
-        private PeerHandler peerh;
+        public delegate void UpdateGraphCallback(plotgraph graphdata);
 
+        private PeerHandler peerh;
+        //bool speedXMLwrite = true;
+        //private List<plotgraph> graphTreeData;
+        //SpeedFrm spfrmtemp;
         ClientConfig cConfig = new ClientConfig();
+        StatisticHandler statHandler;
 
         public ClientHandler(ClientForm mainFm)
         {
             this.mainFm = mainFm;
             vlc = new VlcHandler();
             ch = new ChunkHandler();
+            statHandler = new StatisticHandler();
 
             cConfig.load("C:\\ClientConfig");
             chunkList = new List<Chunk>(cConfig.ChunkCapacity);
@@ -106,16 +115,26 @@ namespace Client
             treeCLCurrentSeq = new int[treeNO];
             treeReconnectState = new int[treeNO];
 
+            graphThreads = new List<Thread>(treeNO);
             receiveChunkThread = new List<Thread>(treeNO);
             receiveControlThread=new List<Thread>(treeNO);
 
             ClientC = new List<TcpClient>(treeNO);
             ClientD = new List<TcpClient>(treeNO);
 
+            //graphTreeData = new List<plotgraph>(treeNO);
+
+            //statHandler.createGraph(treeNO);
+
             for (int i = 0; i < treeNO; i++)
             {
                 ClientC.Add(null);
                 ClientD.Add(null);
+
+                //SpeedFrm spfrmtemp = new SpeedFrm("Tree" + i);
+                
+                //spfrm.Add(spfrmtemp);
+                //spfrm[i].Show();
             }
 
 
@@ -170,6 +189,7 @@ namespace Client
             {
                 bool check = false;
                 PeerListenPort = TcpApps.RanPort(cConfig.LisPort, cConfig.LisPortup);
+
                 //startUpload();
                 for (int i = 0; i < treeNO; i++)
                 {
@@ -257,6 +277,7 @@ namespace Client
 
                 if (conPeer)
                 {
+                    peerh.PeerListenPort = this.PeerListenPort;
 
                         ClientC[tree_index]=peerh.getControlConnect(tree_index);
                         ClientD[tree_index]=peerh.getDataConnect(tree_index);
@@ -278,8 +299,9 @@ namespace Client
 
                         }
 
-                    if (!reconnectUse)
-                        peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString()); //by vinci: register To Tree in Tracker
+                    //move to register by parent
+                    //if (!reconnectUse)
+                    //    peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString()); //by vinci: register To Tree in Tracker
 
                     
 
@@ -390,6 +412,7 @@ namespace Client
                 //conSource = connectToSources(tree_index,true);
                 //changeParent = peerh.changeParent(tree_index);//register to tracker for new parent
 
+
                 if (!peerh.downloadPeerlist(tree_index, true))
                 {
                     ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "reconnect downloadPeerlist fail\n" });
@@ -404,8 +427,10 @@ namespace Client
                     Thread.Sleep(20);
                     continue;
                 }
-                if (!peerh.changeParent(tree_index, errType))//register to tracker for new parent
-                    peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString());
+
+                //moved to handle by parent
+                //if (!peerh.changeParent(tree_index, errType))//register to tracker for new parent
+                //    peerh.registerToTracker(tree_index, PeerListenPort, peerh.JoinPeer[tree_index].Layer.ToString());
                 //mainFm.rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "reconnect complate:"+peerh.JoinPeer[tree_index].Id+"\n" });
                 break;
                 
@@ -420,12 +445,29 @@ namespace Client
         public void startThread()
         {
             tempSeq = 0;
+            //SpeedFrm spfrm = new SpeedFrm("Tree"+tree_index);
+
+            //for (int i = 0; i < treeNO; i++)
+            //{
+            //    //startSpeedgraph(i);
+            //    Thread graphThread = new Thread(delegate() { spfrm[i].Show(); });
+            //    graphThread.IsBackground = true;
+            //    graphThread.Name = "graph" + i;
+            //    graphThread.Start();
+            //    //Thread.Sleep(20);
+            //    graphThreads.Add(graphThread);
+            //}
+            //Thread.Sleep(100);
 
             for (int i = 0; i < treeNO; i++)
             {
                 List<Chunk> chunkLists = new List<Chunk>(cConfig.ChunkCapacity);
                 treeChunkList.Add(chunkLists);
 
+                //graphTreeData.Add(new plotgraph("Tree" + i, true));
+                //plotgraph graphdata = graphTreeData[tree_index];
+
+                //Thread DRecvThread = new Thread(delegate() { receiveTreeChunk(i, graphTreeData[i]); });
                 Thread DRecvThread = new Thread(delegate() { receiveTreeChunk(i); });
                 DRecvThread.IsBackground = true;
                 DRecvThread.Name = " DRecv_handle_" + i;
@@ -439,7 +481,27 @@ namespace Client
                 CRecvThread.Start();
                 Thread.Sleep(20);
                 receiveControlThread.Add(CRecvThread);
+
+                //Thread speedgraph = new Thread(delegate() { startSpeedgraph(i); });
+                //speedgraph.IsBackground = true;
+                //speedgraph.Name = " SpeedGraph" + i;
+                //speedgraph.Start();
+                //Thread.Sleep(20);
+                //graphThreads.Add(speedgraph);
+
             }
+            //Thread.Sleep(100);
+            //for (int i = 0; i < treeNO; i++)
+            //{
+                //spfrmtemp = new SpeedFrm("Tree" + i, graphTreeData[i]);
+                //Thread speedgraph = new Thread(delegate() { startSpeedgraph(0); });
+                //speedgraph.IsBackground = true;
+                //speedgraph.Name = " SpeedGraph" + 0;
+                //speedgraph.Start();
+                //Thread.Sleep(20);
+                //graphThreads.Add(speedgraph);
+            //}
+
 
                 //startUpload();
             
@@ -463,6 +525,43 @@ namespace Client
                 vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
         }
 
+        //public void startSpeedgraph(int tree)
+        //{
+        //    //plotgraph graphdata = new plotgraph("Tree" + tree, true);
+        //    //spfrmtemp = new SpeedFrm("Tree" + tree, graphTreeData[tree]);
+        //    //spfrmtemp.Show();
+
+        //    //mainFm.CreateTestForm(new Guid(code4 + "1"));
+        //    //spfrmtemp.repaint();
+        //    //System.Windows.Forms.Application.Run(spfrmtemp);
+
+        //    mainFm.updateGraph(graphTreeData[tree]);
+        //    //((SpeedFrm)mainFm.updateGraph).BeginInvoke(new UpdateGraphCallback(mainFm.updateGraph), new object[] { graphTreeData[tree] });
+        //    while (true)
+        //    {
+        //        if (!speedXMLwrite)
+        //        {
+        //            speedXMLwrite = true;
+        //            //spfrmtemp.UpdateSpeed();
+        //            //mainFm.updateGraph(graphTreeData[tree]);
+        //            ((SpeedFrm)mainFm.speedFrm).UpdateSpeed();
+        //            //((SpeedFrm)mainFm.speedFrm).zedGraphCon.BeginInvoke();
+        //            speedXMLwrite = false;
+        //            //spfrmtemp.ShowDialog();
+        //            //spfrmtemp.repaint();
+        //            //spfrmtemp.release();
+        //        }
+        //        Thread.Sleep(1000);
+        //        //spfrmtemp.clo;
+        //    }
+
+        //}
+
+        //private void updateGraph(DateTime start, DateTime end,int tree)
+        //{
+        //    spfrm[tree].UpdateSpeed(start, end, cConfig.ChunkSize);
+        //}
+
         public void startUpload()
         {
             if (!uploading)
@@ -472,7 +571,7 @@ namespace Client
 
                 //start uploading thread
                 this.max_peer = cConfig.MaxPeer;
-                upPorth = new UploadPortHandler(cConfig, CLIENTIP, mainFm, treeNO);
+                upPorth = new UploadPortHandler(cConfig, CLIENTIP, mainFm, treeNO, this);
                 upPorth.startTreePort();
                 //mainFm.rtbupload.AppendText("upPorth.startPort()");
 
@@ -514,7 +613,7 @@ namespace Client
 
         }
 
-
+        //private void receiveTreeChunk(int tree_index, plotgraph graphdata)
         private void receiveTreeChunk(int tree_index)
         {
             TcpClient clientD = null;
@@ -525,6 +624,16 @@ namespace Client
             Chunk streamingChunk;
             int responseMessageBytes;
 
+
+            //SpeedFrm spfrmtemp = new SpeedFrm("Tree" + tree_index);
+            //if (tree_index == 0)
+            //{
+            //    spfrmtemp.Show();
+            //}
+            //spfrm.Add(spfrmtemp);
+            
+            //plotgraph graphdata = new plotgraph("Tree" + tree_index, true);
+            
             while (serverConnect)
             {
                 int checkNullCount = 0;
@@ -551,9 +660,12 @@ namespace Client
                         continue;
                     }
 
-
+                    int receiveCount = 1;
+                    DateTime start, end;
+                    start = DateTime.Now;
                     while (true)
                     {
+
                         if (ClientD[tree_index] == null)
                         {
                             stream.Close();
@@ -577,6 +689,11 @@ namespace Client
 
                         stream.ReadTimeout = cConfig.ReadStreamTimeout;
                         responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
+                        
+
+                        //if (tree_index == 0)
+                        //    spfrmtemp.UpdateSpeed(start, end, cConfig.ChunkSize);
+
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
                         
                         if (responseString == "Wait")
@@ -625,33 +742,58 @@ namespace Client
                             upPorth.setChunkList(streamingChunk, tree_index);
                         }
 
-                        //by yam:04-01-10
-                        int write_index = treeCLWriteIndex[tree_index];
 
-                        if (treeChunkList[tree_index].Count <= cConfig.ChunkCapacity)
-                            treeChunkList[tree_index].Add(streamingChunk);
+                        if (streamingChunk.seq > (treeCLCurrentSeq[tree_index] - 60))
+                        {
+                            int write_index = treeCLWriteIndex[tree_index];
+
+                            if (treeChunkList[tree_index].Count <= cConfig.ChunkCapacity)
+                                treeChunkList[tree_index].Add(streamingChunk);
+                            else
+                                treeChunkList[tree_index][write_index] = streamingChunk;
+
+                            if (write_index == cConfig.ChunkCapacity)
+                                treeCLWriteIndex[tree_index] = 0;
+                            else
+                                treeCLWriteIndex[tree_index] += 1;
+
+                            treeCLCurrentSeq[tree_index] = streamingChunk.seq;
+
+                            if (tree_index == 0)
+                                mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+                            if (tree_index == 1)
+                                mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+                            if (tree_index == 2)
+                                mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { treeCLCurrentSeq[tree_index].ToString() });
+
+                            //speed test
+
+                            //if (receiveCount == 30 && tree_index==0)
+                            if (receiveCount == 30)
+                            {
+                                end = DateTime.Now;
+                                //spfrmtemp.UpdateSpeed(start, end, cConfig.ChunkSize*30*8);
+                                //speedXMLwrite = true;
+                                //graphdata.AddRecord(start, end, cConfig.ChunkSize * 30 * 8);
+                                //speedXMLwrite = false;
+                                statHandler.updateCurve(start, end, cConfig.ChunkSize * 30 * 8, tree_index, treeNO);
+                                receiveCount = 1;
+                                start = DateTime.Now;
+                            }
+                            receiveCount++;
+                        }
                         else
-                            treeChunkList[tree_index][write_index] = streamingChunk;
+                        {
+                            ArgumentException argEx2 = new System.ArgumentException("chunkNull");
+                            throw argEx2;
+                        }
+                             
 
-                        if (write_index == cConfig.ChunkCapacity)
-                            treeCLWriteIndex[tree_index] = 0;
-                        else
-                            treeCLWriteIndex[tree_index] += 1;
-
-                        treeCLCurrentSeq[tree_index] = streamingChunk.seq;
-
-                        if (tree_index == 0)
-                            mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { treeCLCurrentSeq[tree_index].ToString() });
-                        if (tree_index == 1)
-                            mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { treeCLCurrentSeq[tree_index].ToString() });
-                        if (tree_index == 2)
-                            mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { treeCLCurrentSeq[tree_index].ToString() });
-                       
                     }
                 }
                 catch (Exception ex)
                 {
-                   // MessageBox.Show(ex.ToString());
+                    //MessageBox.Show(ex.ToString());
                     if (stream != null)
                         stream.Close();
                     if (clientD != null)
@@ -894,7 +1036,9 @@ namespace Client
                         if (tempSeq == 2147483647)
                             tempSeq = 1;
                         else
-                            tempSeq += 1; 
+                            tempSeq += 1;
+
+                        continue;
                     }
 
                    if (check_num == i && ClientD[i] == null)
@@ -907,7 +1051,7 @@ namespace Client
 
                    }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(30);
             }
         }
        
@@ -1233,7 +1377,11 @@ namespace Client
             }
         }
 
-       
+        public void startStatistic()
+        {
+            statHandler.StatisticListen = (Int32)mainFm.nudStatisticPort.Value;
+            statHandler.Enable = true;
+        }
 
     }// end class     
 }// end namespace

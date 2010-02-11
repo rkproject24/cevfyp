@@ -15,6 +15,7 @@ using System.IO;
 //using System.Runtime.InteropServices;
 using ClassLibrary;
 using Crom.Controls.Docking;
+using Analysis;
 
 namespace Client
 {
@@ -23,9 +24,11 @@ namespace Client
         private const string code = "a6402b80-2ebd-4fd3-8930-024a6201d001";
         private const string code2 = "a6402b80-2ebd-4fd3-8930-024a6201d002";
         private const string code3 = "a6402b80-2ebd-4fd3-8930-024a6201d003";
+        private const string code4 = "a6402b80-2ebd-4fd3-8930-024a6201d004";
         private DockContainer _docker = null;
-        public Form downloadFrm, uploadFrm, playFrm;
+        public Form downloadFrm, uploadFrm, playFrm, speedFrm;
         private DockStateSerializer _serializer = null;
+        public plotgraph graphTreeData;
 
        // static int chunkList_capacity = 1000;  //0-xxx
        // static int SERVER_PORT = 1100;  //server listen port
@@ -94,6 +97,11 @@ namespace Client
             label5.Text = message;
         }
 
+        //public void updateGraph(plotgraph data)
+        //{
+        //    ((SpeedFrm)speedFrm).setData(data);
+        //}
+
 
         public ClientForm()
         {
@@ -105,6 +113,7 @@ namespace Client
         //_docker.FormClosing += OnDockerFormClosing;
         //_docker.FormClosed += OnDockerFormClosed;
 
+            graphTreeData = new plotgraph("Tree0", true);
             clientHandler = new ClientHandler(this);
 
             downloadFrm = CreateTestForm(new Guid(code));
@@ -132,9 +141,20 @@ namespace Client
             info3.ShowCloseButton = false;
             _docker.DockForm(info3, DockStyle.Fill, zDockMode.Outer);
             _docker.SetHeight(info3, 310);
+
+            //SpeedFrm speed = new SpeedFrm("tree0");
+            //this.speedFrm = CreateTestForm(new Guid(code4), speed);
+            ////form1.Show();
+            //DockableFormInfo info4 = _docker.Add(speedFrm, zAllowedDock.All, new Guid(code4));
+            //info4.ShowContextMenuButton = false;
+            //_docker.DockForm(info4, DockStyle.Bottom, zDockMode.Outer);
+            //_docker.SetHeight(info4, 310);
+            //info4.ShowCloseButton = false;
             
-            _docker.SetAutoHide(info1, true);
-            _docker.SetAutoHide(info2, true);
+
+            
+            //_docker.SetAutoHide(info1, true);
+            //_docker.SetAutoHide(info2, true);
            
         }
 
@@ -155,7 +175,7 @@ namespace Client
             return form;
         }
 
-        private static Form CreateTestForm(Guid identifier)
+        public static Form CreateTestForm(Guid identifier)
         {
             if (identifier == new Guid(code))
             {
@@ -178,9 +198,26 @@ namespace Client
                 result.Text = "video";
                 return result;
             }
+            //else if (identifier == new Guid(code4))
+            //{
+                
+            //    //SpeedFrm result = new SpeedFrm("tree0", graphTreeData);
+            //    result.Bounds = new Rectangle(200, 100, 400, 200);
+            //    result.Text = "speed";
+            //    return result;
+            //}
 
             throw new InvalidOperationException();
         }
+
+        //public static Form CreateTestForm(Guid identifier, SpeedFrm result)
+        //{
+        //    result.Bounds = new Rectangle(200, 100, 400, 450);
+        //    result.Text = "speed";
+        //    return result;
+
+        //    throw new InvalidOperationException();
+        //}
 
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -329,6 +366,12 @@ namespace Client
             //if (clientHandler.vlc.playing)
             //    clientHandler.vlc.stop(); //to avoid GUI problem
             clientHandler.closeAllThread();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            btnStatistic.Enabled = false;
+            clientHandler.startStatistic();
         }
        
 
