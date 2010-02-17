@@ -33,6 +33,7 @@ namespace TrackerServer
 
         public List<Thread> unRegChildThread;
         List<ChildUnregHandler> unreghandlers;
+        List<Thread> peerlistThreads;
         //int max_client;
 
        // List<PeerNode> peerList; //store all the Peer include server in a list
@@ -45,6 +46,7 @@ namespace TrackerServer
             treeNo= 0;
             InitializeComponent();
             unRegChildThread = new List<Thread>();
+            peerlistThreads = new List<Thread>();
         }
 
         private void btnOn_Click(object sender, EventArgs e)
@@ -119,6 +121,10 @@ namespace TrackerServer
                             byte[] newIDbyte = BitConverter.GetBytes(newID);
                             cstream.Write(newIDbyte, 0, newIDbyte.Length);
                         }
+                        responsePeerMsg = new byte[4];
+                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                        int peerListPort = BitConverter.ToInt32(responsePeerMsg, 0);
+
                         //if (!recoonect)
                         //{
                         //    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
@@ -128,7 +134,7 @@ namespace TrackerServer
                         //    cstream.Write(newIDbyte, 0, newIDbyte.Length);
                         //}
 
-                        byte[] peeripMsg;
+                        //byte[] peeripMsg;
                         //if (File.Exists(Peerlist_name + "1" + ".xml"))
                         if (File.Exists(Peerlist_name + treeNo + ".xml"))
                         {
@@ -138,24 +144,23 @@ namespace TrackerServer
                             sr.Close();
                             file.Close();
 
+                            Thread peerlistThread = new Thread(new ThreadStart(delegate() { sendPeerList(peerListPort, clientendpt,s1); }));
+                            peerlistThread.IsBackground = true;
+                            peerlistThread.Name = "Peerlist_to_" + peerListPort;
+                            peerlistThread.Start();
+                            peerlistThreads.Add(peerlistThread);
 
-                            //file = new FileStream(Peerlist_name + "2.xml", FileMode.OpenOrCreate, FileAccess.Read);
-                            //sr = new StreamReader(file);
-                            //string s2 = sr.ReadToEnd();
-                            //sr.Close();
-                            //file.Close();
-
-                            //peeripMsg = StrToByteArray(s1 + "@" + s2);
-                            peeripMsg = StrToByteArray(s1);
+                            //peeripMsg = StrToByteArray(s1);
 
                         }
                         else
                         {
-                            peeripMsg = StrToByteArray("NOPEER");
+                            byte[] peeripMsg = StrToByteArray("NOPEER");
                         }
-                        byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
-                        cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                        cstream.Write(peeripMsg, 0, peeripMsg.Length);
+                        //===========move to thread===============
+                        //byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
+                        //cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                        //cstream.Write(peeripMsg, 0, peeripMsg.Length);
 
                     }
                     else if (peertype.Contains("<cRegister>"))
@@ -459,6 +464,19 @@ namespace TrackerServer
                 return false;
             }
             return true;
+        }
+
+        public void sendPeerList(int peerlistPort, IPAddress ip, string xmlString)
+        {
+            byte[] peeripMsg = StrToByteArray(xmlString);
+
+            TcpClient trackerTcpClient = new TcpClient(ip.ToString(), peerlistPort);
+            NetworkStream cstream = trackerTcpClient.GetStream();  
+
+            byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
+            cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+            cstream.Write(peeripMsg, 0, peeripMsg.Length);
+            cstream.Close();
         }
 
     }
