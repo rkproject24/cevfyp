@@ -51,6 +51,7 @@ namespace TrackerServer
                 {
                     mainFrm.rtbClientlist.BeginInvoke(new UpdateTextCallback(mainFrm.UpdatertbClientlist), new object[] { "ChildUnregHandler Ex:\n"+ex });
                     Thread.Sleep(40);
+                    continue;
                 }
                 break;
             }
