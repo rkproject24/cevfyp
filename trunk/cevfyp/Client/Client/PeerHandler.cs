@@ -223,59 +223,62 @@ namespace Client
                     trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                     this.selfid[tree] = BitConverter.ToInt32(responsePeerMsg, 0).ToString();
                 }
-
-                responsePeerMsg = new byte[4];
-                trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
-
-                int xmlsize = BitConverter.ToInt16(responsePeerMsg, 0);
-
-                byte[] responsePeerMsg2 = new byte[xmlsize];
-                trackerStream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-
-                string xmlContent = ByteArrayToString(responsePeerMsg2);
-               // System.Windows.Forms.MessageBox.Show(xmlContent);
-
-                //string[] xmlTrees = xmlContent.Split('@');
-
-                if (reConnectUse)
-                {
-                    if (File.Exists(PeerFileName))
-                        File.Delete(PeerFileName);
-                }
-
-                // Specify file, instructions, and privelegdes
-                FileStream file = new FileStream(PeerFileName, FileMode.OpenOrCreate, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(file);
-                sw.Write(xmlContent);
-                sw.Close();
-                file.Close();
-
-                //if (File.Exists("PeerInfoT2.xml"))
-                //    File.Delete("PeerInfoT2.xml");
-                //file = new FileStream("PeerInfoT2.xml", FileMode.OpenOrCreate, FileAccess.Write);
-                //sw = new StreamWriter(file);
-                //sw.Write(xmlTrees[1]);
-                //sw.Close();
-                //file.Close();
-
-                //if (!reConnectUse)
-                //{
-                //    treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
-                //    this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString();
-                //}
-
-                //treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
-                //this.selfid[tree] = (treeAccessor.getMaxId() + 1).ToString(); //keep old id when reconnect
-                
-                
-                //treeAccessor2 = new PeerInfoAccessor("PeerInfoT2");
-                //this.selfid[1] = (treeAccessor2.getMaxId() + 1).ToString();
-
-                //selfid = xmlTrees[2];
-                //virtualResponse();
+//port for receive peer list
+                int recPeerListPort = TcpApps.RanPort(1801, 1900);
+                byte[] PeerListPortbyte = BitConverter.GetBytes(recPeerListPort);
+                trackerStream.Write(PeerListPortbyte, 0, PeerListPortbyte.Length);
 
                 trackerTcpClient.Close();
                 trackerStream.Close();
+
+
+                TcpClient tracker = null;
+                NetworkStream peerListstream = null;
+                IPAddress receiveAddr = IPAddress.Parse(TcpApps.LocalIPAddress());
+                //TcpApps.RanPort()
+                try
+                {
+                    // mainFm.rtbupload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { PeerListenPort.ToString() +"\n"});
+                    TcpListener listenTracker = new TcpListener(receiveAddr, recPeerListPort);
+                    listenTracker.Start();
+
+                    tracker = listenTracker.AcceptTcpClient();
+                    peerListstream = tracker.GetStream();
+
+                    responsePeerMsg = new byte[4];
+                    peerListstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+
+                    int xmlsize = BitConverter.ToInt16(responsePeerMsg, 0);
+
+                    byte[] responsePeerMsg2 = new byte[xmlsize];
+                    peerListstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+
+                    string xmlContent = ByteArrayToString(responsePeerMsg2);
+                    // System.Windows.Forms.MessageBox.Show(xmlContent);
+
+                    //string[] xmlTrees = xmlContent.Split('@');
+
+                    if (reConnectUse)
+                    {
+                        if (File.Exists(PeerFileName))
+                            File.Delete(PeerFileName);
+                    }
+
+                    // Specify file, instructions, and privelegdes
+                    FileStream file = new FileStream(PeerFileName, FileMode.OpenOrCreate, FileAccess.Write);
+                    StreamWriter sw = new StreamWriter(file);
+                    sw.Write(xmlContent);
+                    sw.Close();
+                    file.Close();
+
+                    peerListstream.Close();
+                    tracker.Close();
+                }
+                catch (Exception ex)
+                {
+                    //((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { ex.ToString()});
+
+                }
 
                 return true;
             }
