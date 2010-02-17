@@ -332,7 +332,13 @@ namespace Server
 
                         if (treeCLState[tree_index] == 0)
                         {
-                            waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
+                            //DateTime dt = DateTime.Now;
+                            //dt.ToBinary();
+
+                            waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait" + "@0@");
+                          //  stream.Write(waitingMessage, 0, waitingMessage.Length);
+
+                           // waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
                             Thread.Sleep(20);
                             continue;
