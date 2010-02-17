@@ -33,6 +33,7 @@ namespace Client
         static int CHUNKLIST_CAPACITY = 200;
         int max_client;
         int max_tree;
+        int tempResult;
 
         bool localterminate = false;
 
@@ -333,13 +334,33 @@ namespace Client
                             break;
                         }
 
-                        if (treeCLState[tree_index] == 0)
+                        if (treeCLState[tree_index] == 2)
                         {
+                            //  DateTime dt= DateTime.Now;
+                            // dt.ToBinary();
+
                             firstRun = true;
-                            waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
+                            waitingMessage = System.Text.Encoding.ASCII.GetBytes(clientMain.waitMsg);//System.Text.Encoding.ASCII.GetBytes("Wait" + "@" + clientMain.getSelfID(tree_index));
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
                             Thread.Sleep(20);
+
                             continue;
+
+
+                        }
+                        else if (treeCLState[tree_index] == 0)
+                        {
+                          //  DateTime dt= DateTime.Now;
+                           // dt.ToBinary();
+
+                            firstRun = true;
+                            waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait"+"@"+clientMain.getSelfID(tree_index));
+                            stream.Write(waitingMessage, 0, waitingMessage.Length);
+                            Thread.Sleep(20);
+
+                            continue;
+
+
                         }
 
                         if (firstRun == true && treeChunkList[tree_index].Count > 1)
@@ -623,47 +644,80 @@ namespace Client
             return true;
         }
 
-        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        //binary search method
+        //private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        //{
+        //    int lb, ub, tempResult;
+        //    if (wIndex < rIndex)
+        //    {
+        //        lb = rIndex;
+        //        ub = CHUNKLIST_CAPACITY;
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        if (tempResult != -1)
+        //            return tempResult;
+        //        else
+        //        {
+        //            lb = 0;
+        //            ub = wIndex - 1;
+        //            tempResult = binarySearch(list, lb, ub, target);
+        //            return tempResult;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lb = rIndex;
+        //        ub = wIndex - 1;
+
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        return tempResult;
+        //    }
+        //}
+
+        //private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        //{
+        //    int mid;
+        //    for (; lb <= ub; )
+        //    {
+        //        mid = (lb + ub) / 2;
+
+        //        if (list[mid].seq == target)
+        //            return mid;
+        //        else if (target > list[mid].seq)
+        //            lb = mid + 1;
+        //        else
+        //            ub = mid - 1;
+        //    }
+        //    return -1;
+        //}
+
+        private int searchChunk(int list_index, int rIndex, int wIndex, int target)
         {
-            int lb, ub, tempResult;
             if (wIndex < rIndex)
             {
-                lb = rIndex;
-                ub = CHUNKLIST_CAPACITY;
-                tempResult = binarySearch(list, lb, ub, target);
+                tempResult = search(list_index, rIndex, cConfig.ChunkCapacity, target);
                 if (tempResult != -1)
                     return tempResult;
                 else
                 {
-                    lb = 0;
-                    ub = wIndex - 1;
-                    tempResult = binarySearch(list, lb, ub, target);
+                    tempResult = search(list_index, 0, wIndex - 1, target);
                     return tempResult;
                 }
             }
             else
             {
-                lb = rIndex;
-                ub = wIndex - 1;
-
-                tempResult = binarySearch(list, lb, ub, target);
+                tempResult = search(list_index, rIndex, wIndex - 1, target);
                 return tempResult;
             }
         }
 
-        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        private int search(int list_index, int r_index, int w_index, int target)
         {
-            int mid;
-            for (; lb <= ub; )
+            for (; r_index <= w_index; )
             {
-                mid = (lb + ub) / 2;
+                if (treeChunkList[list_index][r_index].seq == target)
+                    return r_index;
 
-                if (list[mid].seq == target)
-                    return mid;
-                else if (target > list[mid].seq)
-                    lb = mid + 1;
-                else
-                    ub = mid - 1;
+                r_index += 1;
             }
             return -1;
         }
