@@ -32,6 +32,7 @@ namespace Client
         Thread listenerThread;
 
         //===================================
+        static int receiveRange = 60;
 
         int treeNO = 0;
         int chunkList_wIndex = 0;  //write index
@@ -85,6 +86,7 @@ namespace Client
         //SpeedFrm spfrmtemp;
         ClientConfig cConfig = new ClientConfig();
         StatisticHandler statHandler;
+        public string waitMsg;
 
         public ClientHandler(ClientForm mainFm)
         {
@@ -695,17 +697,32 @@ namespace Client
                         //    spfrmtemp.UpdateSpeed(start, end, cConfig.ChunkSize);
 
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-                        
-                        if (responseString == "Wait")
+                        string []type = responseString.Split('@');
+
+
+                        if (type[0] == "Wait")
                         {
-                            upPorth.setTreeCLState(tree_index, 0);
+                            waitMsg = responseString;
+                            if(type[1]==peerh.Selfid[tree_index])
+                            {
+                                ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "loopErr\n" });
+                                 ArgumentException argEx3 = new System.ArgumentException("loopErr");
+                                 throw argEx3;
+                            }
+
+                            upPorth.setTreeCLState(tree_index, 2);
 
                             if (tree_index == 0)
-                                mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Wait~" });
-                            if (tree_index == 1)
-                                mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Wait~" });
+                            {
+                                mainFm.textBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox1), new object[] { "Wait~" + type[1].ToString() });
+                                //((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "Wait~" + type[1].ToString() +"\n"});
+                            }
+                                if (tree_index == 1)
+                                mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox2), new object[] { "Wait~" + type[1].ToString()  });
                             if (tree_index == 2)
-                                mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Wait~" });
+                                mainFm.textBox3.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { "Wait~" + type[1].ToString()  });
+
+
 
                             Thread.Sleep(10);
                             continue;
@@ -743,7 +760,7 @@ namespace Client
                         }
 
 
-                        if (streamingChunk.seq > (treeCLCurrentSeq[tree_index] - 60))
+                        if (streamingChunk.seq > (treeCLCurrentSeq[tree_index] - receiveRange) && streamingChunk.seq != treeCLCurrentSeq[tree_index])
                         {
                             int write_index = treeCLWriteIndex[tree_index];
 
@@ -801,7 +818,7 @@ namespace Client
 
                     if (!checkClose)
                     {
-                        if (ex.ToString().Contains("period of time") || ex.ToString().Contains("chunkNull"))
+                        if (ex.ToString().Contains("period of time") || ex.ToString().Contains("chunkNull") || ex.ToString().Contains("loopErr"))
                         {
                             ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "T[" + tree_index + "] D timeout\n" });
                             treeReconnectState[tree_index] = 1;
@@ -1109,45 +1126,79 @@ namespace Client
            
         }
       
+        // =================================Binary Search ================================================================
+        //private int searchChunk(int list_index, int rIndex, int wIndex, int target)
+        //{
+        //   if (wIndex < rIndex)
+        //    {
+        //        lb = rIndex;
+        //        ub = cConfig.ChunkCapacity;
+        //        tempResult = binarySearch(list_index, lb, ub, target);
+        //        if (tempResult != -1)
+        //            return tempResult;
+        //        else
+        //        {
+        //            lb = 0;
+        //            ub = wIndex - 1;
+        //            tempResult = binarySearch(list_index, lb, ub, target);
+        //            return tempResult;
+        //        }
+        //    }
+        //    else
+        //   {
+        //        lb = rIndex;
+        //        ub = wIndex -1;
+
+        //        tempResult = binarySearch(list_index, lb, ub, target);
+        //        return tempResult;
+        //    }
+        //}
+
+        //private int binarySearch(int list_index, int lb, int ub, int target)
+        //{
+        //    for (; lb <= ub; )
+        //    {
+        //        mid = (lb + ub) / 2;
+
+        //        if (treeChunkList[list_index][mid].seq == target)
+        //            return mid;
+        //        else if (target > treeChunkList[list_index][mid].seq)
+        //            lb = mid + 1;
+        //        else
+        //            ub = mid - 1;
+        //    }
+        //    return -1;
+        //}
+
+        //basic search method
         private int searchChunk(int list_index, int rIndex, int wIndex, int target)
         {
-           if (wIndex < rIndex)
+            if (wIndex < rIndex)
             {
-                lb = rIndex;
-                ub = cConfig.ChunkCapacity;
-                tempResult = binarySearch(list_index, lb, ub, target);
+                tempResult = search(list_index, rIndex, cConfig.ChunkCapacity, target);
                 if (tempResult != -1)
                     return tempResult;
                 else
                 {
-                    lb = 0;
-                    ub = wIndex - 1;
-                    tempResult = binarySearch(list_index, lb, ub, target);
+                    tempResult = search(list_index, 0, wIndex - 1, target);
                     return tempResult;
                 }
             }
             else
-           {
-                lb = rIndex;
-                ub = wIndex -1;
-
-                tempResult = binarySearch(list_index, lb, ub, target);
+            {
+                tempResult = search(list_index, rIndex, wIndex - 1, target);
                 return tempResult;
             }
         }
 
-        private int binarySearch(int list_index, int lb, int ub, int target)
+        private int search(int list_index, int r_index, int w_index, int target)
         {
-            for (; lb <= ub; )
+            for (; r_index <= w_index; )
             {
-                mid = (lb + ub) / 2;
+                if (treeChunkList[list_index][r_index].seq == target)
+                    return r_index;
 
-                if (treeChunkList[list_index][mid].seq == target)
-                    return mid;
-                else if (target > treeChunkList[list_index][mid].seq)
-                    lb = mid + 1;
-                else
-                    ub = mid - 1;
+                r_index += 1;
             }
             return -1;
         }

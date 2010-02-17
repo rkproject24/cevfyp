@@ -23,10 +23,12 @@ namespace Client
             cConfig.load("C:\\ClientConfig");
             args = new string[]
             {
-            "-I", "dummy", "--ignore-config",
+            "-I", "dummy","--http-caching=200" ,
             @"--plugin-path="+cConfig.PluginPath+"\\plugins",
             "--vout-filter=deinterlace", "--deinterlace-mode=blend"
             };
+
+            //"--ignore-config",
         }
 
         static void Raise(ref libvlc_exception_t ex)
