@@ -21,6 +21,16 @@ namespace TrackerServer
  
             Thread.Sleep(waitTime); //time to wait for peer reconnect
             PeerInfoAccessor treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+            
+            //if(!treeAccessor.load())
+            //    mainFrm.rtbClientlist.BeginInvoke(new UpdateTextCallback(mainFrm.UpdatertbClientlist), new object[] { "xml load error \n" });
+            while (!treeAccessor.load())
+            {
+
+                Thread.Sleep(20);
+                treeAccessor.load();
+            }
+                         
             PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0, "-1");
             while (true)
             {
