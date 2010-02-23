@@ -64,7 +64,7 @@ namespace TrackerServer
             listenerThread.Abort();
             TrackerListen.Stop();
             //peerList.Clear();
-
+            treeNo = 0;
             start();
         }
 
@@ -113,6 +113,7 @@ namespace TrackerServer
                         else
                         {
                             PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
+                            bool checkLoad = TreeAccess.load();
                             int newID = TreeAccess.getMaxId() + 1;
 
                             //if (TreeAccess.getMaxId() < Int32.Parse(clientid)) //to handle re-register for maxId
@@ -195,6 +196,7 @@ namespace TrackerServer
                         clientNode.Layer = layer;
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
+                        bool checkLoad = TreeAccess.load();
 
                         //delete peer old record before add peer
                         PeerNode p1 = new PeerNode(clientid, "deleting", 0, 0, "-1");
@@ -263,6 +265,8 @@ namespace TrackerServer
                         //==incompleted
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                        bool checkLoad = TreeAccess.load();
+
                         PeerNode p1 = TreeAccess.getPeer(peerId);
                         if (p1 == null)
                             continue;
@@ -300,30 +304,35 @@ namespace TrackerServer
                             this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree + "\n" });
                         }
                     }
-                    else if (peertype.Contains("<changePar>"))
+                    else if (peertype.Contains("<treeSizes>"))
                     {
-                        responsePeerMsg = new byte[4];
-
-
-                        cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
-                        int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
-
-                        byte[] responsePeerMsg2 = new byte[MsgSize];
-                        cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-                        string MsgContent = ByteArrayToString(responsePeerMsg2);
-                        string[] messages = MsgContent.Split('@');
-
-                        string tree = messages[0];
-                        string peerId = messages[1];
-                        string newParentId = messages[2];
-
-
-                        bool changed = changeParent(tree, peerId, newParentId); //reply whether change parent sucess
-                        byte[] changedbyte = BitConverter.GetBytes(changed);
-                        cstream.Write(changedbyte, 0, changedbyte.Length);
-
-                        this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " change to Parent:" + newParentId + " in tree:" + tree + "\n" });
+                        byte[] treeNoByte = BitConverter.GetBytes(treeNo);
+                        cstream.Write(treeNoByte, 0, treeNoByte.Length);
                     }
+                    //else if (peertype.Contains("<changePar>"))
+                    //{
+                    //    responsePeerMsg = new byte[4];
+
+
+                    //    cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                    //    int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
+
+                    //    byte[] responsePeerMsg2 = new byte[MsgSize];
+                    //    cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
+                    //    string MsgContent = ByteArrayToString(responsePeerMsg2);
+                    //    string[] messages = MsgContent.Split('@');
+
+                    //    string tree = messages[0];
+                    //    string peerId = messages[1];
+                    //    string newParentId = messages[2];
+
+
+                    //    bool changed = changeParent(tree, peerId, newParentId); //reply whether change parent sucess
+                    //    byte[] changedbyte = BitConverter.GetBytes(changed);
+                    //    cstream.Write(changedbyte, 0, changedbyte.Length);
+
+                    //    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " change to Parent:" + newParentId + " in tree:" + tree + "\n" });
+                    //}
 
                 }
                 catch(Exception ex)
@@ -414,6 +423,8 @@ namespace TrackerServer
             TreelistView.Items.Clear();
 
             PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+            bool checkLoad = TreeAccess.load();
+
             for (int i = 0; i <= TreeAccess.getMaxId(); i++)
             {
                 PeerNode displayNode = TreeAccess.getPeer(i.ToString());
@@ -452,6 +463,8 @@ namespace TrackerServer
             try
             {
                 PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                bool checkLoad = TreeAccess.load();
+
                 PeerNode p1 = TreeAccess.getPeer(peerId);
                 TreeAccess.deletePeer(p1);
                 p1.Parentid = newParentId;
@@ -468,15 +481,21 @@ namespace TrackerServer
 
         public void sendPeerList(int peerlistPort, IPAddress ip, string xmlString)
         {
-            byte[] peeripMsg = StrToByteArray(xmlString);
+            try
+            {
+                byte[] peeripMsg = StrToByteArray(xmlString);
 
-            TcpClient trackerTcpClient = new TcpClient(ip.ToString(), peerlistPort);
-            NetworkStream cstream = trackerTcpClient.GetStream();  
+                TcpClient trackerTcpClient = new TcpClient(ip.ToString(), peerlistPort);
+                NetworkStream cstream = trackerTcpClient.GetStream();
 
-            byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
-            cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-            cstream.Write(peeripMsg, 0, peeripMsg.Length);
-            cstream.Close();
+                byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
+                cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                cstream.Write(peeripMsg, 0, peeripMsg.Length);
+                cstream.Close();
+            }
+            catch
+            {
+            }
         }
 
     }
