@@ -35,7 +35,7 @@ namespace ClassLibrary
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    MessageBox.Show("xml:"+ex.ToString());
                 }
             }
 
@@ -43,17 +43,26 @@ namespace ClassLibrary
 
         }
 
+
         public void AddAttribute(string group, string type, string value)
         {
-            xmlDoc = new XmlDocument();
-            //XmlNode node = setting.SelectSingleNode(group);
-            xmlDoc.Load(this.xmlFile);
-            XmlAttribute xmlattribute_add = xmlDoc.CreateAttribute(type);
-            xmlattribute_add.Value = value;
-            //node.Attributes.Append(xmlattribute_add);
-            
-            xmlDoc.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                xmlDoc = new XmlDocument();
+                //XmlNode node = setting.SelectSingleNode(group);
+                xmlDoc.Load(this.xmlFile);
+                XmlAttribute xmlattribute_add = xmlDoc.CreateAttribute(type);
+                xmlattribute_add.Value = value;
+                //node.Attributes.Append(xmlattribute_add);
+
+                xmlDoc.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
+                xmlDoc.Save(this.xmlFile);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("AddAttribute:"+ex.ToString());
+            }
+
         }
 
 
@@ -93,61 +102,74 @@ namespace ClassLibrary
         //by vinci: attribute=NULL if there is no attributes in the node
         public void Add(string list, string []type, string []value, string []attributeName, string[] attributevalues)
         {
-            xmlDoc = new XmlDocument();
-           
-            XmlElement childNode;
-            xmlDoc.Load(this.xmlFile);
-            XmlElement root = xmlDoc.DocumentElement;
-            
-            //try
-            //{
-            //    //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
-            //    childNode = (XmlElement)root.SelectSingleNode(list);
-            //}
-            //catch
-            //{
-            //    childNode = xmlDoc.CreateElement(list);
-            //}
-
-            childNode = xmlDoc.CreateElement(list);
-
-            //by vinci
-            for (int i = 0; i < attributeName.Length; i++)
+            try
             {
-                XmlAttribute attribute = xmlDoc.CreateAttribute(attributeName[i]);
-                attribute.Value = attributevalues[i];
-                childNode.SetAttributeNode(attribute);
-            }
+                xmlDoc = new XmlDocument();
 
-            for (int i = 0; i < type.Length; i++)
-            {
+                XmlElement childNode;
+                xmlDoc.Load(this.xmlFile);
+                XmlElement root = xmlDoc.DocumentElement;
 
-                //by vinci:
-                try
+                //try
+                //{
+                //    //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
+                //    childNode = (XmlElement)root.SelectSingleNode(list);
+                //}
+                //catch
+                //{
+                //    childNode = xmlDoc.CreateElement(list);
+                //}
+
+                childNode = xmlDoc.CreateElement(list);
+
+                //by vinci
+                for (int i = 0; i < attributeName.Length; i++)
                 {
-                    XmlElement subNode = xmlDoc.CreateElement(type[i]);
-                    subNode.InnerText = value[i];
-
-                    root.AppendChild(childNode);
-                    childNode.AppendChild((XmlNode) subNode);
-                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
+                    XmlAttribute attribute = xmlDoc.CreateAttribute(attributeName[i]);
+                    attribute.Value = attributevalues[i];
+                    childNode.SetAttributeNode(attribute);
                 }
 
+                for (int i = 0; i < type.Length; i++)
+                {
+
+                    //by vinci:
+                    try
+                    {
+                        XmlElement subNode = xmlDoc.CreateElement(type[i]);
+                        subNode.InnerText = value[i];
+
+                        root.AppendChild(childNode);
+                        childNode.AppendChild((XmlNode)subNode);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Add_inside:" + ex.ToString());
+                    }
+
+                }
+
+                xmlDoc.Save(this.xmlFile);
             }
-            
-            xmlDoc.Save(this.xmlFile);
+            catch (Exception ex)
+            {
+                MessageBox.Show("Add_outside:" + ex.ToString());
+            }
         }
 
 
         public void Add(string[] type, string[] value)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             XmlNode childNode = xmlDoc.DocumentElement;
 
@@ -170,8 +192,8 @@ namespace ClassLibrary
         public string ReadAttribute(string group, string type)
         {
                 string value;
-                xmlDoc = new XmlDocument();
-                xmlDoc.Load(this.xmlFile);
+               // xmlDoc = new XmlDocument();
+               // xmlDoc.Load(this.xmlFile);
                 try
                 {
                     value = xmlDoc.SelectSingleNode(group).Attributes[type].Value;
@@ -188,15 +210,17 @@ namespace ClassLibrary
 
          public string Read(string group, string type)
          {
-             xmlDoc = new XmlDocument();
-             xmlDoc.Load(this.xmlFile);
-             XmlElement root = xmlDoc.DocumentElement;
+             //xmlDoc = new XmlDocument();
+             //xmlDoc.Load(this.xmlFile);
+             XmlElement root;// = xmlDoc.DocumentElement;
              //XmlNodeList nodes = root.SelectNodes("/"+group);
              //XmlNodeList nodes = root.GetElementsByTagName(group);
 
                  string value;
                  try
                  {
+                     root = xmlDoc.DocumentElement;
+
                      if (root.LocalName == group)
                      {
                         foreach (XmlElement G in root)
@@ -237,15 +261,17 @@ namespace ClassLibrary
 
          public string Read(string nodeName, string attributeName, string attributeValue, string type)
          {
-             xmlDoc = new XmlDocument();
-             xmlDoc.Load(this.xmlFile);
-             XmlElement root = xmlDoc.DocumentElement;
+            // xmlDoc = new XmlDocument();
+            // xmlDoc.Load(this.xmlFile);
+             XmlElement root;// = xmlDoc.DocumentElement;
              //XmlNodeList nodes = root.SelectNodes("/"+group);
              //XmlNodeList nodes = root.GetElementsByTagName(group);
 
              string value;
              try
              {
+                 root = xmlDoc.DocumentElement;
+
                  if (root.LocalName == nodeName)
                  {
                      foreach (XmlElement G in root)
@@ -296,6 +322,35 @@ namespace ClassLibrary
              }
              return "";
          }
+
+         public string ReadRandom(string nodeName, string attributeName)
+         {
+             // xmlDoc = new XmlDocument();
+             // xmlDoc.Load(this.xmlFile);
+             XmlElement root;// = xmlDoc.DocumentElement;
+             //XmlNodeList nodes = root.SelectNodes("/"+group);
+             //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+             try
+             {
+                 root = xmlDoc.DocumentElement;
+
+                 XmlNode G = root.ChildNodes[ RandomNumber(0, root.ChildNodes.Count - 1)];
+                 XmlAttributeCollection attributes = G.Attributes;
+                 foreach (XmlAttribute attri in attributes)
+                 {
+                     if (attri.Name.Equals(attributeName))
+                         return attri.InnerText;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 //MessageBox.Show("Reading Error! Please input both group and type!");
+                 //return "error";
+                 return ex.ToString();
+             }
+             return "";
+         }
         /*
          public string Read(string [] Location)
          {
@@ -334,70 +389,112 @@ namespace ClassLibrary
 
          public int GetElementNum()
          {
-             xmlDoc = new XmlDocument();
-             xmlDoc.Load(this.xmlFile);
-             XmlElement root = xmlDoc.DocumentElement;
+             try
+             {
+                 xmlDoc = new XmlDocument();
+                 xmlDoc.Load(this.xmlFile);
+                 XmlElement root = xmlDoc.DocumentElement;
 
-             int EleNum = root.ChildNodes.Count;
+                 int EleNum = root.ChildNodes.Count;
 
-             return EleNum;
+                 return EleNum;
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show("GetElementNum:"+ ex.ToString());
+                 return -1;
+             }
          }
 
 
 
         public void modify(string group, string type, string newValue)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
-            XmlElement root = xmlDoc.DocumentElement;
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
+                XmlElement root = xmlDoc.DocumentElement;
 
-           // foreach (XmlElement 
-            
-            //attribute.Value = newValue;
-            xmlDoc.Save(this.xmlFile);
+                // foreach (XmlElement 
+
+                //attribute.Value = newValue;
+                xmlDoc.Save(this.xmlFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("modify:" + ex.ToString());
+                 
+            }
         }
 
         //by vinci
         public void modifyAttribute(string node, string attributeName, string newValue)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            XmlAttribute attribute = xmlDoc.SelectSingleNode(node).Attributes[attributeName];
-            //xmlDoc.SelectSingleNode(node).Attributes[attributeName] = newValue;
-            attribute.Value = newValue;
-            //xmlDoc.RemoveChild(attribute);
-            //xmlDoc.AppendChild(attribute);
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                XmlAttribute attribute = xmlDoc.SelectSingleNode(node).Attributes[attributeName];
+                //xmlDoc.SelectSingleNode(node).Attributes[attributeName] = newValue;
+                attribute.Value = newValue;
+                //xmlDoc.RemoveChild(attribute);
+                //xmlDoc.AppendChild(attribute);
+                xmlDoc.Save(this.xmlFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("modifyAttribute:" + ex.ToString());
+                 
+            }
+
         }
 
         public void deleteAttribute(string group, string type)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            XmlAttribute attribute = xmlDoc.SelectSingleNode(group).Attributes[type];
-            attribute.ParentNode.RemoveChild(attribute);
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                XmlAttribute attribute = xmlDoc.SelectSingleNode(group).Attributes[type];
+                attribute.ParentNode.RemoveChild(attribute);
+                xmlDoc.Save(this.xmlFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("deleteAttribute:" + ex.ToString());
+            }
+
         }
 
         public void deleteNode(string group)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            XmlNode node = xmlDoc.SelectSingleNode(group);
-            node.ParentNode.RemoveChild(node);
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                XmlNode node = xmlDoc.SelectSingleNode(group);
+                node.ParentNode.RemoveChild(node);
+                xmlDoc.Save(this.xmlFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("deleteNode:" + ex.ToString());
+            }
         }
 
         public bool deleteInnerNode(string nodeName, string attributeName, string attributeValue)
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(this.xmlFile);
-            XmlElement root = xmlDoc.DocumentElement;
-            //XmlNodeList nodes = root.SelectNodes("/"+group);
-            //XmlNodeList nodes = root.GetElementsByTagName(group);
             try
             {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                XmlElement root = xmlDoc.DocumentElement;
+                //XmlNodeList nodes = root.SelectNodes("/"+group);
+                //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+
 
                 foreach (XmlElement G in root)
                 {
@@ -427,14 +524,43 @@ namespace ClassLibrary
         }
 
 
-        public void save()
+        //public void save()
+        //{
+        //    xmlDoc.Save(this.xmlFile);
+        //}
+
+        public bool load()
         {
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Load(this.xmlFile);
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("load:"+ex.ToString());
+               return false;
+            }
         }
-        public void load()
+
+        public bool hasNode()
         {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Save(this.xmlFile);
+            try
+            {
+                XmlElement root = xmlDoc.DocumentElement;
+                return root.HasChildNodes;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private int RandomNumber(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
         }
       }
 
