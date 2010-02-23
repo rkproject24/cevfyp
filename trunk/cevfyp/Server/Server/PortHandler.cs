@@ -32,7 +32,7 @@ namespace Server
     class PortHandler
     {
         //static int TrackerSLPort = 1500;
-        static int CHUNKLIST_CAPACITY = 200; 
+         static int CHUNKLIST_CAPACITY = 500; 
         int max_client;
         int max_tree;
 
@@ -211,6 +211,36 @@ namespace Server
                 treeCPortList[tree_index][cList_index] = cport;
                 //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T:" + tree_index + " C:" + " unReg \n" });
             }
+        }
+
+        public Chunk searchReqChunk(int target_tree,int reqSeq)
+        {
+            Chunk ck = new Chunk();
+            ck.seq = 0;
+            int result_index;
+
+            if (treeChunkList[target_tree].Count < CHUNKLIST_CAPACITY)
+                result_index = search(target_tree, 0, treeCLWriteIndex[target_tree], reqSeq);
+            else
+                result_index = search(target_tree, 0, CHUNKLIST_CAPACITY - 1, reqSeq);
+
+            if (result_index != -1)
+                return treeChunkList[target_tree][result_index];
+            else
+                return ck;
+
+        }
+
+        private int search(int list_index, int r_index, int w_index, int target)
+        {
+            for (; r_index <= w_index; )
+            {
+                if (treeChunkList[list_index][r_index].seq == target)
+                    return r_index;
+
+                r_index += 1;
+            }
+            return -1;
         }
 
         public void startTreePort()
@@ -571,50 +601,50 @@ namespace Server
         }
 
       
-        private int search(List<Chunk> list, int rIndex, int wIndex, int target)
-        {
-            int lb, ub, tempResult;
-            if (wIndex < rIndex)
-            {
-                lb = rIndex;
-                ub = CHUNKLIST_CAPACITY;
-                tempResult = binarySearch(list, lb, ub, target);
-                if (tempResult != -1)
-                    return tempResult;
-                else
-                {
-                    lb = 0;
-                    ub = wIndex - 1;
-                    tempResult = binarySearch(list, lb, ub, target);
-                    return tempResult;
-                }
-            }
-            else
-            {
-                lb = rIndex;
-                ub = wIndex - 1;
+        //private int search(List<Chunk> list, int rIndex, int wIndex, int target)
+        //{
+        //    int lb, ub, tempResult;
+        //    if (wIndex < rIndex)
+        //    {
+        //        lb = rIndex;
+        //        ub = CHUNKLIST_CAPACITY;
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        if (tempResult != -1)
+        //            return tempResult;
+        //        else
+        //        {
+        //            lb = 0;
+        //            ub = wIndex - 1;
+        //            tempResult = binarySearch(list, lb, ub, target);
+        //            return tempResult;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lb = rIndex;
+        //        ub = wIndex - 1;
 
-                tempResult = binarySearch(list, lb, ub, target);
-                return tempResult;
-            }
-        }
+        //        tempResult = binarySearch(list, lb, ub, target);
+        //        return tempResult;
+        //    }
+        //}
 
-        private int binarySearch(List<Chunk> list, int lb, int ub, int target)
-        {
-            int mid;
-            for (; lb <= ub; )
-            {
-                mid = (lb + ub) / 2;
+        //private int binarySearch(List<Chunk> list, int lb, int ub, int target)
+        //{
+        //    int mid;
+        //    for (; lb <= ub; )
+        //    {
+        //        mid = (lb + ub) / 2;
 
-                if (list[mid].seq == target)
-                    return mid;
-                else if (target > list[mid].seq)
-                    lb = mid + 1;
-                else
-                    ub = mid - 1;
-            }
-            return -1;
-        }
+        //        if (list[mid].seq == target)
+        //            return mid;
+        //        else if (target > list[mid].seq)
+        //            lb = mid + 1;
+        //        else
+        //            ub = mid - 1;
+        //    }
+        //    return -1;
+        //}
 
         private static string ByteArrayToString(byte[] bytes)
         {
