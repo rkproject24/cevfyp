@@ -264,22 +264,30 @@ namespace Client
             //treeDPListener[tree_index].Add(new TcpListener(localAddr, ran_port));
             treeDPListener[(tree_index * max_client) + DThreadList_index] = new TcpListener(localAddr, ran_port);
 
+            bool portStarted = false;
+            while (!portStarted)
+            {
+                try
+                {
+                    //DportListener.Start(1);
+                    //treeDPListener[tree_index][DThreadList_index].Start(1);
+                    treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+                    portStarted = true;
+                }
+                catch (Exception ex)
+                {
+                    ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ran_port +"\n"+ex.ToString() });
+                    //clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+                    Thread.Sleep(20);
+                    treeDPListener[(tree_index * max_client) + DThreadList_index] = new TcpListener(localAddr, ran_port);
+                }
+            }
+
             dPort dp = new dPort();
             dp.PortD = ran_port;
             dp.clientD = null;
             dp.peerId = -1;
             treeDPortList[tree_index].Add(dp);
-
-         //   try
-          //  {
-                //DportListener.Start(1);
-                //treeDPListener[tree_index][DThreadList_index].Start(1);
-                treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
-          //  }
-          //  catch (Exception ex)
-          //  {
-           //     clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ex.ToString() });
-           // }
 
             while (true)
             {
@@ -370,26 +378,6 @@ namespace Client
                             firstRun = false;
                         }
 
-                        //by yam: using search method
-                        /*if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
-                        {
-
-                            resultIndex = search(treeChunkList[tree_index], treeCLReadIndex[tree_index], treeCLWriteIndex[tree_index], tempSeq);
-
-                            if (resultIndex != -1)
-                            {
-                                sendMessage = ch.chunkToByte(treeChunkList[tree_index][resultIndex], sConfig.ChunkSize);
-                                stream.Write(sendMessage, 0, sendMessage.Length);
-                                treeCLReadIndex[tree_index] = resultIndex;
-                            }
-
-                            if (tempSeq == 2147483647)
-                                tempSeq = tree_index+1;
-                            else
-                                tempSeq += max_tree;
-                        }
-                        */
-
                         //by yam: not seach method
                         if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
                         {
@@ -437,8 +425,12 @@ namespace Client
                         DPortClient.Close();
 
                     firstRun = true;
-                }
 
+                    if (localterminate)
+                        break;
+                    
+                }
+                Thread.Sleep(10);
 
             }
         }
@@ -452,21 +444,28 @@ namespace Client
             NetworkStream stream = null;
             treeCPListener[(tree_index * max_client) + CThreadList_index] = new TcpListener(localAddr, ran_port);
 
+            bool portStarted = false;
+            while (!portStarted)
+            {
+                try
+                {
+                    treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+                    portStarted = true;
+                }
+                catch (Exception ex)
+                {
+                    ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ran_port + "\n" + ex.ToString() });
+                    //clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+                    Thread.Sleep(20);
+                    treeCPListener[(tree_index * max_client) + CThreadList_index] = new TcpListener(localAddr, ran_port); //ran a new port if crash
+                }
+            }
+
             cPort cp = new cPort();
             cp.PortC = ran_port;
             cp.clientC = null;
             treeCPortList[tree_index].Add(cp);
-           
 
-
-          //  try
-           // {
-                treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
-          //  }
-            //catch (Exception ex)
-          //  {
-           //     clientFm.rtbupload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] {"T[" + tree_index + "]"+ ex.ToString() });
-           // }
 
             while (true)
             {
@@ -542,8 +541,12 @@ namespace Client
 
                     if (CPortClient != null)
                         CPortClient.Close();
-                }
+                    //Thread.Sleep(10);
+                    if (localterminate)
+                        break;
 
+                }
+                Thread.Sleep(10);
             }
         }
 
@@ -644,57 +647,13 @@ namespace Client
             return true;
         }
 
-        //binary search method
-        //private int search(List<Chunk> list, int rIndex, int wIndex, int target)
-        //{
-        //    int lb, ub, tempResult;
-        //    if (wIndex < rIndex)
-        //    {
-        //        lb = rIndex;
-        //        ub = CHUNKLIST_CAPACITY;
-        //        tempResult = binarySearch(list, lb, ub, target);
-        //        if (tempResult != -1)
-        //            return tempResult;
-        //        else
-        //        {
-        //            lb = 0;
-        //            ub = wIndex - 1;
-        //            tempResult = binarySearch(list, lb, ub, target);
-        //            return tempResult;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        lb = rIndex;
-        //        ub = wIndex - 1;
-
-        //        tempResult = binarySearch(list, lb, ub, target);
-        //        return tempResult;
-        //    }
-        //}
-
-        //private int binarySearch(List<Chunk> list, int lb, int ub, int target)
-        //{
-        //    int mid;
-        //    for (; lb <= ub; )
-        //    {
-        //        mid = (lb + ub) / 2;
-
-        //        if (list[mid].seq == target)
-        //            return mid;
-        //        else if (target > list[mid].seq)
-        //            lb = mid + 1;
-        //        else
-        //            ub = mid - 1;
-        //    }
-        //    return -1;
-        //}
+        
 
         private int searchChunk(int list_index, int rIndex, int wIndex, int target)
         {
             if (wIndex < rIndex)
             {
-                tempResult = search(list_index, rIndex, cConfig.ChunkCapacity, target);
+                tempResult = search(list_index, rIndex, cConfig.ChunkCapacity-1, target);
                 if (tempResult != -1)
                     return tempResult;
                 else
