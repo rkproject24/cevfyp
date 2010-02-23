@@ -179,6 +179,8 @@ namespace ClassLibrary
         {
             xml load = new xml(fileName, "server", false);
 
+            bool checkLoad = load.load();
+
             this.pluginPath = load.Read("server", "pluginPath");
             this.streamType = load.Read("server", "streamType");
             this.videoDir = load.Read("server", "videoDir");

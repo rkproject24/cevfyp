@@ -93,7 +93,20 @@ namespace ClassLibrary
             string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
             string parentid = RPI.Read("Peer", "ID", id, "Parentid");
 
-            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
+            //try
+            //{
+                return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
+            //}
+            //catch
+            //{
+            //    return null;
+            //}
+        }
+
+        public PeerNode getRandomPeer()
+        {
+            string id = RPI.ReadRandom("Peer", "ID");
+            return getPeer(id);
         }
 
         public void addPeer(PeerNode peer)
@@ -129,8 +142,10 @@ namespace ClassLibrary
 
         public int getMaxId()
         {
-
-            return Int32.Parse(RPI.ReadAttribute("Info", "MaxId"));
+            string maxId = RPI.ReadAttribute("Info", "MaxId");
+            if (maxId.Equals(""))
+                return -1;
+            return Int32.Parse(maxId);
         }
 
         public void setTreeSize(int MaxId)
@@ -194,6 +209,16 @@ namespace ClassLibrary
             if (parentid.Equals("-2"))
                 return true;
             return false;
+        }
+
+        public bool hasPeerInList()
+        {
+            return RPI.hasNode();
+        }
+
+        public bool load()
+        {
+            return RPI.load();
         }
     }
 }
