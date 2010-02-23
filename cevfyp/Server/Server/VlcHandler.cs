@@ -72,6 +72,7 @@ namespace Server
             LibVlc.libvlc_media_player_play(player, ref ex);
             Raise(ref ex);
 
+            setMute(1);
         }
 
         public void pause()
