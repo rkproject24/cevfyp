@@ -365,7 +365,7 @@ namespace Client
         {
             //if (clientHandler.vlc.playing)
             //    clientHandler.vlc.stop(); //to avoid GUI problem
-            clientHandler.closeAllThread();
+            //clientHandler.closeAllThread();
         }
 
         private void button1_Click(object sender, EventArgs e)
