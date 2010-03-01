@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Xml.XPath;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 
@@ -351,6 +352,35 @@ namespace ClassLibrary
              }
              return "";
          }
+
+         public string ReadByIndex(string nodeName, string attributeName,int index)
+         {
+             // xmlDoc = new XmlDocument();
+             // xmlDoc.Load(this.xmlFile);
+             XmlElement root;// = xmlDoc.DocumentElement;
+             //XmlNodeList nodes = root.SelectNodes("/"+group);
+             //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+             try
+             {
+                 root = xmlDoc.DocumentElement;
+
+                 XmlNode G = root.ChildNodes[index];
+                 XmlAttributeCollection attributes = G.Attributes;
+                 foreach (XmlAttribute attri in attributes)
+                 {
+                     if (attri.Name.Equals(attributeName))
+                         return attri.InnerText;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 //MessageBox.Show("Reading Error! Please input both group and type!");
+                 //return "error";
+                 return ex.ToString();
+             }
+             return "";
+         }
         /*
          public string Read(string [] Location)
          {
@@ -536,6 +566,50 @@ namespace ClassLibrary
                 xmlDoc = new XmlDocument();
                 xmlDoc.Load(this.xmlFile);
                 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("load:"+ex.ToString());
+               return false;
+            }
+        }
+
+        public bool sortLoad( string nodeString, string sortnode)
+        {
+            try
+            {
+                XPathDocument xmldoc = new System.Xml.XPath.XPathDocument(this.xmlFile);
+                XPathNavigator nav = xmldoc.CreateNavigator();
+
+                // Compile the XPath query expression to select all the Title elements.
+                // The Compile method of the XPathNavigator generates an XPathExpression 
+                // object that encapsulates the compiled query.
+                System.Xml.XPath.XPathExpression expr = nav.Compile(nodeString);
+
+                // Execute the AddSort method of the XPathExpression object to define the 
+                // Title Element as the sort key.
+                expr.AddSort(sortnode, System.Xml.XPath.XmlSortOrder.Ascending, System.Xml.XPath.XmlCaseOrder.None, "", System.Xml.XPath.XmlDataType.Number);
+
+
+                // Create the XPathNodeIterator by executing the Select method of the 
+                // XPathNavigator. Notice that the XPathExpression object is supplied as 
+                // the query expression parameter.
+                XPathNodeIterator iterator = nav.Select(expr);
+
+                string xmlString = "";
+
+                XmlElement root = xmlDoc.DocumentElement;
+                root.InnerXml = "";
+                // Use the iterator to explore the result set that is generated.
+                while (iterator.MoveNext())
+                {
+                    //System.Diagnostics.Debug.WriteLine(iterator.Current.InnerXml);
+                    xmlString += iterator.Current.OuterXml;
+                }
+                root.InnerXml = xmlString;
+
+                //xmlDoc.Save(this.xmlFile);
                 return true;
             }
             catch (Exception ex)
