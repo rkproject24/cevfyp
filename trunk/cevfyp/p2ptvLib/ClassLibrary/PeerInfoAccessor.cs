@@ -92,10 +92,15 @@ namespace ClassLibrary
             string layer = getLayer(id);
             string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
             string parentid = RPI.Read("Peer", "ID", id, "Parentid");
+            string nullChunk = RPI.Read("Peer", "ID", id, "NullChunkTotal");
 
             //try
             //{
+            if (nullChunk == null)
+            {
                 return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
+            }
+            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid, Int32.Parse(nullChunk));
             //}
             //catch
             //{
@@ -114,8 +119,8 @@ namespace ClassLibrary
             string[] attributes = {"ID"};
             string[] attributesValue = {peer.Id};
 
-            string[] Info = {"IP", "Layer", "listenPort","Parentid" };
-            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid };
+            string[] Info = { "IP", "Layer", "listenPort", "Parentid", "NullChunkTotal" };
+            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid,peer.NullChunkTotal.ToString() };
 
             RPI.Add("Peer", Info, Value, attributes, attributesValue);
             
@@ -219,6 +224,18 @@ namespace ClassLibrary
         public bool load()
         {
             return RPI.load();
+        }
+
+        //public bool sortLoad(string attribute)
+        //{
+        //    return RPI.sortLoad("/Info/Peer", attribute);
+        //}
+
+        public PeerNode getLeastChunkNullPeer()
+        {
+            RPI.sortLoad("/Info/Peer", "NullChunkTotal");
+            string id = RPI.ReadByIndex("Peer", "ID",0);
+            return getPeer(id);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace ClassLibrary
         //private List<string> childPeer;
         private int layer;
         private string parentid;
+        private int nullChunkTotal;
 
         public PeerNode(string id, string ip, int maxClient, int listenPort,string parentid)
         {
@@ -24,6 +25,19 @@ namespace ClassLibrary
             this.parentid= parentid;
 
             this.layer = 0;
+            this.nullChunkTotal = 0;
+            //childPeer = new List<string>(maxClient);
+        }
+
+        public PeerNode(string id, string ip, int maxClient, int listenPort, string parentid, int nullChunkTotal)
+        {
+            this.id = id;
+            this.ip = ip;
+            this.listenPort = listenPort;
+            this.parentid = parentid;
+
+            this.layer = 0;
+            this.nullChunkTotal = nullChunkTotal;
             //childPeer = new List<string>(maxClient);
         }
 
@@ -72,7 +86,11 @@ namespace ClassLibrary
             get { return listenPort; }
             set { listenPort = value; }
         }
-
+        public int NullChunkTotal
+        {
+            get { return nullChunkTotal; }
+            set { nullChunkTotal = value; }
+        }
         //private List<string> parentPeer;
 
         //public List<string> ParentPeer
