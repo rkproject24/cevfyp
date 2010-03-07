@@ -20,7 +20,10 @@ namespace Client
         string Peerlist_name = "PeerInfoT"; 
         int TREE_NO;
         static int GET_PORT_TIMEOUT = 10000;
-        static int TOTAL_SELECT_PEER_TIME = 2000;
+        static int TOTAL_SELECT_PEER_TIME = 50;
+        
+        public  int RANDOM_PEER = 0;
+        public  int NO_NULLCHUNK = 1;
 
         //static int TrackerSLPort = 1500;
 
@@ -28,6 +31,8 @@ namespace Client
         private PeerNode[] joinPeers;
         private ClientForm clientFrm;
         private string[] selfid;//= new string[TREE_NO];
+        private bool chunkNullUpdated;
+        private bool savingchunkNull = false;
       
         //int Cport = 0;             
         ClientConfig cConfig = new ClientConfig();
@@ -50,14 +55,18 @@ namespace Client
         public PeerNode[] JoinPeer
         {
             get { return joinPeers; }
-            set { joinPeers = value; }
+            set { joinPeers = value;}
         }
         public int PeerListenPort
         {
             get { return peerListenPort; }
             set { peerListenPort = value; }
         }
-
+        public bool ChunkNullUpdated
+        {
+            get { return chunkNullUpdated; }
+            set { chunkNullUpdated = value; }
+        }
      
 
         //int D1port = 0;             //video data port number
@@ -132,6 +141,7 @@ namespace Client
             }
             
             treeInitial();
+            
 
             for (int i = 0; i < TREE_NO; i++)
             {
@@ -140,6 +150,7 @@ namespace Client
             }
 
             joinPeers = new PeerNode[TREE_NO]; //define size of JoinpeerNode array
+            chunkNullUpdated = false;
 
             //TcpClient trackerTcpClient;
             //NetworkStream trackerStream;
@@ -352,7 +363,7 @@ namespace Client
         }
 
 
-        public bool connectPeers(int tree_num)  //connect to Peer to get the port no of Cport Dport
+        public bool connectPeers(int tree_num, bool reconnectUse)  //connect to Peer to get the port no of Cport Dport
         {
             TcpClient connectServerClient=null;
             NetworkStream connectServerStream=null;
@@ -368,7 +379,10 @@ namespace Client
                             return false;               //or down peer list again 
 
                         //select a peer to connect
-                        conNode = selectPeer(i - 1);
+                        if(reconnectUse)
+                            conNode = selectPeer(i - 1, true, NO_NULLCHUNK);
+                        else
+                            conNode = selectPeer(i - 1, true, RANDOM_PEER);
                         if (conNode == null)
                             return false;
 
@@ -524,6 +538,23 @@ namespace Client
             }
         }
 
+        public bool updateTotalChunkNull(int treeNo, PeerNode peer)
+        {
+            if (!savingchunkNull)
+            {
+                savingchunkNull = true;
+
+                treeAccessor = new PeerInfoAccessor(folder + "\\" + Peerlist_name + treeNo);
+                treeAccessor.deletePeer(peer);
+                treeAccessor.addPeer(peer);
+                chunkNullUpdated = false;
+
+                savingchunkNull = false;
+                return true;
+            }
+            else
+                return false;
+        }
 
 
         private int RandomNumber(int min, int max)
@@ -533,8 +564,19 @@ namespace Client
         }
 
         //selecting Peer for conection
-        public PeerNode selectPeer(int tree)
-        {   
+        public PeerNode selectPeer(int tree,bool forceSaveXml,int type)
+        {
+            if (chunkNullUpdated)
+            {
+                bool saved = updateTotalChunkNull(tree, JoinPeer[tree]);//update the totalChunkNull to xml
+                while (forceSaveXml && !saved)
+                {
+                    if (updateTotalChunkNull(tree, JoinPeer[tree]))
+                        break;
+                    Thread.Sleep(10);
+                }
+            }
+
             PeerNode tempPeer=null;
             treeAccessor = new PeerInfoAccessor(folder + "\\" + Peerlist_name + tree);
             //bool checkLoad = treeAccessor.load();
@@ -544,30 +586,44 @@ namespace Client
 
             //PeerNode tempPeer=null;
 
-            while (tempPeer == null)
-            {
+            //while (tempPeer == null)
+            //{
                 bool checkLoad = treeAccessor.load();
                 if (!checkLoad)
                 {
-                    Thread.Sleep(20);
-                    continue;
+                    return null;
+                    //Thread.Sleep(20);
+                    //continue;
                 }
                 //clientFrm.rtbdownload.AppendText(RandomNumber(0, peerAccess.getMaxId()+1) + "\n");
                 //String id  = peerAccess.getPeer("0");                                               //select the server ip as default
                 //string id = peerAccess.getMaxId().ToString();                  //select the last peer
                 try
                 {
-                    if(treeAccessor.getMaxId() == -1)
-                        continue;
+                    if (treeAccessor.getMaxId() == -1)
+                        return null;
+                        //continue;
                     //string id = RandomNumber(0, treeAccessor.getMaxId() + 1).ToString();//Random select
-                    PeerNode target = treeAccessor.getRandomPeer();//treeAccessor.getPeer(id);
-                    if(target == null)
-                        continue;
-                    if (treeAccessor.reconecting(target.Id))//if peer is not exist, skip
-                        continue;
-                    if (treeAccessor.checkchild(target, selfid[tree])) //if peer is child, skip it
-                        continue;
-                    tempPeer = target;
+                    if(type == RANDOM_PEER)
+                    {
+                        PeerNode target = treeAccessor.getRandomPeer();//treeAccessor.getPeer(id);
+                        tempPeer = target;
+                    }
+                    else
+                    {
+                        List<PeerNode> target = treeAccessor.getLeastChunkNullPeer(5);
+                        tempPeer = target[RandomNumber(0, target.Count)];
+                    }
+
+                    //if(target == null)
+                    //    //continue;
+                    if (treeAccessor.reconecting(tempPeer.Id))//if peer is not exist, skip
+                        tempPeer = null;
+                        //continue;
+                    if (treeAccessor.checkchild(tempPeer, selfid[tree])) //if peer is child, skip it
+                        tempPeer = null;
+                        //continue;
+                    //tempPeer = target;
                 }
                 catch(Exception ex)
                 {
@@ -576,7 +632,7 @@ namespace Client
                     Thread.Sleep(20);
                 }
 
-            }
+            //}
             return tempPeer;
         }
 
