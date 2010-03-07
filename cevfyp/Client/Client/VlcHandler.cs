@@ -23,7 +23,7 @@ namespace Client
             cConfig.load("C:\\ClientConfig");
             args = new string[]
             {
-            "-I", "dummy","--http-caching=200" ,
+            "-I", "dummy", "--no-ignore-config", "--http-caching=1000",
             @"--plugin-path="+cConfig.PluginPath+"\\plugins",
             "--vout-filter=deinterlace", "--deinterlace-mode=blend"
             };
