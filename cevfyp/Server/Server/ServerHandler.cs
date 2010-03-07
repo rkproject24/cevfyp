@@ -102,7 +102,8 @@ namespace Server
             mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
             mainFm.richTextBox1.Clear();
             mainFm.richTextBox2.Clear();
-           
+
+            ph.setTreeCLState(1, 0);
         }
 
         
@@ -328,25 +329,29 @@ namespace Server
 
                     if (reqType.Equals("chunkReq"))
                     {
-                        byte[] sendMessage = new byte[sConfig.ChunkSize];
-                        byte[] responseMessage2 = new byte[4];
-                        stream.Read(responseMessage2, 0, responseMessage2.Length);
+                        int replyPort = ph.getReplyChunkPort();
+                        byte[] sendMessage = BitConverter.GetBytes(replyPort);
+                        stream.Write(sendMessage, 0, sendMessage.Length);
 
-                        int reqSeq = BitConverter.ToInt16(responseMessage2, 0);
-                        int remainder_number = reqSeq % max_tree;
-                        int target_tree;
-                        Chunk resultChunk = new Chunk();
+                        //byte[] sendMessage = new byte[sConfig.ChunkSize];
+                        //byte[] responseMessage2 = new byte[4];
+                        //stream.Read(responseMessage2, 0, responseMessage2.Length);
 
-                        if (remainder_number == 0)
-                            target_tree = max_tree - 1;
-                        else
-                            target_tree = remainder_number - 1;
+                        //int reqSeq = BitConverter.ToInt16(responseMessage2, 0);
+                        //int remainder_number = reqSeq % max_tree;
+                        //int target_tree;
+                        //Chunk resultChunk = new Chunk();
 
-                        resultChunk=ph.searchReqChunk(target_tree, reqSeq);
+                        //if (remainder_number == 0)
+                        //    target_tree = max_tree - 1;
+                        //else
+                        //    target_tree = remainder_number - 1;
+
+                        //resultChunk=ph.searchReqChunk(target_tree, reqSeq);
                       
-                            sendMessage = ch.chunkToByte(resultChunk, sConfig.ChunkSize);
-                            stream.Write(sendMessage, 0, sendMessage.Length);
-                            mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedMissChunk:"+resultChunk.seq.ToString()+"\n" });
+                        //    sendMessage = ch.chunkToByte(resultChunk, sConfig.ChunkSize);
+                        //    stream.Write(sendMessage, 0, sendMessage.Length);
+                        //    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedMissChunk:"+resultChunk.seq.ToString()+"\n" });
 
                     }
 
@@ -387,6 +392,7 @@ namespace Server
             bool checkFirst = true;
 
             TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
+            //TcpClient getClient = new TcpClient("vinci.dyndns.info", 1000);
             NetworkStream vlcStream = getClient.GetStream();
 
             try
@@ -410,7 +416,7 @@ namespace Server
                 {
                     if (checkFirst)
                     {
-                        vlcStream.ReadTimeout = 8000;// If read timeout(5 sec.) , we assume the movie has finished playing
+                        vlcStream.ReadTimeout = 20000;// If read timeout(20 sec.) , we assume the movie has finished playing
                         checkFirst = false;
                     }
                     else

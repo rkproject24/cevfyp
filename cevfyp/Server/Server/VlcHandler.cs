@@ -132,6 +132,14 @@ namespace Server
             return fps;
         }
 
+        //public int getBitRate()
+        //{
+        //    MediaInfo mi = new MediaInfo();
+        //    mi.Open(@"" + filesrc);
+        //    string a = mi.getVidBitrate();
+        //    mi.Close();
+        //}
+
       
 
     }
