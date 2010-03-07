@@ -231,11 +231,21 @@ namespace ClassLibrary
         //    return RPI.sortLoad("/Info/Peer", attribute);
         //}
 
-        public PeerNode getLeastChunkNullPeer()
+        public List<PeerNode> getLeastChunkNullPeer(int totalPeer)
         {
-            RPI.sortLoad("/Info/Peer", "NullChunkTotal");
-            string id = RPI.ReadByIndex("Peer", "ID",0);
-            return getPeer(id);
+            List<PeerNode> resultlist = new List<PeerNode>();
+
+                RPI.sortLoad("/Info/Peer", "NullChunkTotal");
+            RPI.load();
+            for (int i = 0; i < totalPeer; i++)
+            {
+                string id = RPI.ReadByIndex("Peer", "ID", i);
+                if (id.Equals(""))
+                    break;
+                resultlist.Add(getPeer(id));
+            }
+            return resultlist;
+            
         }
     }
 }
