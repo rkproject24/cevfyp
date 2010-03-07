@@ -54,6 +54,11 @@ namespace TrackerServer
             start();
             btnOn.Enabled = false;
             btnReset.Enabled = true;
+
+            //testXMLsort.sort("PeerInfoT0.xml", "/Info/Peer", "Parentid");
+            //PeerInfoAccessor TreeAccess = new PeerInfoAccessor("PeerInfoT0");
+            //TreeAccess.load();
+            //bool checkLoad = TreeAccess.sortLoad();
         }
         private void btnReset_Click(object sender, EventArgs e)
         {
