@@ -336,7 +336,7 @@ namespace ClassLibrary
              {
                  root = xmlDoc.DocumentElement;
 
-                 XmlNode G = root.ChildNodes[ RandomNumber(0, root.ChildNodes.Count - 1)];
+                 XmlNode G = root.ChildNodes[ RandomNumber(0, root.ChildNodes.Count)];
                  XmlAttributeCollection attributes = G.Attributes;
                  foreach (XmlAttribute attri in attributes)
                  {
@@ -377,7 +377,7 @@ namespace ClassLibrary
              {
                  //MessageBox.Show("Reading Error! Please input both group and type!");
                  //return "error";
-                 return ex.ToString();
+                 return "";
              }
              return "";
          }
@@ -609,7 +609,7 @@ namespace ClassLibrary
                 }
                 root.InnerXml = xmlString;
 
-                //xmlDoc.Save(this.xmlFile);
+                xmlDoc.Save(this.xmlFile);
                 return true;
             }
             catch (Exception ex)
