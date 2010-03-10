@@ -34,7 +34,7 @@ namespace Client
         static int PULL_CHUNK_PORT_BASE = 0;
         static int PULL_CHUNK_PORT_UP = 0;
         static int REPLY_CHUNK_TIMEOUT = 5000;
-        static int REC_SEND_DIFF = 40;
+        static int REC_SEND_DIFF = 5;
 
         int max_client;
         int max_tree;
@@ -343,7 +343,7 @@ namespace Client
                     DPortClient = treeDPListener[(tree_index * max_client) + DThreadList_index].AcceptTcpClient();
 
                     DPortClient.NoDelay = true;
-
+                    DPortClient.SendBufferSize = cConfig.ChunkSize;
                     stream = DPortClient.GetStream();
 
                     //get peer ip
@@ -372,8 +372,9 @@ namespace Client
                     //register the child
                     while (!registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer))
                     {
-                        registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer);
-                        Thread.Sleep(100);
+                        //registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer);
+                        Random random = new Random();
+                        Thread.Sleep(random.Next(50, 100));
                     }
 
                     while (true)
@@ -419,8 +420,10 @@ namespace Client
 
                         if (firstRun == true && treeChunkList[tree_index].Count > 1)
                         {
-                            tempSeq = treeCLCurrentSeq[tree_index];
+                          
+                          //  tempSeq = treeCLCurrentSeq[tree_index];
                             tempRead_index = treeCLWriteIndex[tree_index] - 1;
+                            tempSeq =treeChunkList[tree_index][tempRead_index].seq;
                             firstRun = false;
                         }
 
@@ -434,7 +437,7 @@ namespace Client
                             if (treeCLWriteIndex[tree_index] > tempRead_index)
                                 readWrite_different = treeCLWriteIndex[tree_index] - tempRead_index;
                             else
-                                readWrite_different = tempRead_index - treeCLWriteIndex[tree_index];
+                                readWrite_different = (treeCLWriteIndex[tree_index] + CHUNKLIST_CAPACITY) - tempRead_index;
 
                             if (!(readWrite_different > REC_SEND_DIFF))
                             {
@@ -454,6 +457,8 @@ namespace Client
                             else
                                 tempRead_index += 1;
                         }
+
+                       // stream.Flush();
 
                         Thread.Sleep(10);
                     }
@@ -631,48 +636,51 @@ namespace Client
 
         private bool unregister(int tree, int peerId)
         {
-            if (peerId != -1)
+            while(true)
             {
-                TcpClient connectTracker = null;
-                NetworkStream connectTrackerStream = null;
-                try
+                if (peerId != -1)
                 {
-                    // mainFm.tbTracker.Text, TrackerSLPort
-                    connectTracker = new TcpClient(clientFm.tbServerIp.Text, cConfig.TrackerPort);
-                    connectTrackerStream = connectTracker.GetStream();
+                    TcpClient connectTracker = null;
+                    NetworkStream connectTrackerStream = null;
+                    try
+                    {
+                        // mainFm.tbTracker.Text, TrackerSLPort
+                        connectTracker = new TcpClient(((LoggerFrm)clientFm.downloadFrm).tbIP.Text, cConfig.TrackerPort);
+                        connectTrackerStream = connectTracker.GetStream();
 
-                    
-                    //define client message type
-                    byte[] clienttype = StrToByteArray("<unRegists>");
-                    connectTrackerStream.Write(clienttype, 0, clienttype.Length);
+                        
+                        //define client message type
+                        byte[] clienttype = StrToByteArray("<unRegists>");
+                        connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
-                    string sendstr = tree + "@" + peerId + "@" + clientMain.getSelfID(tree);//add the selfid for tracker to check who start unreg event
-                    byte[] sendbyte = StrToByteArray(sendstr);
-                    //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                        string sendstr = tree + "@" + peerId + "@" + clientMain.getSelfID(tree);//add the selfid for tracker to check who start unreg event
+                        byte[] sendbyte = StrToByteArray(sendstr);
+                        //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                    byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                    connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                    connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
+                        byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                        connectTrackerStream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
+                        connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
-                    connectTrackerStream.Close();
-                    connectTracker.Close();
-                    
-               
-
+                        connectTrackerStream.Close();
+                        connectTracker.Close();
+                        
+                   
+                        break;
+                    }
+                    catch
+                    {
+                        ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree + "] Peer:" + peerId + " unRge fail\n" });
+                           
+                        if(connectTrackerStream!=null)
+                           connectTrackerStream.Close();
+                        if(connectTracker!=null)
+                           connectTracker.Close();
+                        Thread.Sleep(20);
+                       // return false;
+                    }
                 }
-                catch
-                {
-                    ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree + "] Peer:" + peerId + " unRge fail\n" });
-                       
-                    if(connectTrackerStream!=null)
-                       connectTrackerStream.Close();
-                    if(connectTracker!=null)
-                       connectTracker.Close();
 
-                    return false;
-                }
             }
-
             return true;
         }
 
@@ -683,8 +691,8 @@ namespace Client
             NetworkStream connectTrackerStream;
             try
             {
-
-                connectTracker = new TcpClient(clientFm.tbServerIp.Text, cConfig.TrackerPort);
+                //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree + "] Peer:" + peerId + " register start\n" });
+                connectTracker = new TcpClient(((LoggerFrm)clientFm.downloadFrm).tbIP.Text, cConfig.TrackerPort);
                 connectTrackerStream = connectTracker.GetStream();
 
                 //define client message type
@@ -717,10 +725,12 @@ namespace Client
 
                 connectTracker.Close();
                 connectTrackerStream.Close();
-
+                ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree + "] Peer:" + peerId + " registered\n" });
             }
-            catch
+            catch(Exception ex)
             {
+                ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "register ex:\n"+ex });
+                return false;
             }
 
             return true;
