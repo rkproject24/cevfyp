@@ -6,7 +6,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Serialization;
 using System.Windows.Forms;
-
+using System.Threading;
 
 namespace ClassLibrary
 {
@@ -45,7 +45,28 @@ namespace ClassLibrary
         }
 
 
-        public void AddAttribute(string group, string type, string value)
+        //public void AddAttribute(string group, string type, string value)
+        //{
+        //    try
+        //    {
+        //        xmlDoc = new XmlDocument();
+        //        //XmlNode node = setting.SelectSingleNode(group);
+        //        xmlDoc.Load(this.xmlFile);
+        //        XmlAttribute xmlattribute_add = xmlDoc.CreateAttribute(type);
+        //        xmlattribute_add.Value = value;
+        //        //node.Attributes.Append(xmlattribute_add);
+
+        //        xmlDoc.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
+        //        xmlDoc.Save(this.xmlFile);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show("AddAttribute:"+ex.ToString());
+        //    }
+
+        //}
+
+        public bool AddAttribute(string group, string type, string value)
         {
             try
             {
@@ -58,50 +79,79 @@ namespace ClassLibrary
 
                 xmlDoc.SelectSingleNode(group).Attributes.Append(xmlattribute_add);
                 xmlDoc.Save(this.xmlFile);
+
+                return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("AddAttribute:"+ex.ToString());
+                //MessageBox.Show("AddAttribute:" + ex.ToString());
+                return false;
             }
 
         }
 
+        
 
-        //public void Add(string list, string type, string value)
+        ////by vinci: attribute=NULL if there is no attributes in the node
+        //public void Add(string list, string []type, string []value, string []attributeName, string[] attributevalues)
         //{
-        //    XmlDocument xmlDoc = new XmlDocument();
-        //    xmlDoc.Load(this.xmlFile);
-        //    XmlElement childNode;
-
-
-        //    XmlNode root = xmlDoc.DocumentElement;
-        //    if ((childNode = (XmlElement)xmlDoc.SelectSingleNode(list)) == null)
+        //    try
         //    {
+        //        xmlDoc = new XmlDocument();
+
+        //        XmlElement childNode;
+        //        xmlDoc.Load(this.xmlFile);
+        //        XmlElement root = xmlDoc.DocumentElement;
+
+        //        //try
+        //        //{
+        //        //    //childNode = (XmlElement)xmlDoc.SelectSingleNode(list);
+        //        //    childNode = (XmlElement)root.SelectSingleNode(list);
+        //        //}
+        //        //catch
+        //        //{
+        //        //    childNode = xmlDoc.CreateElement(list);
+        //        //}
+
         //        childNode = xmlDoc.CreateElement(list);
+
+        //        //by vinci
+        //        for (int i = 0; i < attributeName.Length; i++)
+        //        {
+        //            XmlAttribute attribute = xmlDoc.CreateAttribute(attributeName[i]);
+        //            attribute.Value = attributevalues[i];
+        //            childNode.SetAttributeNode(attribute);
+        //        }
+
+        //        for (int i = 0; i < type.Length; i++)
+        //        {
+
+        //            //by vinci:
+        //            try
+        //            {
+        //                XmlElement subNode = xmlDoc.CreateElement(type[i]);
+        //                subNode.InnerText = value[i];
+
+        //                root.AppendChild(childNode);
+        //                childNode.AppendChild((XmlNode)subNode);
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Add_inside:" + ex.ToString());
+        //            }
+
+        //        }
+
+        //        xmlDoc.Save(this.xmlFile);
         //    }
-           
-        //        XmlElement childNode2 = xmlDoc.CreateElement(type);
-        //        XmlText textNode = xmlDoc.CreateTextNode(value);
-        //        //textNode.Value = value;
-
-        //        root.AppendChild(childNode);
-        //        childNode.AppendChild(childNode2);
-        //        //childNode.SetAttribute("Name", type[i]);
-        //        childNode2.AppendChild(textNode);
-
-        //        //textNode.Value = "replacing hello world";
-
-        //        //XmlAttribute xmlattribute_add = setting.CreateAttribute(type[i]);
-        //        //xmlattribute_add.Value = value[i];
-        //        //xmlnode_add.Attributes.Append(xmlattribute_add);
-            
-
-        //    xmlDoc.Save(this.xmlFile);
-
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Add_outside:" + ex.ToString());
+        //    }
         //}
 
-        //by vinci: attribute=NULL if there is no attributes in the node
-        public void Add(string list, string []type, string []value, string []attributeName, string[] attributevalues)
+        public bool Add(string list, string[] type, string[] value, string[] attributeName, string[] attributevalues)
         {
             try
             {
@@ -146,21 +196,53 @@ namespace ClassLibrary
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Add_inside:" + ex.ToString());
+                        // MessageBox.Show("Add_inside:" + ex.ToString());
+                        return false;
                     }
 
                 }
 
                 xmlDoc.Save(this.xmlFile);
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Add_outside:" + ex.ToString());
+                //MessageBox.Show("Add_outside:" + ex.ToString());
+                return false;
             }
         }
 
 
-        public void Add(string[] type, string[] value)
+        //public void Add(string[] type, string[] value)
+        //{
+        //    try
+        //    {
+        //        xmlDoc = new XmlDocument();
+        //        xmlDoc.Load(this.xmlFile);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.ToString());
+        //    }
+
+        //    XmlNode childNode = xmlDoc.DocumentElement;
+
+        //    for (int i = 0; i < type.Length; i++)
+        //    {
+        //        XmlElement childNode2 = xmlDoc.CreateElement(type[i]);
+        //        XmlText textNode = xmlDoc.CreateTextNode(value[i]);
+        //        //textNode.Value = value;
+
+        //        childNode.AppendChild(childNode2);
+        //        //childNode.SetAttribute("Name", type[i]);
+        //        childNode2.AppendChild(textNode);
+        //    }
+
+        //    xmlDoc.Save(this.xmlFile);
+
+        //}
+
+        public bool Add(string[] type, string[] value)
         {
             try
             {
@@ -169,7 +251,8 @@ namespace ClassLibrary
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                // MessageBox.Show(ex.ToString());
+                return false;
             }
 
             XmlNode childNode = xmlDoc.DocumentElement;
@@ -187,8 +270,9 @@ namespace ClassLibrary
 
             xmlDoc.Save(this.xmlFile);
 
+            return true;
+
         }
-          
 
         public string ReadAttribute(string group, string type)
         {
@@ -319,7 +403,7 @@ namespace ClassLibrary
              {
                  //MessageBox.Show("Reading Error! Please input both group and type!");
                  //return "error";
-                 return ex.ToString();
+                 //return ex.ToString();
              }
              return "";
          }
@@ -438,29 +522,54 @@ namespace ClassLibrary
 
 
 
-        public void modify(string group, string type, string newValue)
-        {
-            try
-            {
-                xmlDoc = new XmlDocument();
-                xmlDoc.Load(this.xmlFile);
-                //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
-                XmlElement root = xmlDoc.DocumentElement;
+        //public void modify(string group, string type, string newValue)
+        //{
+        //    try
+        //    {
+        //        xmlDoc = new XmlDocument();
+        //        xmlDoc.Load(this.xmlFile);
+        //        //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
+        //        XmlElement root = xmlDoc.DocumentElement;
 
-                // foreach (XmlElement 
+        //        // foreach (XmlElement 
 
-                //attribute.Value = newValue;
-                xmlDoc.Save(this.xmlFile);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("modify:" + ex.ToString());
+        //        //attribute.Value = newValue;
+        //        xmlDoc.Save(this.xmlFile);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("modify:" + ex.ToString());
                  
-            }
-        }
+        //    }
+        //}
+
+         public bool modify(string group, string type, string newValue)
+         {
+             try
+             {
+                 xmlDoc = new XmlDocument();
+                 xmlDoc.Load(this.xmlFile);
+                 //XmlAttribute attribute = modify.SelectSingleNode(type).Attributes[type];
+                 XmlElement root = xmlDoc.DocumentElement;
+
+                 // foreach (XmlElement 
+
+                 //attribute.Value = newValue;
+                 xmlDoc.Save(this.xmlFile);
+
+                 return true;
+             }
+             catch (Exception ex)
+             {
+                 // MessageBox.Show("modify:" + ex.ToString());
+                 return false;
+
+             }
+         }
+
 
         //by vinci
-        public void modifyAttribute(string node, string attributeName, string newValue)
+        public bool modifyAttribute(string node, string attributeName, string newValue)
         {
             try
             {
@@ -471,17 +580,37 @@ namespace ClassLibrary
                 attribute.Value = newValue;
                 //xmlDoc.RemoveChild(attribute);
                 //xmlDoc.AppendChild(attribute);
+                //while(!save())
+                //    Thread.Sleep(20);
                 xmlDoc.Save(this.xmlFile);
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("modifyAttribute:" + ex.ToString());
-                 
+                //MessageBox.Show("modifyAttribute:" + ex.ToString());
+                return false;
             }
 
         }
 
-        public void deleteAttribute(string group, string type)
+        //public void deleteAttribute(string group, string type)
+        //{
+        //    try
+        //    {
+        //        xmlDoc = new XmlDocument();
+        //        xmlDoc.Load(this.xmlFile);
+        //        XmlAttribute attribute = xmlDoc.SelectSingleNode(group).Attributes[type];
+        //        attribute.ParentNode.RemoveChild(attribute);
+        //        xmlDoc.Save(this.xmlFile);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("deleteAttribute:" + ex.ToString());
+        //    }
+
+        //}
+
+        public bool deleteAttribute(string group, string type)
         {
             try
             {
@@ -490,15 +619,34 @@ namespace ClassLibrary
                 XmlAttribute attribute = xmlDoc.SelectSingleNode(group).Attributes[type];
                 attribute.ParentNode.RemoveChild(attribute);
                 xmlDoc.Save(this.xmlFile);
+
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("deleteAttribute:" + ex.ToString());
+                //MessageBox.Show("deleteAttribute:" + ex.ToString());
+                return false;
             }
 
         }
 
-        public void deleteNode(string group)
+        //public void deleteNode(string group)
+        //{
+        //    try
+        //    {
+        //        xmlDoc = new XmlDocument();
+        //        xmlDoc.Load(this.xmlFile);
+        //        XmlNode node = xmlDoc.SelectSingleNode(group);
+        //        node.ParentNode.RemoveChild(node);
+        //        xmlDoc.Save(this.xmlFile);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("deleteNode:" + ex.ToString());
+        //    }
+        //}
+
+        public bool deleteNode(string group)
         {
             try
             {
@@ -507,10 +655,13 @@ namespace ClassLibrary
                 XmlNode node = xmlDoc.SelectSingleNode(group);
                 node.ParentNode.RemoveChild(node);
                 xmlDoc.Save(this.xmlFile);
+
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("deleteNode:" + ex.ToString());
+                // MessageBox.Show("deleteNode:" + ex.ToString());
+                return false;
             }
         }
 
@@ -553,12 +704,6 @@ namespace ClassLibrary
             return false;
         }
 
-
-        //public void save()
-        //{
-        //    xmlDoc.Save(this.xmlFile);
-        //}
-
         public bool load()
         {
             try
@@ -572,6 +717,21 @@ namespace ClassLibrary
             {
                 //MessageBox.Show("load:"+ex.ToString());
                return false;
+            }
+        }
+        public bool save()
+        {
+            try
+            {
+                xmlDoc = new XmlDocument();
+                xmlDoc.Save(this.xmlFile);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("load:"+ex.ToString());
+                return false;
             }
         }
 
@@ -638,7 +798,7 @@ namespace ClassLibrary
         }
       }
 
-    public static class SiteHelper
+   /* public static class SiteHelper
     {
         public static string Serialize(object o)
         {
@@ -668,6 +828,7 @@ namespace ClassLibrary
             }
         }
 
-    }  
+    }  */
+
         
 }

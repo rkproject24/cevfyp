@@ -122,13 +122,15 @@ namespace ClassLibrary
             string[] Info = { "IP", "Layer", "listenPort", "Parentid", "NullChunkTotal" };
             string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid,peer.NullChunkTotal.ToString() };
 
-            RPI.Add("Peer", Info, Value, attributes, attributesValue);
+            while (!RPI.Add("Peer", Info, Value, attributes, attributesValue))
+                Thread.Sleep(20);
             
         }
         public bool deletePeer(PeerNode peer)
         {
             string attributesValue =  peer.Id ;
 
+            //while(!RPI.deleteInnerNode("Peer", "ID", attributesValue);)
             return RPI.deleteInnerNode("Peer", "ID", attributesValue);
         }
 
@@ -140,9 +142,9 @@ namespace ClassLibrary
         }
 
 
-        public void setMaxId(int MaxId)
+        public bool setMaxId(int MaxId)
         {
-            RPI.modifyAttribute("Info", "MaxId", MaxId.ToString());
+            return RPI.modifyAttribute("Info", "MaxId", MaxId.ToString());
         }
 
         public int getMaxId()
@@ -153,9 +155,9 @@ namespace ClassLibrary
             return Int32.Parse(maxId);
         }
 
-        public void setTreeSize(int MaxId)
+        public bool setTreeSize(int MaxId)
         {
-            RPI.modifyAttribute("Info", "treeSize", MaxId.ToString());
+            return RPI.modifyAttribute("Info", "treeSize", MaxId.ToString());
         }
 
         public int getTreeSize()
