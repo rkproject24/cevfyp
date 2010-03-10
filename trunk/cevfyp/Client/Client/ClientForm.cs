@@ -25,7 +25,6 @@ namespace Client
         private const string code2 = "a6402b80-2ebd-4fd3-8930-024a6201d002";
         private const string code3 = "a6402b80-2ebd-4fd3-8930-024a6201d003";
         private const string code4 = "a6402b80-2ebd-4fd3-8930-024a6201d004";
-        private DockContainer _docker = null;
         public Form downloadFrm, uploadFrm, playFrm, speedFrm;
         private DockStateSerializer _serializer = null;
         public plotgraph graphTreeData;
@@ -71,10 +70,10 @@ namespace Client
         //    tbStatus.Text = message;
         //}
 
-        public void UpdateTextBox4(string message)
-        {
-            tbServerIp.Text = message;
-        }
+        //public void UpdateTextBox4(string message)
+        //{
+        //    tbServerIp.Text = message;
+        //}
         public void UpdateRtbUpload(string message)
         {
             ((LoggerFrm)uploadFrm).rtbdownload.AppendText(message);
@@ -114,7 +113,7 @@ namespace Client
         //_docker.FormClosed += OnDockerFormClosed;
 
             graphTreeData = new plotgraph("Tree0", true);
-            clientHandler = new ClientHandler(this);
+            
 
             downloadFrm = CreateTestForm(new Guid(code));
             //form1.Show();
@@ -155,7 +154,7 @@ namespace Client
             
             //_docker.SetAutoHide(info1, true);
             //_docker.SetAutoHide(info2, true);
-           
+            clientHandler = new ClientHandler(this);
         }
 
 
@@ -182,6 +181,8 @@ namespace Client
                 LoggerFrm result = new LoggerFrm();
                 result.Bounds = new Rectangle(0, 0, 176, 345);
                 result.Text = "Download";
+                result.label1.Text = "TrackerIP";
+                result.lbSpeed.Text = "0Kb";
                 return result;
             }
             else if (identifier == new Guid(code2))
@@ -189,6 +190,8 @@ namespace Client
                 LoggerFrm result = new LoggerFrm();
                 result.Bounds = new Rectangle(400, 0, 176, 345);
                 result.Text = "Upload";
+                result.label1.Text = "Hosting IP";
+                result.lbSpeed.Text = "0Kb";
                 return result;
             }
             else if (identifier == new Guid(code3))
@@ -314,10 +317,10 @@ namespace Client
         //    serverPre.Show();
         //}
 
-        private void btnListenPeer_Click(object sender, EventArgs e)
-        {
-            clientHandler.startUpload();
-        }
+        //private void btnListenPeer_Click(object sender, EventArgs e)
+        //{
+        //    clientHandler.startUpload();
+        //}
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -335,10 +338,11 @@ namespace Client
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            string response = clientHandler.establishConnect(tbServerIp.Text);
+            string response = clientHandler.establishConnect(((LoggerFrm)downloadFrm).tbIP.Text.ToString());
             if (!response.Equals(""))
             {
                 MessageBox.Show(response);
+                
             }
             else
             {
