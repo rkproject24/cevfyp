@@ -215,7 +215,7 @@ namespace Server
             {
                 int port_num = treeCPortList[tree_index][cList_index].PortC;
 
-                treeCPortList[tree_index][cList_index].clientC.Close();
+               treeCPortList[tree_index][cList_index].clientC.Close();
 
                 cPort cport = new cPort();
                 cport.clientC = null;
@@ -310,6 +310,7 @@ namespace Server
                     //DPortClient = treeDPListener[tree_index][DThreadList_index].AcceptTcpClient();
                     DPortClient = treeDPListener[(tree_index * max_client) + DThreadList_index].AcceptTcpClient();
                     DPortClient.NoDelay = true;
+                    DPortClient.SendBufferSize = sConfig.ChunkSize;
                     stream = DPortClient.GetStream();
 
                     //get peer ip
@@ -401,7 +402,8 @@ namespace Server
                             if (treeCLWriteIndex[tree_index] > tempRead_index)
                                 readWrite_different = treeCLWriteIndex[tree_index] - tempRead_index;
                             else
-                                readWrite_different = tempRead_index - treeCLWriteIndex[tree_index];
+                                readWrite_different = (treeCLWriteIndex[tree_index] + CHUNKLIST_CAPACITY) - tempRead_index;
+                               // readWrite_different = tempRead_index - treeCLWriteIndex[tree_index];
 
                             if (!(readWrite_different > REC_SEND_DIFF))
                             {
@@ -410,7 +412,7 @@ namespace Server
                                 stream.Write(sendMessage, 0, sendMessage.Length);
                             }
                             else
-                                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] {"Skip chunk: " + tempRead_index + "\n"});
+                                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Skip chunk: " + tempRead_index + "\n" });
 
                             if (tempSeq == 2147483647)
                                 tempSeq = tree_index + 1;

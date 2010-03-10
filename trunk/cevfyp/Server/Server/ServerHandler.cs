@@ -93,6 +93,7 @@ namespace Server
                 ph.setTreeCLState(i, 1);
 
             }
+            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { vlc.getBitRate() + "\n" });
         }
 
 
@@ -393,7 +394,10 @@ namespace Server
 
             TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
             //TcpClient getClient = new TcpClient("vinci.dyndns.info", 1000);
+
+            getClient.NoDelay = true;
             NetworkStream vlcStream = getClient.GetStream();
+
 
             try
             {
@@ -423,14 +427,24 @@ namespace Server
                         vlcStream.ReadTimeout = 500;// If read timeout(500) , we assume the movie has finished playing and then throw catch
 
                     byte[] responseData = new byte[sConfig.ReceiveStreamSize];
-                    responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
-                    if (responseMessageBytes == 0)
-                    {
-                        Thread.Sleep(5);
-                        continue;
-                    }
 
-                    streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
+                    //responseMessageBytes = vlcStream.Read(responseData, 0, responseData.Length);
+                    //if (responseMessageBytes == 0)
+                    //{
+                    //    Thread.Sleep(5);
+                    //    continue;
+                    //}
+                    //streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
+
+                    int dataRead = 0;
+                    do
+                    {
+                        dataRead += vlcStream.Read(responseData, dataRead, sConfig.ReceiveStreamSize - dataRead);
+                    } while (dataRead < sConfig.ReceiveStreamSize);
+
+                    vlcStream.Flush();
+
+                    streamingChunk = ch.streamingToChunk(dataRead, responseData, seqNumber);
 
                     int remainder_number = streamingChunk.seq % max_tree;
 
@@ -446,7 +460,7 @@ namespace Server
                     else
                         seqNumber += 1;
 
-                    Thread.Sleep(20);
+                    Thread.Sleep(10);
                 }
             }
             catch(Exception ex)
