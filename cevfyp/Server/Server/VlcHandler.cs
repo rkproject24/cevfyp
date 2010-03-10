@@ -15,6 +15,7 @@ namespace Server
         ServerConfig sConfig = new ServerConfig();
         bool firstplay = true;
         Panel playPanel;
+        string filesrc;
 
         public VlcHandler()
         {
@@ -29,6 +30,7 @@ namespace Server
 
         public void streaming(Panel p, string filesrc)//, string libsrc)
         {
+            this.filesrc = filesrc;
             if (firstplay)
             {
                 this.playPanel = p;
@@ -132,13 +134,14 @@ namespace Server
             return fps;
         }
 
-        //public int getBitRate()
-        //{
-        //    MediaInfo mi = new MediaInfo();
-        //    mi.Open(@"" + filesrc);
-        //    string a = mi.getVidBitrate();
-        //    mi.Close();
-        //}
+        public string getBitRate()
+        {
+            MediaInfo mi = new MediaInfo();
+            mi.Open(@"" + filesrc);
+            string result= mi.getVidBitrate();
+            mi.Close();
+            return result;
+        }
 
       
 
