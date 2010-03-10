@@ -33,3 +33,18 @@ C:\Documents and Settings\eeuser.EEA050\Desktop\2010_0302_fyp\p2ptvLib\ClassLibr
 C:\Documents and Settings\eeuser.EEA050\Desktop\2010_0302_fyp\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
 C:\Documents and Settings\eeuser.EEA050\Desktop\2010_0302_fyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
 C:\Documents and Settings\eeuser.EEA050\Desktop\2010_0302_fyp\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
+C:\Documents and Settings\eeuser\Desktop\0903\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\eeuser\Desktop\0903\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
+C:\Documents and Settings\eeuser\Desktop\0903\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+C:\Documents and Settings\eeuser\Desktop\0903\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+C:\Documents and Settings\eeuser\Desktop\0903\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+F:\New Folder\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+F:\New Folder\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
+F:\New Folder\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+F:\New Folder\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+F:\New Folder\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+G:\10-03-2010\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.dll
+G:\10-03-2010\p2ptvLib\ClassLibrary\bin\Debug\ClassLibrary.pdb
+G:\10-03-2010\p2ptvLib\ClassLibrary\obj\Debug\ResolveAssemblyReference.cache
+G:\10-03-2010\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.dll
+G:\10-03-2010\p2ptvLib\ClassLibrary\obj\Debug\ClassLibrary.pdb
