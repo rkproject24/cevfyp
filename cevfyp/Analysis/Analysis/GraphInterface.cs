@@ -150,6 +150,14 @@ namespace Analysis
             //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);         
         }
 
+
+        public void clearGraph(ZedGraphControl display)
+        {
+            display.GraphPane.CurveList.Clear();
+            //display.MasterPane = new MasterPane();
+            
+        }
+
         public void UpdateGraph(ZedGraphControl display, int tree)
         {
             //AddRecord(DateTime.Now.AddHours(-20), DateTime.Now.AddMinutes(CurrentIndex).AddHours(-20), 512000);
@@ -174,7 +182,7 @@ namespace Analysis
                         ImportData.deleteInnerNode("Record", "id", previousPrint[tree].ToString());
                     }
                     //LineItem myCurve = display.GraphPane.AddCurve("My Curve", list, Color.DarkGreen, SymbolType.None);
-                    myCurve[tree].AddPoint(new PointPair(x, y));
+                    //myCurve[tree].AddPoint(new PointPair(x, y));
                     //CurrentIndex++;
                 }
                 catch(Exception ex)
