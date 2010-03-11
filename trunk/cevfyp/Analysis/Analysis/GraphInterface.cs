@@ -165,6 +165,7 @@ namespace Analysis
             display.GraphPane.XAxis.Scale.MaxAuto = true;
             
             xml ImportData = new xml("Tree"+tree, "DataBase", false);
+            ImportData.load();
             int index = Int32.Parse(ImportData.ReadAttribute("DataBase", "Maxid"));
             if (index > previousPrint[tree])
             {
