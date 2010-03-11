@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="ZedGraph, Version=5.0.6.18416, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\cevfyp\GraphPloting\ZedGraph.dll</HintPath>
+      <HintPath>..\..\..\..\cevfyp\Analysis\Analysis\bin\Debug\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
