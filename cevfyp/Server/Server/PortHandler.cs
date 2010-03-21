@@ -63,6 +63,7 @@ namespace Server
         int replyChunkPort;
         TcpListener replyChunkListener = null;
 
+        bool[] readWriteReverse;
         int[] treeCLWriteIndex;
         int[] treeCLReadIndex;
         int[] treeCLCurrentSeq;
@@ -91,7 +92,8 @@ namespace Server
            // treeDThreadList = new List<List<Thread>>(maxTree);
             //treeCPListener = new List<List<TcpListener>>(maxTree);
             //treeDPListener = new List<List<TcpListener>>(maxTree);
-           
+
+            readWriteReverse = new bool[maxTree];
             treeCLWriteIndex = new int[maxTree];
             treeCLReadIndex = new int[maxTree];
             treeCLCurrentSeq = new int[maxTree];
@@ -114,6 +116,8 @@ namespace Server
                 List<dPort> DPortList = new List<dPort>(maxClient);
                 treeCPortList.Add(CPortList);
                 treeDPortList.Add(DPortList);
+
+                readWriteReverse[i] = false;
 
                // List<TcpListener> CPListener = new List<TcpListener>(maxClient);
                // List<TcpListener> DPListener = new List<TcpListener>(maxClient);
@@ -162,8 +166,11 @@ namespace Server
             else
                 treeChunkList[tree_index][write_index] = sChunk;
 
-            if (write_index == (CHUNKLIST_CAPACITY-1))
+            if (write_index == (CHUNKLIST_CAPACITY - 1))
+            {
                 treeCLWriteIndex[tree_index] = 0;
+                //readWriteReverse[tree_index] = true;
+            }
             else
                 treeCLWriteIndex[tree_index] += 1;
 
@@ -279,26 +286,32 @@ namespace Server
 
             NetworkStream stream = null;
             TcpClient DPortClient = null;
-            //TcpListener DportListener = new TcpListener(localAddr,ran_port);
-            //treeDPListener[tree_index].Add(new TcpListener(localAddr, ran_port));
+            
             treeDPListener[(tree_index * max_client) + DThreadList_index] = new TcpListener(localAddr, ran_port);
+
+            bool portStarted = false;
+
+            while (!portStarted)
+            {
+                try
+                {
+                    treeDPListener[(tree_index * max_client) + DThreadList_index] = new TcpListener(localAddr, ran_port);
+                    treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
+                    portStarted = true;
+                }
+                catch (Exception ex)
+                {
+                   // mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+                    ran_port = TcpApps.RanPort(sConfig.Dport, sConfig.Dataportup);
+                }
+                Thread.Sleep(10);
+            }
 
             dPort dp = new dPort();
             dp.PortD = ran_port;
             dp.clientD = null;
             dp.peerId = -1;
             treeDPortList[tree_index].Add(dp);
-
-            try
-            {
-                //DportListener.Start(1);
-                //treeDPListener[tree_index][DThreadList_index].Start(1);
-                treeDPListener[(tree_index * max_client) + DThreadList_index].Start(1);
-            }
-            catch (Exception ex)
-            {
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
-            }
 
             while (true)
             {
@@ -365,51 +378,42 @@ namespace Server
                            // waitingMessage = System.Text.Encoding.ASCII.GetBytes("Wait");
                             stream.Write(waitingMessage, 0, waitingMessage.Length);
                             Thread.Sleep(20);
+                            stream.Flush();
                             continue;
                         }
 
-                        if (firstRun == true && treeChunkList[tree_index].Count > 1)
+                        if (treeChunkList[tree_index].Count < 1)
+                        {
+                            Thread.Sleep(10);
+                            continue;
+                        }
+
+                        if (firstRun == true)
                         {
                             tempSeq = treeCLCurrentSeq[tree_index];
                             tempRead_index = treeCLWriteIndex[tree_index] - 1;
                             firstRun = false;
                         }
 
-                        //by yam: using search method
-                        /*if (treeChunkList[tree_index].Count > 10 && tempSeq <= treeCLCurrentSeq[tree_index])
-                        {
-
-                            resultIndex = search(treeChunkList[tree_index], treeCLReadIndex[tree_index], treeCLWriteIndex[tree_index], tempSeq);
-
-                            if (resultIndex != -1)
-                            {
-                                sendMessage = ch.chunkToByte(treeChunkList[tree_index][resultIndex], sConfig.ChunkSize);
-                                stream.Write(sendMessage, 0, sendMessage.Length);
-                                treeCLReadIndex[tree_index] = resultIndex;
-                            }
-
-                            if (tempSeq == 2147483647)
-                                tempSeq = tree_index+1;
-                            else
-                                tempSeq += max_tree;
-                        }
-                        */
+                   
 
                         //by yam: not seach method
-                        if (treeChunkList[tree_index].Count > 1 && tempSeq <= treeCLCurrentSeq[tree_index])
+                        if (tempSeq <= treeCLCurrentSeq[tree_index])
+                       // if ((!readWriteReverse[tree_index] && tempRead_index < treeCLWriteIndex[tree_index]) || (readWriteReverse[tree_index] && tempRead_index < CHUNKLIST_CAPACITY))
                         {
                             int readWrite_different = 0;
                             if (treeCLWriteIndex[tree_index] > tempRead_index)
                                 readWrite_different = treeCLWriteIndex[tree_index] - tempRead_index;
                             else
                                 readWrite_different = (treeCLWriteIndex[tree_index] + CHUNKLIST_CAPACITY) - tempRead_index;
-                               // readWrite_different = tempRead_index - treeCLWriteIndex[tree_index];
+                              
 
                             if (!(readWrite_different > REC_SEND_DIFF))
                             {
                                 Chunk tempChunk = treeChunkList[tree_index][tempRead_index];
                                 sendMessage = ch.chunkToByte(tempChunk, sConfig.ChunkSize);
                                 stream.Write(sendMessage, 0, sendMessage.Length);
+                                stream.Flush();
                             }
                             else
                                 mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Skip chunk: " + tempRead_index + "\n" });
@@ -419,8 +423,11 @@ namespace Server
                             else
                                 tempSeq += max_tree;
 
-                            if (tempRead_index == (CHUNKLIST_CAPACITY-1))
+                            if (tempRead_index == (CHUNKLIST_CAPACITY - 1))
+                            {
                                 tempRead_index = 0;
+                                //readWriteReverse[tree_index] = false;
+                            }
                             else
                                 tempRead_index += 1;
                         }
@@ -448,17 +455,6 @@ namespace Server
                     if (!localterminate && treeDPortList[tree_index][DThreadList_index].clientD != null)
                     {
                         DOfflineState[(tree_index * max_client) + DThreadList_index] = 1;
-                        //treeCPListener[(tree_index * max_client) + DThreadList_index].Stop();
-                        //CThreadList[(tree_index * max_client) + DThreadList_index].Abort();
-
-
-                        //Thread CPortThread = new Thread(delegate() { TreePortHandle_Cport(DThreadList_index, tree_index); });
-                        //CPortThread.IsBackground = true;
-                        //CPortThread.Name = " Cport_handle_" + tree_index + "_" + DThreadList_index;
-                        //CPortThread.Start();
-                        //Thread.Sleep(20);
-                        //CThreadList[(tree_index * max_client) + DThreadList_index]=CPortThread;
-
 
                     }
                     if (stream != null)
@@ -481,21 +477,30 @@ namespace Server
 
             TcpClient CPortClient = null;
             NetworkStream stream = null;
-            treeCPListener[(tree_index * max_client) + CThreadList_index]  = new TcpListener(localAddr,ran_port);
+            
+            bool portStarted = false;
+        
+            while (!portStarted)
+            {
+                try
+                {
+                    treeCPListener[(tree_index * max_client) + CThreadList_index] = new TcpListener(localAddr, ran_port);
+                    treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
+                    portStarted = true;
+                }
+                catch (Exception ex)
+                {
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
+                    ran_port = TcpApps.RanPort(sConfig.CportBase, sConfig.Conportup);
+                }
+                Thread.Sleep(10);
+            }
+
 
             cPort cp = new cPort();
             cp.PortC = ran_port;
             cp.clientC = null;
             treeCPortList[tree_index].Add(cp);
-
-            try
-            {
-                treeCPListener[(tree_index * max_client) + CThreadList_index].Start(1);
-            }
-            catch (Exception ex)
-            {
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + tree_index + "]" + ex.ToString() });
-            }
 
             while (true)
             {
@@ -525,7 +530,7 @@ namespace Server
                         stream.ReadTimeout = 10000;
                         int responseMessageBytes = stream.Read(responseMessage, 0, responseMessage.Length);
                         string responseString = System.Text.Encoding.ASCII.GetString(responseMessage, 0, responseMessageBytes);
-
+                        stream.Flush();
 
                         if (responseString == "Exit" ||  DOfflineState[(tree_index * max_client) + CThreadList_index] == 1)
                         {

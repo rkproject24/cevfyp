@@ -16,10 +16,16 @@ namespace Server
         bool firstplay = true;
         Panel playPanel;
         string filesrc;
+        bool playing = false;
 
         public VlcHandler()
         {
             sConfig.load("C:\\ServerConfig");
+        }
+
+        public bool getPlayingState()
+        {
+            return playing;
         }
 
         static void Raise(ref libvlc_exception_t ex)
@@ -71,10 +77,12 @@ namespace Server
                 Raise(ref ex);
             }
             
+
             LibVlc.libvlc_media_player_play(player, ref ex);
             Raise(ref ex);
 
             setMute(1);
+            playing = true;
         }
 
         public void pause()
@@ -92,6 +100,7 @@ namespace Server
             LibVlc.libvlc_exception_init(ref ex);
             LibVlc.libvlc_media_player_stop(player, ref ex);
             Raise(ref ex);
+            playing = false;
             //LibVlc.libvlc_media_player_release(player);
             //LibVlc.libvlc_release(instance);
         }
@@ -134,11 +143,11 @@ namespace Server
             return fps;
         }
 
-        public string getBitRate()
+        public int getBitRate()
         {
             MediaInfo mi = new MediaInfo();
             mi.Open(@"" + filesrc);
-            string result= mi.getVidBitrate();
+            int result= (Int32.Parse(mi.getVidBitrate()) + Int32.Parse(mi.getAudioBitrate()))/1000;
             mi.Close();
             return result;
         }
