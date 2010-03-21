@@ -21,11 +21,12 @@ namespace Client
 {
     public partial class ClientForm :XCoolForm.XCoolForm
     {
+
         private const string code = "a6402b80-2ebd-4fd3-8930-024a6201d001";
         private const string code2 = "a6402b80-2ebd-4fd3-8930-024a6201d002";
         private const string code3 = "a6402b80-2ebd-4fd3-8930-024a6201d003";
         private const string code4 = "a6402b80-2ebd-4fd3-8930-024a6201d004";
-        public Form downloadFrm, uploadFrm, playFrm, speedFrm;
+        public Form downloadFrm, uploadFrm, playFrm, speedFrm, controlFrm;
         private DockStateSerializer _serializer = null;
         public plotgraph graphTreeData;
 
@@ -49,20 +50,24 @@ namespace Client
 
         public void UpdateTBox1(string message)
         {
-            textBox1.Text = message;
+            //textBox1.Text = message;
+            ((ControlFrm)controlFrm).lbTree0.Text = message;
         }
         public void UpdateTBox2(string message)
         {
-            textBox2.Text = message;
+            ((ControlFrm)controlFrm).lbTree1.Text = message;
+            //textBox2.Text = message;
         }
         public void UpdateTBox3(string message)
         {
-            textBox3.Text = message;
+            ((ControlFrm)controlFrm).lbTree2.Text = message;
+            //textBox3.Text = message;
         }
 
         public void UpdateTextBox2(string message)
         {
-            tbReadStatus.Text = message;
+            //tbReadStatus.Text = message;
+            ((ControlFrm)controlFrm).lbPlaySeq.Text = message;
         }
 
         //public void UpdateTextBox3(string message)
@@ -86,6 +91,12 @@ namespace Client
             //rtbdownload.AppendText(message);
         }
 
+        public void UpdateDownloadSpeed(string speed)
+        {
+            ((LoggerFrm)downloadFrm).lbSpeed.Text = speed + "kb";
+            //rtbdownload.AppendText(message);
+        }
+
         public void UpdateMainFmText(string message)
         {
             this.Text = message;
@@ -93,7 +104,11 @@ namespace Client
 
         public void UpdateLabel5(string message)
         {
-            label5.Text = message;
+            //label5.Text = message;
+            //((ControlFrm)controlFrm).lbId.Text = message;
+            this.Text = message;
+
+            this.TitleBar.TitleBarCaption = message;
         }
 
         //public void updateGraph(plotgraph data)
@@ -155,6 +170,21 @@ namespace Client
             //_docker.SetAutoHide(info1, true);
             //_docker.SetAutoHide(info2, true);
             clientHandler = new ClientHandler(this);
+
+            ControlFrm control = new ControlFrm(this, clientHandler);
+            //    //SpeedFrm result = new SpeedFrm("tree0", graphTreeData);
+            control.Bounds = new Rectangle(200, 100, 454, 110);
+            control.Text = "Menu";
+            controlFrm = control;
+            //return control;
+
+            //form1.Show();
+            DockableFormInfo info4 = _docker.Add(control, zAllowedDock.All, new Guid(code4));
+            info4.ShowContextMenuButton = false;
+            info4.ShowCloseButton = false;
+            
+            _docker.DockForm(info4, DockStyle.Bottom, zDockMode.Inner);
+            _docker.SetHeight(info4, 60);
         }
 
 
@@ -203,11 +233,11 @@ namespace Client
             }
             //else if (identifier == new Guid(code4))
             //{
-                
-            //    //SpeedFrm result = new SpeedFrm("tree0", graphTreeData);
-            //    result.Bounds = new Rectangle(200, 100, 400, 200);
-            //    result.Text = "speed";
-            //    return result;
+            //    ControlFrm control =  new ControlFrm(clientHandler);
+            ////    //SpeedFrm result = new SpeedFrm("tree0", graphTreeData);
+            //    control.Bounds = new Rectangle(200, 100, 454, 110);
+            //    control.Text = "Menu";
+            //    return control;
             //}
 
             throw new InvalidOperationException();
@@ -279,7 +309,7 @@ namespace Client
             this.TitleBar.TitleBarCaption = "Client";
             this.TitleBar.TitleBarType = XCoolForm.XTitleBar.XTitleBarType.Rounded;
 
-            btnDisconnect.Enabled = false;
+            //btnDisconnect.Enabled = false;
 
 
 
@@ -338,26 +368,26 @@ namespace Client
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            string response = clientHandler.establishConnect(((LoggerFrm)downloadFrm).tbIP.Text.ToString());
-            if (!response.Equals(""))
-            {
-                MessageBox.Show(response);
+            //string response = clientHandler.establishConnect(((LoggerFrm)downloadFrm).tbIP.Text.ToString());
+            //if (!response.Equals(""))
+            //{
+            //    MessageBox.Show(response);
                 
-            }
-            else
-            {
+            //}
+            //else
+            //{
                
-                btnDisconnect.Enabled = true;
-                btnConnect.Enabled = false;
-                clientHandler.startThread();
-            }
+            //    btnDisconnect.Enabled = true;
+            //    btnConnect.Enabled = false;
+            //    clientHandler.startThread();
+            //}
         }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
-            btnDisconnect.Enabled = false;
-            clientHandler.closeAllThread();
-            btnConnect.Enabled = true;
+            //btnDisconnect.Enabled = false;
+            //clientHandler.closeAllThread();
+            //btnConnect.Enabled = true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -374,14 +404,28 @@ namespace Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            btnStatistic.Enabled = false;
-            clientHandler.startStatistic();
+            //button1.Enabled = false;
+            ////(Int32)mainFm.nudStatisticPort.Value;
+            //clientHandler.startStatistic((Int32)nudStatisticPort.Value);
+        }
+
+        private void dowloadSpeedTimer_Tick(object sender, EventArgs e)
+        {
+            int total=0;
+            for(int i=0; i<clientHandler.treeNO; i++)
+            {
+                total += clientHandler.downloadSpeed[i];         
+            }
+            if (clientHandler.treeNO != 0)
+                ((LoggerFrm)this.downloadFrm).lbSpeed.Text =  total + " KB";
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
         }
+
+
 
     
        

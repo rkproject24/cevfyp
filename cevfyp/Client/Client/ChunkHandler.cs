@@ -12,7 +12,7 @@ namespace Client
 {
     class ChunkHandler
     {
-        object tempChunk;
+        //object tempChunk;
 
         //Chunk tempChunk;
 
@@ -25,7 +25,11 @@ namespace Client
         {
             try
             {
+               // MemoryStream Memstream = new MemoryStream(tempByte.Length);
+                object tempChunk =new object();
                 tempChunk = bf.Deserialize(new MemoryStream(tempByte));
+                //object tempChunk = bf.Deserialize(Memstream);
+                //Memstream.Close();
                 return tempChunk;
             }
             catch

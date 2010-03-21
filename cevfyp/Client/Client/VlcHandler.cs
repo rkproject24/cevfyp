@@ -8,7 +8,7 @@ using ClassLibrary;
 
 namespace Client
 {
-    class VlcHandler
+    public class VlcHandler
     {
         IntPtr instance, player;
         libvlc_exception_t ex = new libvlc_exception_t();
@@ -30,6 +30,12 @@ namespace Client
 
             //"--ignore-config",
         }
+
+        public bool getPlayingState()
+        {
+            return playing;
+        }
+
 
         static void Raise(ref libvlc_exception_t ex)
         {
@@ -108,5 +114,22 @@ namespace Client
             Raise(ref ex);
             return checkNo;
         }
+
+        public int getVolume()
+        {
+            LibVlc.libvlc_exception_init(ref ex);
+            int vol = LibVlc.libvlc_audio_get_volume(instance);
+            Raise(ref ex);
+            return vol;
+        }
+
+        public void setVolume(int vol)
+        {
+            LibVlc.libvlc_exception_init(ref ex);
+            LibVlc.libvlc_audio_set_volume(instance, vol, ref ex);
+            Raise(ref ex);
+            
+        }
+
     }
 }
