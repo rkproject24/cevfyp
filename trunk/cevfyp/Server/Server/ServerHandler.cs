@@ -93,7 +93,7 @@ namespace Server
                 ph.setTreeCLState(i, 1);
 
             }
-            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { vlc.getBitRate() + "\n" });
+            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { vlc.getBitRate() + " Kb\n" });
         }
 
 
@@ -111,12 +111,15 @@ namespace Server
 
         public void stop(bool manualStop)
         {
-            vlc.stop(manualStop);
-            //seqNumber = 1;
-           // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
-            //mainFm.richTextBox1.Clear();
+            if (vlc.getPlayingState())
+            {
+                vlc.stop(manualStop);
+                //seqNumber = 1;
+                // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
+                //mainFm.richTextBox1.Clear();
 
-            getStreamingThread.Abort(); //by vinci
+                getStreamingThread.Abort(); //by vinci
+            }
         }
 
         public void replay()
@@ -180,12 +183,15 @@ namespace Server
 
         public void mute()
         {
-            int checkMute = vlc.getMute();
+            if (vlc.getPlayingState())
+            {
+                int checkMute = vlc.getMute();
 
-            if (checkMute == 0)
-                vlc.setMute(1);
-            else
-                vlc.setMute(0);
+                if (checkMute == 0)
+                    vlc.setMute(1);
+                else
+                    vlc.setMute(0);
+            }
         }
 
     
@@ -414,7 +420,8 @@ namespace Server
                 int responseMessageBytes;
 
                 byte[] sendMessage = new byte[sConfig.ChunkSize];
-
+                int dataRead;
+                 int remainder_number;
 
                 while (responseMessageBytes1 != 0)
                 {
@@ -436,7 +443,7 @@ namespace Server
                     //}
                     //streamingChunk = ch.streamingToChunk(responseMessageBytes, responseData, seqNumber);
 
-                    int dataRead = 0;
+                    dataRead = 0;
                     do
                     {
                         dataRead += vlcStream.Read(responseData, dataRead, sConfig.ReceiveStreamSize - dataRead);
@@ -446,13 +453,10 @@ namespace Server
 
                     streamingChunk = ch.streamingToChunk(dataRead, responseData, seqNumber);
 
-                    int remainder_number = streamingChunk.seq % max_tree;
+                    remainder_number = (streamingChunk.seq - 1) % max_tree;
 
-                    if (remainder_number == 0)
-                        ph.setChunkList(streamingChunk, max_tree - 1);
-                    else
-                        ph.setChunkList(streamingChunk, remainder_number - 1);
-
+                    ph.setChunkList(streamingChunk, remainder_number);
+                 
                     mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { seqNumber.ToString() });
 
                     if (seqNumber == 2147483647)
