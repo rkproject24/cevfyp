@@ -75,13 +75,22 @@ namespace ClassLibrary
             int maxid = getMaxId();
             for (int i = 1; i <= maxid; i++)
             {
-                string fileParentid = RPI.Read("Peer", "ID", i.ToString(), "Parentid");
-                if (fileParentid.Equals(parentid))
+                //string fileParentid = RPI.Read("Peer", "ID", i.ToString(), "Parentid");
+                //if (fileParentid.Equals(parentid))
+                //{
+                //    childPeers.Add(getPeer(i.ToString()));
+                //}
+
+                string id = RPI.ReadByIndex("Peer", "ID", i);
+                if (id.Equals(""))
+                    break;
+                else
                 {
-                    childPeers.Add(getPeer(i.ToString()));
-                }
-                    
-            }
+                    PeerNode readPeer = getPeer(id);
+                    if(getPeer(id).Parentid.Equals(parentid))
+                        childPeers.Add(getPeer(id));
+                }           
+             }
             return childPeers;
         }
         public PeerNode getPeer(string id)

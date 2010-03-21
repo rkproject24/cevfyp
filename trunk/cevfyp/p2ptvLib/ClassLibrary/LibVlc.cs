@@ -44,6 +44,11 @@ namespace ClassLibrary
         [DllImport("libvlc")]
         public static extern int libvlc_audio_get_mute(IntPtr p_instance, ref libvlc_exception_t ex);
 
+        [DllImport("libvlc")]
+        public static extern int libvlc_audio_get_volume (IntPtr p_instance);
+
+        [DllImport("libvlc")]
+        public static extern void libvlc_audio_set_volume(IntPtr p_instance, int status, ref libvlc_exception_t ex);
 
         #endregion
 
