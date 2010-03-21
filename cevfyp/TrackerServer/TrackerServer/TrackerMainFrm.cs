@@ -21,6 +21,7 @@ namespace TrackerServer
     public partial class TrackerMainFrm : Form
     {
         int treeNo;
+        int[] maxID;
         const string Peerlist_name = "PeerInfoT";
         const int tlPort = 1500;
         const int deleteChildTime = 5000;
@@ -84,7 +85,7 @@ namespace TrackerServer
                    
 
                 IPAddress clientendpt = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
-                this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "New connection to from " + clientendpt.ToString() + "\n" });
+                //this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "New connection to from " + clientendpt.ToString() + "\n" });
                 
                 try
                 {
@@ -105,74 +106,23 @@ namespace TrackerServer
                         cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
                         int peerListPort = BitConverter.ToInt32(responsePeerMsg, 0);
 
-                        //byte[] recoonectMsg = new byte[1];
-                        //cstream.Read(recoonectMsg, 0, recoonectMsg.Length);
-                        //bool recoonect = BitConverter.ToBoolean(recoonectMsg, 0);
-
-                        //if (recoonect)
-                        //{
-                        //    responsePeerMsg = new byte[4];
-                        //    cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
-                        //    int MsgSize = BitConverter.ToInt32(responsePeerMsg, 0);
-
-                        //    byte[] responsePeerMsg2 = new byte[MsgSize];
-                        //    cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
-                        //    string peerId = ByteArrayToString(responsePeerMsg2);
-
-                        //    changeParent(treeNo.ToString(), peerId, "-2"); //-2 indicate the peer is reconnecting
-                        //}
-                        //else
-                        //{
-                        //    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
-                        //    bool checkLoad = TreeAccess.load();
-                        //    int newID = TreeAccess.getMaxId() + 1;
-
-                        //    //if (TreeAccess.getMaxId() < Int32.Parse(clientid)) //to handle re-register for maxId
-                        //    TreeAccess.setMaxId(newID);
-
-                        //    byte[] newIDbyte = BitConverter.GetBytes(newID);
-                        //    cstream.Write(newIDbyte, 0, newIDbyte.Length);
-                        //}
-
                         cstream.Close();
                         client.Close();
 
-                        //if (!recoonect)
-                        //{
-                        //    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
-                        //    int newID = TreeAccess.getMaxId() + 1;
-
-                        //    byte[] newIDbyte = BitConverter.GetBytes(newID);
-                        //    cstream.Write(newIDbyte, 0, newIDbyte.Length);
-                        //}
-
-                        //byte[] peeripMsg;
-                        //if (File.Exists(Peerlist_name + "1" + ".xml"))
                         if (File.Exists(Peerlist_name + treeNo + ".xml"))
                         {
-                            //FileStream file = new FileStream(Peerlist_name + treeNo+ ".xml", FileMode.OpenOrCreate, FileAccess.Read);
-                            //StreamReader sr = new StreamReader(file);
-                            //string s1 = sr.ReadToEnd();
-                            //sr.Close();
-                            //file.Close();
-
-                            Thread peerlistThread = new Thread(new ThreadStart(delegate() { sendPeerList(peerListPort, clientendpt, Peerlist_name + treeNo); }));
+                            
+                            Thread peerlistThread = new Thread(new ThreadStart(delegate() { sendPeerList(peerListPort, clientendpt, treeNo); }));
                             peerlistThread.IsBackground = true;
                             peerlistThread.Name = "Peerlist_to_" + peerListPort;
                             peerlistThread.Start();
                             peerlistThreads.Add(peerlistThread);
-
-                            //peeripMsg = StrToByteArray(s1);
 
                         }
                         else
                         {
                             byte[] peeripMsg = StrToByteArray("NOPEER");
                         }
-                        //===========move to thread===============
-                        //byte[] MsgLength = BitConverter.GetBytes(peeripMsg.Length);
-                        //cstream.Write(MsgLength, 0, MsgLength.Length); //send size of ip
-                        //cstream.Write(peeripMsg, 0, peeripMsg.Length);
 
                     }
                     else if (peertype.Contains("<cRegister>"))
@@ -210,7 +160,7 @@ namespace TrackerServer
                         clientNode.Layer = layer;
 
                         PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + treeNo);
-                        bool checkLoad = TreeAccess.load();
+                        //bool checkLoad = TreeAccess.load();
 
                         //delete peer old record before add peer
                         PeerNode p1 = new PeerNode(clientid, "deleting", 0, 0, "-1");
@@ -245,7 +195,8 @@ namespace TrackerServer
 
                         PeerNode serverNode = new PeerNode("0", clientendpt.ToString(), MaxClient, listenPort, "-1");
                         serverNode.Layer = 0;
-                        
+
+                        maxID = new int[treeNo];
                         for (int i = 0; i < treeNo; i++)
                         {
                             PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + i);
@@ -254,9 +205,10 @@ namespace TrackerServer
                             //Thread.Sleep(400);
                             TreeAccess.addPeer(serverNode);
 
+                            maxID[i] = 0;
                             this.cbbTree.BeginInvoke(new UpdateTextCallback(TreeComboBox), new object[] {"T"+i });
                         }
-
+                        
                         this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Server " + clientendpt.ToString() + " started\n" });
 
                     }
@@ -284,19 +236,22 @@ namespace TrackerServer
                         PeerNode p1 = TreeAccess.getPeer(peerId);
                         if (p1 == null)
                             continue;
-                        //PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0, "-1");
+
+                        //TreeAccess.deletePeer(p1);
+                        //this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree + "\n" });
+
                         if (p1.Parentid.Equals(senderId))
                         {
-                            //stop the unRegchild thread
+                            ////stop the unRegchild thread
                             //foreach (Thread thread in unRegChildThread)
                             //{
-                            //    if (thread.Name.Equals("ChildUnreg_Tree:" + tree + ":" + peerId))
+                            //    if (thread.Name.Equals("ChildUnreg_Tree:" + tree + ":" + senderId))
                             //        thread.Abort();
                             //}
 
                             TreeAccess.deletePeer(p1);
 
-                            ////PeerInfoAccessor treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+                            //PeerInfoAccessor treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
                             //List<PeerNode> childPeerList = TreeAccess.getPeersByParent(peerId);
 
                             //foreach (PeerNode child in childPeerList)
@@ -315,7 +270,7 @@ namespace TrackerServer
                             //p1 = TreeAccess.getPeer("1");
                             //if (p1 == null)
                             //    Console.WriteLine("Nothings");
-                            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree + "\n" });
+                            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "Peer:" + peerId + " unregister from tree:" + tree + "by Peer:" + senderId + "\n" });
                         }
                     }
                     else if (peertype.Contains("<treeSizes>"))
@@ -369,6 +324,7 @@ namespace TrackerServer
             //this.max_client = sConfig.MaxClient;
 
             localAddr = IPAddress.Parse(TcpApps.LocalIPAddress());
+            //maxID = 0;
             //localAddr= new  IPAddress.Parse("")
 
             listenerThread = new Thread(new ThreadStart(listenForClients));
@@ -472,43 +428,44 @@ namespace TrackerServer
             updateTreelistView(cbbTree.SelectedIndex);
         }
 
-        public bool changeParent(string tree, string peerId, string newParentId)
-        {
-            while (true)
-            {
-                try
-                {
-                    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
-                    //bool checkLoad = TreeAccess.load();
+        //public bool changeParent(string tree, string peerId, string newParentId)
+        //{
+        //    while (true)
+        //    {
+        //        try
+        //        {
+        //            PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+        //            //bool checkLoad = TreeAccess.load();
 
-                    PeerNode p1 = TreeAccess.getPeer(peerId);
-                    if (p1 != null)
-                    {
-                        TreeAccess.deletePeer(p1);
-                        p1.Parentid = newParentId;
-                        //p1.ChangeParent = true;//mark the parent is just changed
-                        TreeAccess.addPeer(p1);
-                    }
+        //            PeerNode p1 = TreeAccess.getPeer(peerId);
+        //            if (p1 != null)
+        //            {
+        //                TreeAccess.deletePeer(p1);
+        //                p1.Parentid = newParentId;
+        //                //p1.ChangeParent = true;//mark the parent is just changed
+        //                TreeAccess.addPeer(p1);
+        //            }
 
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(20);
-                    this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "T[" + tree + "] Peer:" + peerId + " change Parent fail\n" });
-                    //return false;
-                }
-                return true;
-            }
-            return false;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Thread.Sleep(20);
+        //            this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "T[" + tree + "] Peer:" + peerId + " change Parent fail\n" });
+        //            //return false;
+        //        }
+        //        return true;
+        //    }
+        //    return false;
             
-        }
+        //}
 
-        public void sendPeerList(int peerlistPort, IPAddress ip, string fileName)
+        public void sendPeerList(int peerlistPort, IPAddress ip, int tree)
         {
-            TcpClient trackerTcpClient = new TcpClient(ip.ToString(), peerlistPort);
-            NetworkStream cstream = trackerTcpClient.GetStream();
             try
             {
+            TcpClient trackerTcpClient = new TcpClient(ip.ToString(), peerlistPort);
+            NetworkStream cstream = trackerTcpClient.GetStream();
+           
                 byte[] recoonectMsg = new byte[1];
                 cstream.Read(recoonectMsg, 0, recoonectMsg.Length);
                 bool recoonect = BitConverter.ToBoolean(recoonectMsg, 0);
@@ -525,28 +482,30 @@ namespace TrackerServer
                     //cstream.Read(responsePeerMsg2, 0, responsePeerMsg2.Length);
                     //string peerId = ByteArrayToString(responsePeerMsg2);
 
-                    changeParent(treeNo.ToString(), peerId, "-2"); //-2 indicate the peer is reconnecting
+                    //changeParent(treeNo.ToString(), peerId, "-2"); //-2 indicate the peer is reconnecting
                 }
                 else
                 {
-                    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(fileName);
-                    while (!TreeAccess.load())
-                    {
-                        Thread.Sleep(20);
-                    }
-                    int newID = TreeAccess.getMaxId() + 1;
+                    //PeerInfoAccessor TreeAccess = new PeerInfoAccessor(fileName);
+                    //while (!TreeAccess.load())
+                    //{
+                    //    Thread.Sleep(10);
+                    //}
+                    //int newID = TreeAccess.getMaxId() + 1;
+                    //while (!TreeAccess.setMaxId(newID))
+                    //    Thread.Sleep(20);
 
-                    byte[] newIDbyte = BitConverter.GetBytes(newID);
+                    maxID[tree]++;
+                    PeerInfoAccessor TreeAccess = new PeerInfoAccessor(Peerlist_name + tree);
+                    while (!TreeAccess.setMaxId(maxID[tree]))
+                        Thread.Sleep(20);
+
+
+                    byte[] newIDbyte = BitConverter.GetBytes(maxID[tree]);
                     cstream.Write(newIDbyte, 0, newIDbyte.Length);
-
-                    //if (TreeAccess.getMaxId() < Int32.Parse(clientid)) //to handle re-register for maxId
-                    while(!TreeAccess.setMaxId(newID))
-                        Thread.Sleep(20);
-
-
                 }
 
-                FileStream file = new FileStream(fileName+".xml", FileMode.OpenOrCreate, FileAccess.Read);
+                FileStream file = new FileStream(Peerlist_name + tree + ".xml", FileMode.OpenOrCreate, FileAccess.Read);
                 StreamReader sr = new StreamReader(file);
                 string s1 = sr.ReadToEnd();
                 sr.Close();
@@ -564,7 +523,7 @@ namespace TrackerServer
             }
             catch(Exception ex)
             {
-                this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "fail to send Peerlist:"+fileName+"\n" });
+                this.rtbClientlist.BeginInvoke(new UpdateTextCallback(UpdatertbClientlist), new object[] { "fail to send Peerlist:" + Peerlist_name + tree + "\n" });
             }
         }
 

@@ -45,7 +45,7 @@ namespace TrackerServer
                     {
                         if (child != null)
                         {
-
+                            mainFrm.rtbClientlist.BeginInvoke(new UpdateTextCallback(mainFrm.UpdatertbClientlist), new object[] { "Peer" + peerId + " create unregThread Peer" + child.Id + "\n" });
                             Thread unRegChild = new Thread(delegate() { new ChildUnregHandler(mainFrm, tree, child.Id, RandomNumber(waitTime, waitTime+1000), Peerlist_name); });
                             unRegChild.IsBackground = true;
                             unRegChild.Name = "ChildUnreg_Tree:" + tree + ":" + child.Id;
