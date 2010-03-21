@@ -688,6 +688,7 @@ namespace ClassLibrary
                             {
                                 root.RemoveChild(G);
                                 xmlDoc.Save(this.xmlFile);
+                               // MessageBox.Show("delete:" + attributeValue + "success");
                                 return true;
                             }
                         }
@@ -696,12 +697,14 @@ namespace ClassLibrary
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Reading Error! Please input both group and type!");
+               // MessageBox.Show("Reading Error! Please input both group and type!");
                 //return "error";
                 //return ex.ToString();
                 return false;
             }
-            return false;
+
+           // MessageBox.Show("delete:" + attributeValue + "fail");
+            return true;
         }
 
         public bool load()

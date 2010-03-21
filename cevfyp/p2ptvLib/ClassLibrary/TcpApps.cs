@@ -44,20 +44,34 @@ namespace ClassLibrary
             try
             {
 
-                for (int port = begin; port <= end; port++)
+                //for (int port = begin; port <= end; port++)
+                //{
+                //    bool found = true;
+                //    for (int i = 0; i < endpoints.Length; i++)
+                //        if (endpoints[i].Port == port)
+                //        {
+                //            found = false;
+                //            break;
+                //        }
+                //    if (found) return port;
+                //}
+
+                Random random = new Random();
+                int port = random.Next(begin, end);
+
+                for (int i = 0; i < endpoints.Length; i++)
                 {
-                    bool found = true;
-                    for (int i = 0; i < endpoints.Length; i++)
-                        if (endpoints[i].Port == port)
-                        {
-                            found = false;
-                            break;
-                        }
-                    if (found) return port;
+                    if (endpoints[i].Port != port)
+                        continue;
+                    else
+                        return -1;
                 }
+
+                return port;
+
             }
             catch { return -1; }
-            return -1;
+            
         }
 
         /*
