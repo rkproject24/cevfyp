@@ -19,7 +19,7 @@ using Analysis;
 
 namespace Client
 {
-    public partial class ClientForm :XCoolForm.XCoolForm
+    public partial class ClientForm : XCoolForm.XCoolForm
     {
 
         private const string code = "a6402b80-2ebd-4fd3-8930-024a6201d001";
@@ -30,18 +30,18 @@ namespace Client
         private DockStateSerializer _serializer = null;
         public plotgraph graphTreeData;
 
-       // static int chunkList_capacity = 1000;  //0-xxx
-       // static int SERVER_PORT = 1100;  //server listen port
-      
+        // static int chunkList_capacity = 1000;  //0-xxx
+        // static int SERVER_PORT = 1100;  //server listen port
+
         //VlcHandler vlc = new VlcHandler();
         //IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-       // List<Chunk> chunkList = new List<Chunk>(chunkList_capacity);
+        // List<Chunk> chunkList = new List<Chunk>(chunkList_capacity);
 
-       // XmlThemeLoader xtl =new XmlThemeLoader();
+        // XmlThemeLoader xtl =new XmlThemeLoader();
 
         ClientHandler clientHandler;
 
-      //  public delegate void UpdateTextCallback(string message);
+        //  public delegate void UpdateTextCallback(string message);
 
         //public void UpdateTextBox1(string message)
         //{
@@ -85,11 +85,24 @@ namespace Client
             //rtbupload.AppendText(message);
         }
 
+        public void UpdateRtbULPull(string message)
+        {
+            ((LoggerFrm)uploadFrm).rtbpull.AppendText(message);
+            //rtbdownload.AppendText(message);
+        }
+
         public void UpdateRtbDownload(string message)
         {
             ((LoggerFrm)downloadFrm).rtbdownload.AppendText(message);
             //rtbdownload.AppendText(message);
         }
+
+        public void UpdateRtbDLPull(string message)
+        {
+            ((LoggerFrm)downloadFrm).rtbpull.AppendText(message);
+            //rtbdownload.AppendText(message);
+        }
+
 
         public void UpdateDownloadSpeed(string speed)
         {
@@ -119,16 +132,16 @@ namespace Client
 
         public ClientForm()
         {
-           
+
             InitializeComponent();
             _serializer = new DockStateSerializer(_docker);
-        //_docker.PreviewRenderer = new CustomPreviewRenderer();
-        //_docker.ShowContextMenu += OnDockerShowContextMenu;
-        //_docker.FormClosing += OnDockerFormClosing;
-        //_docker.FormClosed += OnDockerFormClosed;
+            //_docker.PreviewRenderer = new CustomPreviewRenderer();
+            //_docker.ShowContextMenu += OnDockerShowContextMenu;
+            //_docker.FormClosing += OnDockerFormClosing;
+            //_docker.FormClosed += OnDockerFormClosed;
 
             graphTreeData = new plotgraph("Tree0", true);
-            
+
 
             downloadFrm = CreateTestForm(new Guid(code));
             //form1.Show();
@@ -138,7 +151,7 @@ namespace Client
 
             _docker.DockForm(info1, DockStyle.Left, zDockMode.Outer);
             _docker.SetHeight(info1, 310);
-      
+
             this.uploadFrm = CreateTestForm(new Guid(code2));
             //form1.Show();
             DockableFormInfo info2 = _docker.Add(uploadFrm, zAllowedDock.All, new Guid(code2));
@@ -164,9 +177,9 @@ namespace Client
             //_docker.DockForm(info4, DockStyle.Bottom, zDockMode.Outer);
             //_docker.SetHeight(info4, 310);
             //info4.ShowCloseButton = false;
-            
 
-            
+
+
             //_docker.SetAutoHide(info1, true);
             //_docker.SetAutoHide(info2, true);
             clientHandler = new ClientHandler(this);
@@ -182,7 +195,7 @@ namespace Client
             DockableFormInfo info4 = _docker.Add(control, zAllowedDock.All, new Guid(code4));
             info4.ShowContextMenuButton = false;
             info4.ShowCloseButton = false;
-            
+
             _docker.DockForm(info4, DockStyle.Bottom, zDockMode.Inner);
             _docker.SetHeight(info4, 60);
         }
@@ -255,7 +268,7 @@ namespace Client
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-           
+
         }
 
         //private void button1_Click(object sender, EventArgs e)  //Connect
@@ -290,7 +303,7 @@ namespace Client
         //    //else
         //    //    MessageBox.Show(response);
         //}
-         
+
         private void button2_Click(object sender, EventArgs e)
         {
             clientHandler.getMute();
@@ -317,19 +330,19 @@ namespace Client
 
         private void ClientForm_XCoolFormHolderButtonClick(XCoolForm.XCoolForm.XCoolFormHolderButtonClickArgs e)
         {
-              switch (e.ButtonIndex)
-              {
-                  case 0:
-                      Preference serverPre = new Preference();
-                      serverPre.Show();
-                      //Form form1 = CreateTestForm(new Guid(code));
-                      ////form1.Show();
-                      //DockableFormInfo info1 = _docker.Add(form1, zAllowedDock.All, new Guid(code));
-                      //info1.ShowContextMenuButton = false;
-                      //_docker.DockForm(info1, DockStyle.Left, zDockMode.Outer);
-                      //_docker.SetHeight(info1, 310);
-                      break;
-             }
+            switch (e.ButtonIndex)
+            {
+                case 0:
+                    Preference serverPre = new Preference();
+                    serverPre.Show();
+                    //Form form1 = CreateTestForm(new Guid(code));
+                    ////form1.Show();
+                    //DockableFormInfo info1 = _docker.Add(form1, zAllowedDock.All, new Guid(code));
+                    //info1.ShowContextMenuButton = false;
+                    //_docker.DockForm(info1, DockStyle.Left, zDockMode.Outer);
+                    //_docker.SetHeight(info1, 310);
+                    break;
+            }
         }
 
         //private void btnDisconnect_Click(object sender, EventArgs e)
@@ -337,7 +350,7 @@ namespace Client
         //    btnDisconnect.Enabled = false;
         //    clientHandler.closeAllThread();
 
-           
+
         //    btnConnect.Enabled = true;
         //}
 
@@ -362,9 +375,9 @@ namespace Client
 
         }
 
-       
 
-   
+
+
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
@@ -372,11 +385,11 @@ namespace Client
             //if (!response.Equals(""))
             //{
             //    MessageBox.Show(response);
-                
+
             //}
             //else
             //{
-               
+
             //    btnDisconnect.Enabled = true;
             //    btnConnect.Enabled = false;
             //    clientHandler.startThread();
@@ -411,13 +424,13 @@ namespace Client
 
         private void dowloadSpeedTimer_Tick(object sender, EventArgs e)
         {
-            int total=0;
-            for(int i=0; i<clientHandler.treeNO; i++)
+            int total = 0;
+            for (int i = 0; i < clientHandler.treeNO; i++)
             {
-                total += clientHandler.downloadSpeed[i];         
+                total += clientHandler.downloadSpeed[i];
             }
             if (clientHandler.treeNO != 0)
-                ((LoggerFrm)this.downloadFrm).lbSpeed.Text =  total + " KB";
+                ((LoggerFrm)this.downloadFrm).lbSpeed.Text = total + " Kb";
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -427,18 +440,18 @@ namespace Client
 
 
 
-    
-       
 
-  
-       
 
-      
 
-    
-     
 
-      
+
+
+
+
+
+
+
+
 
 
 
