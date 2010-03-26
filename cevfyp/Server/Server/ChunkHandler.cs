@@ -12,23 +12,24 @@ namespace Server
     class ChunkHandler
     {
         BinaryFormatter bf;
-        Chunk tempChunk;
-      
+        //Chunk tempChunk;
+
         public ChunkHandler()
         {
             bf = new BinaryFormatter();
-            tempChunk = new Chunk();
+            //tempChunk = new Chunk();
         }
 
-        public Chunk streamingToChunk(int tempByte,byte[] tempData,int tempSeq)
+        public Chunk streamingToChunk(int tempByte, byte[] tempData, int tempSeq)
         {
+            Chunk tempChunk = new Chunk();
             tempChunk.bytes = tempByte;
             tempChunk.streamingData = tempData;
             tempChunk.seq = tempSeq;
             return tempChunk;
         }
 
-        public byte[] chunkToByte(Chunk tempchunk,int tempSize)
+        public byte[] chunkToByte(Chunk tempchunk, int tempSize)
         {
             byte[] tempMessage = new byte[tempSize];
             MemoryStream Memstream = new MemoryStream(tempSize);
