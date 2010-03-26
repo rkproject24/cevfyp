@@ -44,7 +44,7 @@ namespace Server
         IPAddress localAddr;
 
         private ServerFrm mainFm;
-       
+
         public ServerHandler(ServerFrm mainFm)
         {
             this.mainFm = mainFm;
@@ -58,7 +58,7 @@ namespace Server
             this.max_client = sConfig.MaxClient;
             this.max_tree = sConfig.TreeSize;
             ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
-          
+
         }
 
         //By Vinci
@@ -87,7 +87,7 @@ namespace Server
             getStreamingThread.Name = "get_Streaming";
             Thread.Sleep(100);
             getStreamingThread.Start();
-            
+
             for (int i = 0; i < max_tree; i++)
             {
                 ph.setTreeCLState(i, 1);
@@ -107,7 +107,7 @@ namespace Server
             ph.setTreeCLState(1, 0);
         }
 
-        
+
 
         public void stop(bool manualStop)
         {
@@ -154,7 +154,7 @@ namespace Server
             {
                 //mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
                 //mainFm.tbServerIp.Text = sConfig.Serverip;
-                
+
                 //reloadUI();
                 ////mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
                 //this.max_client = sConfig.MaxClient;
@@ -194,7 +194,7 @@ namespace Server
             }
         }
 
-    
+
         private bool UpdateTracker()
         {
             TcpClient trackerTcp = null;
@@ -232,10 +232,10 @@ namespace Server
             }
             catch
             {
-                if(trackerStream!=null)
-                  trackerStream.Close();
-                if(trackerTcp!=null)
-                  trackerTcp.Close();
+                if (trackerStream != null)
+                    trackerStream.Close();
+                if (trackerTcp != null)
+                    trackerTcp.Close();
             }
             return false;
 
@@ -255,9 +255,9 @@ namespace Server
             try
             {
                 listenServer = new TcpListener(localAddr, slPort);
-                listenServer.Start();
+                listenServer.Start(1);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
             }
@@ -282,7 +282,7 @@ namespace Server
 
                     stream.Read(responseMessage, 0, responseMessage.Length);
                     string reqType = ByteArrayToString(responseMessage);
-                   // int typeno = BitConverter.ToInt16(responseMessage, 0);
+                    // int typeno = BitConverter.ToInt16(responseMessage, 0);
 
                     if (reqType.Equals("treesReq"))
                     {
@@ -296,23 +296,25 @@ namespace Server
                         {
                             //which tree ,client want to join.
                             bool sendPort = false;
-                            stream.Read(responseMessage2, 0, responseMessage2.Length);
-                            req_tree_num = BitConverter.ToInt16(responseMessage2, 0);
+                            // stream.Read(responseMessage2, 0, responseMessage2.Length);
+                            // req_tree_num = BitConverter.ToInt16(responseMessage2, 0);
 
 
                             for (int j = 0; j < max_client; j++)
                             {
-                                if (ph.getTreeCListClient(req_tree_num, j) == null && ph.getTreeDListClient(req_tree_num, j) == null)
+                                if (ph.getTreeCListClient(j) == null && ph.getTreeDListClient(j) == null)
                                 {
-                                    tempC_num = ph.getTreeCListPort(req_tree_num, j);
+                                    tempC_num = ph.getTreeCListPort(j);
                                     cMessage = BitConverter.GetBytes(tempC_num);
                                     stream.Write(cMessage, 0, cMessage.Length);
-                                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "T[" + (req_tree_num - 1) + "] Cport:" + tempC_num.ToString() + " " });
+                                    // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "T[" + (req_tree_num - 1) + "] Cport:" + tempC_num.ToString() + " " });
+                                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num + " " });
 
-                                    tempD_num = ph.getTreeDListPort(req_tree_num, j);
+                                    tempD_num = ph.getTreeDListPort(j);
                                     dMessage = BitConverter.GetBytes(tempD_num);
                                     stream.Write(dMessage, 0, dMessage.Length);
-                                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
+                                    // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
+                                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num + "\n" });
 
                                     sendPort = true;
                                     break;
@@ -355,7 +357,7 @@ namespace Server
                         //    target_tree = remainder_number - 1;
 
                         //resultChunk=ph.searchReqChunk(target_tree, reqSeq);
-                      
+
                         //    sendMessage = ch.chunkToByte(resultChunk, sConfig.ChunkSize);
                         //    stream.Write(sendMessage, 0, sendMessage.Length);
                         //    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedMissChunk:"+resultChunk.seq.ToString()+"\n" });
@@ -364,21 +366,21 @@ namespace Server
 
                     if (stream != null)
                         stream.Close();
-                    if(client != null)
+                    if (client != null)
                         client.Close();
 
                 }
                 catch (Exception ex)
                 {
-                   // System.Windows.Forms.MessageBox.Show(ex.ToString());
+                    // System.Windows.Forms.MessageBox.Show(ex.ToString());
 
                     mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "One client join fail...\n" });
-                   
+
                     if (stream != null)
                         stream.Close();
                     if (client != null)
                         client.Close();
-                    
+
                 }
 
                 Thread.Sleep(50);
@@ -401,7 +403,7 @@ namespace Server
             TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
             //TcpClient getClient = new TcpClient("vinci.dyndns.info", 1000);
 
-            getClient.NoDelay = true;
+            //getClient.NoDelay = true;
             NetworkStream vlcStream = getClient.GetStream();
 
 
@@ -421,7 +423,7 @@ namespace Server
 
                 byte[] sendMessage = new byte[sConfig.ChunkSize];
                 int dataRead;
-                 int remainder_number;
+                int remainder_number;
 
                 while (responseMessageBytes1 != 0)
                 {
@@ -456,7 +458,7 @@ namespace Server
                     remainder_number = (streamingChunk.seq - 1) % max_tree;
 
                     ph.setChunkList(streamingChunk, remainder_number);
-                 
+
                     mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { seqNumber.ToString() });
 
                     if (seqNumber == 2147483647)
@@ -467,7 +469,7 @@ namespace Server
                     Thread.Sleep(10);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 for (int i = 0; i < max_tree; i++)
                 {
@@ -482,7 +484,7 @@ namespace Server
             }
         }
 
-       
+
 
 
     }

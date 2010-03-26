@@ -10,7 +10,7 @@ namespace Server
 {
     class VlcHandler
     {
-        IntPtr instance, player,media;
+        IntPtr instance, player, media;
         libvlc_exception_t ex = new libvlc_exception_t();
         ServerConfig sConfig = new ServerConfig();
         bool firstplay = true;
@@ -55,7 +55,7 @@ namespace Server
 
                 media = LibVlc.libvlc_media_new(instance, @"" + filesrc, ref ex);
                 Raise(ref ex);
-                LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst="+ TcpApps.LocalIPAddress() +":" + sConfig.VlcStreamPort + "}} :sout-all", ref ex);
+                LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=" + TcpApps.LocalIPAddress() + ":" + sConfig.VlcStreamPort + "}} :sout-all", ref ex);
                 //LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=127.0.0.1:" + sConfig.VlcStreamPort + "}} :sout-keep :input-repeat=999", ref ex);
                 //LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=ts,dst=123.203.249.36:1234}}", ref ex);
                 player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
@@ -76,7 +76,7 @@ namespace Server
                 firstplay = false;
                 Raise(ref ex);
             }
-            
+
 
             LibVlc.libvlc_media_player_play(player, ref ex);
             Raise(ref ex);
@@ -91,7 +91,7 @@ namespace Server
             LibVlc.libvlc_media_player_pause(player, ref ex);
             Raise(ref ex);
 
-          
+
         }
 
         public void stop(bool manualStop)
@@ -115,7 +115,7 @@ namespace Server
         public int getMute()
         {
             LibVlc.libvlc_exception_init(ref ex);
-           int checkNo= LibVlc.libvlc_audio_get_mute(instance, ref ex);
+            int checkNo = LibVlc.libvlc_audio_get_mute(instance, ref ex);
             Raise(ref ex);
             return checkNo;
         }
@@ -131,7 +131,7 @@ namespace Server
         public int getVideoWidth()
         {
             LibVlc.libvlc_exception_init(ref ex);
-            int width=LibVlc.libvlc_video_get_width(player, ref ex);
+            int width = LibVlc.libvlc_video_get_width(player, ref ex);
             Raise(ref ex);
             return width;
         }
@@ -147,12 +147,12 @@ namespace Server
         {
             MediaInfo mi = new MediaInfo();
             mi.Open(@"" + filesrc);
-            int result= (Int32.Parse(mi.getVidBitrate()) + Int32.Parse(mi.getAudioBitrate()))/1000;
+            int result = (Int32.Parse(mi.getVidBitrate()) + Int32.Parse(mi.getAudioBitrate())) / 1000;
             mi.Close();
             return result;
         }
 
-      
+
 
     }
 }
