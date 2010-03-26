@@ -43,7 +43,7 @@ namespace Client
                 MessageBox.Show(LibVlc.libvlc_exception_get_message(ref ex));
         }
 
-        public void play(Panel p,int port)
+        public void play(Panel p, int port)
         {
             playing = true;
 
@@ -56,10 +56,10 @@ namespace Client
             instance = LibVlc.libvlc_new(args.Length, args, ref ex);
             Raise(ref ex);
 
-            IntPtr media = LibVlc.libvlc_media_new(instance, @"http://127.0.0.1:"+ boardcastport.ToString(), ref ex);
+            IntPtr media = LibVlc.libvlc_media_new(instance, @"http://127.0.0.1:" + boardcastport.ToString(), ref ex);
             Raise(ref ex);
 
-           // LibVlc.libvlc_media_add_option(media, @" :drop-late-frames", ref ex);
+            // LibVlc.libvlc_media_add_option(media, @" :drop-late-frames", ref ex);
             //LibVlc.libvlc_media_add_option(media, @":dst="+cConfig.Localdisplay, ref ex);
 
             player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
@@ -81,13 +81,13 @@ namespace Client
             setMute(1);
         }
 
-    /*    public void pause()
-        {
-            LibVlc.libvlc_exception_init(ref ex);
-            LibVlc.libvlc_media_player_pause(player, ref ex);
-            Raise(ref ex);
-        }
-        */
+        /*    public void pause()
+            {
+                LibVlc.libvlc_exception_init(ref ex);
+                LibVlc.libvlc_media_player_pause(player, ref ex);
+                Raise(ref ex);
+            }
+            */
 
         public void stop()
         {
@@ -98,7 +98,7 @@ namespace Client
             LibVlc.libvlc_release(instance);
             playing = false;
         }
-        
+
 
         public void setMute(int status)
         {
@@ -128,7 +128,7 @@ namespace Client
             LibVlc.libvlc_exception_init(ref ex);
             LibVlc.libvlc_audio_set_volume(instance, vol, ref ex);
             Raise(ref ex);
-            
+
         }
 
     }

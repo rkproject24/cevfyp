@@ -20,13 +20,22 @@ namespace Client
         {
 
         }
+        public Chunk streamingToChunk(int tempByte, byte[] tempData, int tempSeq)
+        {
+            Chunk tempChunk = new Chunk();
+            tempChunk.bytes = tempByte;
+            tempChunk.streamingData = tempData;
+            tempChunk.seq = tempSeq;
+            return tempChunk;
+        }
 
-        public object byteToChunk(BinaryFormatter bf,byte[] tempByte)
+
+        public object byteToChunk(BinaryFormatter bf, byte[] tempByte)
         {
             try
             {
-               // MemoryStream Memstream = new MemoryStream(tempByte.Length);
-                object tempChunk =new object();
+                // MemoryStream Memstream = new MemoryStream(tempByte.Length);
+                object tempChunk = new object();
                 tempChunk = bf.Deserialize(new MemoryStream(tempByte));
                 //object tempChunk = bf.Deserialize(Memstream);
                 //Memstream.Close();
