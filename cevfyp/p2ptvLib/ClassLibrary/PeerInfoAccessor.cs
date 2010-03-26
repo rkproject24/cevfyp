@@ -64,7 +64,7 @@ namespace ClassLibrary
             }
         */
 
-//by vinci
+        //by vinci
         //public PeerNode[] getPeerlist()
         //{
 
@@ -87,10 +87,10 @@ namespace ClassLibrary
                 else
                 {
                     PeerNode readPeer = getPeer(id);
-                    if(getPeer(id).Parentid.Equals(parentid))
+                    if (getPeer(id).Parentid.Equals(parentid))
                         childPeers.Add(getPeer(id));
-                }           
-             }
+                }
+            }
             return childPeers;
         }
         public PeerNode getPeer(string id)
@@ -125,19 +125,19 @@ namespace ClassLibrary
 
         public void addPeer(PeerNode peer)
         {
-            string[] attributes = {"ID"};
-            string[] attributesValue = {peer.Id};
+            string[] attributes = { "ID" };
+            string[] attributesValue = { peer.Id };
 
             string[] Info = { "IP", "Layer", "listenPort", "Parentid", "NullChunkTotal" };
-            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid,peer.NullChunkTotal.ToString() };
+            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid, peer.NullChunkTotal.ToString() };
 
             while (!RPI.Add("Peer", Info, Value, attributes, attributesValue))
                 Thread.Sleep(20);
-            
+
         }
         public bool deletePeer(PeerNode peer)
         {
-            string attributesValue =  peer.Id ;
+            string attributesValue = peer.Id;
 
             //while(!RPI.deleteInnerNode("Peer", "ID", attributesValue);)
             return RPI.deleteInnerNode("Peer", "ID", attributesValue);
@@ -246,7 +246,7 @@ namespace ClassLibrary
         {
             List<PeerNode> resultlist = new List<PeerNode>();
 
-                RPI.sortLoad("/Info/Peer", "NullChunkTotal");
+            RPI.sortLoad("/Info/Peer", "NullChunkTotal");
             RPI.load();
             for (int i = 0; i < totalPeer; i++)
             {
@@ -256,7 +256,7 @@ namespace ClassLibrary
                 resultlist.Add(getPeer(id));
             }
             return resultlist;
-            
+
         }
     }
 }
