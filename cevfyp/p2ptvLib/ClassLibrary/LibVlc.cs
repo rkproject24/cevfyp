@@ -50,6 +50,7 @@ namespace ClassLibrary
         [DllImport("libvlc")]
         public static extern void libvlc_audio_set_volume(IntPtr p_instance, int status, ref libvlc_exception_t ex);
 
+        
         #endregion
 
         #region video
