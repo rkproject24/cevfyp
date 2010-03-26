@@ -167,9 +167,9 @@ namespace Client
 
             Chunk sChunk = Chunk.Copy(streamingChunk);
 
-            if (treeChunkList[tree_index].Count <= (CHUNKLIST_CAPACITY - 1))
-                treeChunkList[tree_index].Add(sChunk);
-            else
+            //if (treeChunkList[tree_index].Count <= (CHUNKLIST_CAPACITY - 1))
+              //  treeChunkList[tree_index].Add(sChunk);
+            //else
                 treeChunkList[tree_index][write_index] = sChunk;
 
             treeSeqList[tree_index][write_index] = sChunk.seq;
@@ -414,14 +414,14 @@ namespace Client
 
                         }
 
-                        //if (treeCLWriteIndex[tree_index] == 0 && firstRun)
-                        //{
-                        //    Thread.Sleep(10);
-                        //    continue;
-                        //}
-
-                        if (treeChunkList[tree_index].Count < 1)
+                        if (treeCLWriteIndex[tree_index] == 0 && firstRun)
+                        {
+                            Thread.Sleep(10);
                             continue;
+                        }
+
+                        //if (treeChunkList[tree_index].Count < 1)
+                        //    continue;
 
 
                         if (firstRun == true)
