@@ -354,6 +354,7 @@ namespace ClassLibrary
             //XmlNodeList nodes = root.GetElementsByTagName(group);
 
             string value;
+            List<string> result;
             try
             {
                 root = xmlDoc.DocumentElement;
@@ -385,6 +386,7 @@ namespace ClassLibrary
 
                             if (matchNode)
                             {
+                                 result = new List<string>();
                                 foreach (XmlElement T in G)
                                 {
                                     if ((T.LocalName) == type)
@@ -392,6 +394,7 @@ namespace ClassLibrary
                                         value = T.InnerText;
                                         return value;
                                     }
+                                    //result.Add(T.InnerText);
                                 }
                             }
 
@@ -436,6 +439,59 @@ namespace ClassLibrary
                 return ex.ToString();
             }
             return "";
+        }
+
+        public List<string> Readlist(string nodeName, string attributeName, string attributeValue)
+        {
+            // xmlDoc = new XmlDocument();
+            // xmlDoc.Load(this.xmlFile);
+            XmlElement root;// = xmlDoc.DocumentElement;
+            //XmlNodeList nodes = root.SelectNodes("/"+group);
+            //XmlNodeList nodes = root.GetElementsByTagName(group);
+
+            string value;
+            List<string> result =null;
+            try
+            {
+                root = xmlDoc.DocumentElement;
+
+                    foreach (XmlElement G in root)
+                    {
+                        if (G.LocalName == nodeName)
+                        {
+                            bool matchNode = false;
+                            XmlAttributeCollection attributes = G.Attributes;
+                            foreach (XmlAttribute attri in attributes)
+                            {
+                                if (attri.Name.Equals(attributeName) && attri.InnerText.Equals(attributeValue))
+                                    matchNode = true;
+                            }
+
+                            if (matchNode)
+                            {
+                                result = new List<string>();
+                                foreach (XmlElement T in G)
+                                {
+                                    //if ((T.LocalName) == type)
+                                    //{
+                                    //    value = T.InnerText;
+                                    //    return value;
+                                    //}
+                                    result.Add(T.InnerText);
+                                }
+                            }
+
+                        }
+                    }
+                    return result;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Reading Error! Please input both group and type!");
+                //return "error";
+                //return ex.ToString();
+                return null;
+            }
         }
 
         public string ReadByIndex(string nodeName, string attributeName, int index)

@@ -10,6 +10,12 @@ namespace ClassLibrary
     using ClassLibrary;
     using System.Threading;
 
+    //xml format
+    //0,id
+    //1,listenport
+    //2,parent
+    //3,NullChunkTotal
+
     public class PeerInfoAccessor
     {
         public xml RPI;
@@ -44,6 +50,7 @@ namespace ClassLibrary
             for (int i = 0; i < eleNum; i++)
             {
                 tempIP = getIP(i.ToString());
+
                 if (string.Compare(tempIP, IP) == 0)
                     return getLayer(i.ToString());
             }
@@ -95,21 +102,29 @@ namespace ClassLibrary
         }
         public PeerNode getPeer(string id)
         {
-            string ip = getIP(id);
-            if (ip.Equals("")) //return NULL if the node is not exist in the list
+            List<string> peerStr = RPI.Readlist("Peer", "ID", id);
+            if (peerStr == null)
+            {
                 return null;
-            string layer = getLayer(id);
-            string listenPort = RPI.Read("Peer", "ID", id, "listenPort");
-            string parentid = RPI.Read("Peer", "ID", id, "Parentid");
-            string nullChunk = RPI.Read("Peer", "ID", id, "NullChunkTotal");
+            }
+            return new PeerNode(id, peerStr);
+
+            //string ip = getIP(id);
+            //if (ip.Equals("")) //return NULL if the node is not exist in the list
+            //    return null;
+            ////string layer = getLayer(id);
+            //string listenPort = RPI.ReadList("Peer", "ID", id);
+            //string parentid = RPI.Read("Peer", "ID", id, "Parentid");
+            //string nullChunk = RPI.Read("Peer", "ID", id, "NullChunkTotal");
 
             //try
             //{
-            if (nullChunk == null)
-            {
-                return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
-            }
-            return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid, Int32.Parse(nullChunk));
+            //if (nullChunk == null)
+            //{
+            //    //return new PeerNode(id, ip, Int32.Parse(layer), Int32.Parse(listenPort), parentid);
+            //    return new PeerNode(id, peerStr);
+            //}
+           // return new PeerNode(id, peerStr);
             //}
             //catch
             //{
@@ -128,8 +143,8 @@ namespace ClassLibrary
             string[] attributes = { "ID" };
             string[] attributesValue = { peer.Id };
 
-            string[] Info = { "IP", "Layer", "listenPort", "Parentid", "NullChunkTotal" };
-            string[] Value = { peer.Ip, peer.Layer.ToString(), peer.ListenPort.ToString(), peer.Parentid, peer.NullChunkTotal.ToString() };
+            string[] Info = { "IP", "listenPort", "Parentid", "NullChunkTotal" };
+            string[] Value = { peer.Ip, peer.ListenPort.ToString(), peer.Parentid, peer.NullChunkTotal.ToString() };
 
             while (!RPI.Add("Peer", Info, Value, attributes, attributesValue))
                 Thread.Sleep(20);
