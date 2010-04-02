@@ -36,8 +36,9 @@ namespace Client
         static int CHUNKLIST_CAPACITY = 0;
         static int PULL_CHUNK_PORT_BASE = 0;
         static int PULL_CHUNK_PORT_UP = 0;
-        static int REPLY_CHUNK_TIMEOUT = 1000;
-        static int REC_SEND_DIFF = 10;
+        static int REPLY_PULL_READ_TIMEOUT = 2000;
+        static int REPLY_PULL_WRITE_TIMEOUT = 2000;
+        static int REC_SEND_DIFF = 25;
 
         int max_client;
         int max_tree;
@@ -178,7 +179,6 @@ namespace Client
 
             if (treeStartRead[tree_index] == -1)
                 treeStartRead[tree_index] = write_index;
-
         }
 
 
@@ -468,7 +468,7 @@ namespace Client
                                         //speedXMLwrite = true;
                                         //graphdata.AddRecord(start, end, cConfig.ChunkSize * 30 * 8);
                                         //speedXMLwrite = false;
-                                        ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + "S:" + start.ToString() + " E:" + end.ToString() + "\n" });
+                                        //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T:" + tree_index + "S:" + start.ToString() + " E:" + end.ToString() + "\n" });
 
                                         //uploadHandler.updateCurve(start, end, cConfig.ChunkSize * 30 * 8, DThreadList_index * 10 + tree_index, max_tree);
                                         
@@ -485,7 +485,9 @@ namespace Client
                                 }
                                 else
                                 {
-                                    ((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] [" + tempRead_index + "] " + readingSeq + "< " + lastSeq + "\n" });
+                                    //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] [" + tempRead_index + "] " + readingSeq + "< " + lastSeq + "\n" });
+                                    //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "T[" + tree_index + "] [" + treeCLWriteIndex[tree_index] + "] " + treeChunkList[tree_index][treeCLWriteIndex[tree_index]].seq + "\n" });
+                                    
                                     // lastSeq = targetSeq;
                                 }
                             }
@@ -782,8 +784,8 @@ namespace Client
                     client.NoDelay = true;
                     //client.SendBufferSize = cConfig.ChunkSize;
                     stream = client.GetStream();
-                    stream.ReadTimeout = REPLY_CHUNK_TIMEOUT;
-                    stream.WriteTimeout = 1000;
+                    stream.ReadTimeout = REPLY_PULL_READ_TIMEOUT;
+                    stream.WriteTimeout = REPLY_PULL_WRITE_TIMEOUT;
 
                     while (true)
                     {
