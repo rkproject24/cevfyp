@@ -25,7 +25,9 @@ namespace Server
         //const bool loop = true;
         static int vlcStreamlow = 1901;
         static int vlcStreamUp = 2000;
-        static int SEND_PORT_TIMEOUT = 10000;
+        //static int SEND_PORT_TIMEOUT = 10000;
+        static int SEND_PORT_READ_TIMEOUT = 5000;
+        static int SEND_PORT_WEITE_TIMEOUT = 3000;
 
         int slPort;
         int max_client;
@@ -294,7 +296,8 @@ namespace Server
                 {
                     client = listenServer.AcceptTcpClient();
                     stream = client.GetStream();
-                    stream.ReadTimeout = SEND_PORT_TIMEOUT;
+                    stream.ReadTimeout = SEND_PORT_READ_TIMEOUT;
+                    stream.WriteTimeout = SEND_PORT_WEITE_TIMEOUT;
 
                     int total_req_num = 0;
                     int req_tree_num = 0;
@@ -394,27 +397,6 @@ namespace Server
                         int replyPort = ph.getReplyChunkPort();
                         byte[] sendMessage = BitConverter.GetBytes(replyPort);
                         stream.Write(sendMessage, 0, sendMessage.Length);
-
-                        //byte[] sendMessage = new byte[sConfig.ChunkSize];
-                        //byte[] responseMessage2 = new byte[4];
-                        //stream.Read(responseMessage2, 0, responseMessage2.Length);
-
-                        //int reqSeq = BitConverter.ToInt16(responseMessage2, 0);
-                        //int remainder_number = reqSeq % max_tree;
-                        //int target_tree;
-                        //Chunk resultChunk = new Chunk();
-
-                        //if (remainder_number == 0)
-                        //    target_tree = max_tree - 1;
-                        //else
-                        //    target_tree = remainder_number - 1;
-
-                        //resultChunk=ph.searchReqChunk(target_tree, reqSeq);
-
-                        //    sendMessage = ch.chunkToByte(resultChunk, sConfig.ChunkSize);
-                        //    stream.Write(sendMessage, 0, sendMessage.Length);
-                        //    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedMissChunk:"+resultChunk.seq.ToString()+"\n" });
-
                     }
 
                     if (stream != null)
