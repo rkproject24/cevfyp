@@ -59,6 +59,8 @@ namespace Server
 
         private void button1_Click(object sender, EventArgs e) //Play
         {
+            //sevhandle.vlcStreamPort = TcpApps.RanPort(vlcStreamlow, vlcStreamUp);
+            sevhandle.genVlcStreamPort();
             sevhandle.play();
 
             button1.Enabled = false;
@@ -72,6 +74,7 @@ namespace Server
 
         private void button3_Click(object sender, EventArgs e) //Stop
         {
+            cbRepeat.Checked = false;
             sevhandle.stop(true);
             button1.Enabled = true;
         }

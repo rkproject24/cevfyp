@@ -23,7 +23,8 @@ namespace Server
 
         //static int TrackerSLPort = 1500;
         //const bool loop = true;
-
+        static int vlcStreamlow = 1901;
+        static int vlcStreamUp = 2000;
         static int SEND_PORT_TIMEOUT = 10000;
 
         int slPort;
@@ -42,8 +43,11 @@ namespace Server
         private ServerConfig sConfig;
 
         IPAddress localAddr;
+        public int channelId;
+        int vlcStreamPort;
 
         private ServerFrm mainFm;
+        bool checkEnd = false;
 
         public ServerHandler(ServerFrm mainFm)
         {
@@ -56,9 +60,10 @@ namespace Server
             reloadUI();
             //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport be4\n" });
             this.max_client = sConfig.MaxClient;
-            this.max_tree = sConfig.TreeSize;
-            ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
-
+            //this.max_tree = sConfig.TreeSize;
+            channelId = -1;
+            ph = new PortHandler(max_client, mainFm.tbServerIp.Text, mainFm, vlc);
+            //vlcStreamPort = sConfig.VlcStreamPort;
         }
 
         //By Vinci
@@ -74,14 +79,18 @@ namespace Server
 
         private delegate void UpdateTextCallback(string message);
 
+        public void genVlcStreamPort()
+        {
+            vlcStreamPort = TcpApps.RanPort(vlcStreamlow, vlcStreamUp);
+        }
         public void play()
         {
-
-            vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text);//, sConfig.PluginPath);
+            
+            vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text, vlcStreamPort);//, sConfig.PluginPath);
             if (getStreamingThread != null) getStreamingThread.Abort(); //by vinci
 
             ch = new ChunkHandler();
-
+            
             getStreamingThread = new Thread(new ThreadStart(getStreaming));
             getStreamingThread.IsBackground = true;
             getStreamingThread.Name = "get_Streaming";
@@ -93,6 +102,9 @@ namespace Server
                 ph.setTreeCLState(i, 1);
 
             }
+
+            ph.BitRates = vlc.getBitRate();
+
             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { vlc.getBitRate() + " Kb\n" });
         }
 
@@ -152,6 +164,7 @@ namespace Server
             }
             else
             {
+                ph.init(max_tree);
                 //mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
                 //mainFm.tbServerIp.Text = sConfig.Serverip;
 
@@ -162,7 +175,7 @@ namespace Server
                 //ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
                 ph.startTreePort();
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
-
+                
                 localAddr = IPAddress.Parse(mainFm.tbServerIp.Text);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
                 listenerThread.IsBackground = true;
@@ -175,7 +188,7 @@ namespace Server
                 Thread.Sleep(100);
                 reStreamingThread.Start();
 
-
+                mainFm.Text = "CH" + this.channelId;
                 return true;
             }
             return false;
@@ -220,11 +233,16 @@ namespace Server
                 trackerStream.Write(ListenPortbyte, 0, ListenPortbyte.Length);
 
                 byte[] treeSizebyte = BitConverter.GetBytes(sConfig.TreeSize); //register the number of tree in tracker
+                this.max_tree = sConfig.TreeSize;
                 trackerStream.Write(treeSizebyte, 0, treeSizebyte.Length);
 
-                byte[] maxcbyte = BitConverter.GetBytes(sConfig.MaxClient);
-                trackerStream.Write(maxcbyte, 0, maxcbyte.Length);
+                //byte[] maxcbyte = BitConverter.GetBytes(sConfig.MaxClient);
+                //trackerStream.Write(maxcbyte, 0, maxcbyte.Length);
 
+                byte[] responsePeerMsg = new byte[4];
+                trackerStream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
+                this.channelId = BitConverter.ToInt16(responsePeerMsg, 0);
+                ph.Channelid = channelId;
                 trackerStream.Close();
                 trackerTcp.Close();
 
@@ -251,15 +269,22 @@ namespace Server
         {
             TcpClient client = null;
             NetworkStream stream = null;
+            int lastPortPair = 0;
 
-            try
+            while (true)
             {
-                listenServer = new TcpListener(localAddr, slPort);
-                listenServer.Start(1);
-            }
-            catch (Exception ex)
-            {
-                mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
+                try
+                {
+                    listenServer = new TcpListener(localAddr, slPort);
+                    listenServer.Start(1);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
+                    slPort = TcpApps.RanPort(sConfig.SLPort, sConfig.SLisPortup);
+                    Thread.Sleep(10);
+                }
             }
 
             mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Port[" + slPort + "]:Listening...\n" });
@@ -299,25 +324,53 @@ namespace Server
                             // stream.Read(responseMessage2, 0, responseMessage2.Length);
                             // req_tree_num = BitConverter.ToInt16(responseMessage2, 0);
 
-
-                            for (int j = 0; j < max_client; j++)
+                            
+                            //for (int j = 0; j < max_client; j++)
+                            for (int j = lastPortPair; j < max_client; j++)
                             {
                                 if (ph.getTreeCListClient(j) == null && ph.getTreeDListClient(j) == null)
                                 {
                                     tempC_num = ph.getTreeCListPort(j);
                                     cMessage = BitConverter.GetBytes(tempC_num);
                                     stream.Write(cMessage, 0, cMessage.Length);
-                                    // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "T[" + (req_tree_num - 1) + "] Cport:" + tempC_num.ToString() + " " });
                                     mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num + " " });
 
                                     tempD_num = ph.getTreeDListPort(j);
                                     dMessage = BitConverter.GetBytes(tempD_num);
                                     stream.Write(dMessage, 0, dMessage.Length);
-                                    // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num.ToString() + "\n" });
                                     mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num + "\n" });
 
                                     sendPort = true;
+                                    if (lastPortPair == max_client)
+                                        lastPortPair = 0;
+                                    else
+                                        lastPortPair++;
                                     break;
+                                }
+                            }
+                            if (!sendPort)
+                            {
+                                for (int j = 0; j < lastPortPair; j++)
+                                {
+                                    if (ph.getTreeCListClient(j) == null && ph.getTreeDListClient(j) == null)
+                                    {
+                                        tempC_num = ph.getTreeCListPort(j);
+                                        cMessage = BitConverter.GetBytes(tempC_num);
+                                        stream.Write(cMessage, 0, cMessage.Length);
+                                        mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Cport:" + tempC_num + " " });
+
+                                        tempD_num = ph.getTreeDListPort(j);
+                                        dMessage = BitConverter.GetBytes(tempD_num);
+                                        stream.Write(dMessage, 0, dMessage.Length);
+                                        mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Dport:" + tempD_num + "\n" });
+
+                                        sendPort = true;
+                                        if (lastPortPair == max_client)
+                                            lastPortPair = 0;
+                                        else
+                                            lastPortPair++;
+                                        break;
+                                    }
                                 }
                             }
 
@@ -394,17 +447,32 @@ namespace Server
             return enc.GetString(bytes);
         }
 
-        bool checkEnd = false;
+        
 
         private void getStreaming()
         {
             bool checkFirst = true;
-
-            TcpClient getClient = new TcpClient(TcpApps.LocalIPAddress(), sConfig.VlcStreamPort);
-            //TcpClient getClient = new TcpClient("vinci.dyndns.info", 1000);
+            checkEnd = false;
+            TcpClient getClient;
+            NetworkStream vlcStream;
+            while (true)
+            {
+                try
+                {
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Start Listen Port:" + vlcStreamPort + "\n" });
+                    getClient = new TcpClient(TcpApps.LocalIPAddress(), vlcStreamPort);
+                    //getClient = new TcpClient("vinci.dyndns.info", 1000);
+                    vlcStream = getClient.GetStream();
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(20);
+                }
+            }
+            
 
             //getClient.NoDelay = true;
-            NetworkStream vlcStream = getClient.GetStream();
 
 
             try
@@ -461,7 +529,7 @@ namespace Server
 
                     mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { seqNumber.ToString() });
 
-                    if (seqNumber == 2147483647)
+                    if (seqNumber == 2147483640)
                         seqNumber = 1;
                     else
                         seqNumber += 1;
@@ -471,6 +539,7 @@ namespace Server
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 for (int i = 0; i < max_tree; i++)
                 {
                     ph.setTreeCLState(i, 0);

@@ -34,7 +34,7 @@ namespace Server
                 MessageBox.Show(LibVlc.libvlc_exception_get_message(ref ex));
         }
 
-        public void streaming(Panel p, string filesrc)//, string libsrc)
+        public void streaming(Panel p, string filesrc,int streamingPort)//, string libsrc)
         {
             this.filesrc = filesrc;
             if (firstplay)
@@ -55,7 +55,7 @@ namespace Server
 
                 media = LibVlc.libvlc_media_new(instance, @"" + filesrc, ref ex);
                 Raise(ref ex);
-                LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=" + TcpApps.LocalIPAddress() + ":" + sConfig.VlcStreamPort + "}} :sout-all", ref ex);
+                LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=" + TcpApps.LocalIPAddress() + ":" + streamingPort + "}} :sout-all", ref ex);
                 //LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=" + sConfig.StreamType + ",dst=127.0.0.1:" + sConfig.VlcStreamPort + "}} :sout-keep :input-repeat=999", ref ex);
                 //LibVlc.libvlc_media_add_option(media, @":sout=#duplicate{dst=display,dst=std{access=http,mux=ts,dst=123.203.249.36:1234}}", ref ex);
                 player = LibVlc.libvlc_media_player_new_from_media(media, ref ex);
@@ -146,9 +146,20 @@ namespace Server
         public int getBitRate()
         {
             MediaInfo mi = new MediaInfo();
+            int audio,video;
+            audio=video=0;
             mi.Open(@"" + filesrc);
-            int result = (Int32.Parse(mi.getVidBitrate()) + Int32.Parse(mi.getAudioBitrate())) / 1000;
+            try
+            {
+                video = Int32.Parse(mi.getVidBitrate());
+                audio = Int32.Parse(mi.getAudioBitrate());
+            }
+            catch {
+                Console.WriteLine("getBitRate() ERROR");
+            }
             mi.Close();
+            int result = (video + audio) / 1000;
+            
             return result;
         }
 
