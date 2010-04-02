@@ -39,17 +39,17 @@
             this.playPanel.BackColor = System.Drawing.SystemColors.ControlText;
             this.playPanel.Location = new System.Drawing.Point(0, 0);
             this.playPanel.Name = "playPanel";
-            this.playPanel.Size = new System.Drawing.Size(294, 266);
+            this.playPanel.Size = new System.Drawing.Size(294, 215);
             this.playPanel.TabIndex = 0;
             // 
-            // playback
+            // PlaybackFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlText;
-            this.ClientSize = new System.Drawing.Size(292, 266);
+            this.ClientSize = new System.Drawing.Size(292, 215);
             this.Controls.Add(this.playPanel);
-            this.Name = "playback";
+            this.Name = "PlaybackFrm";
             this.Text = "playback";
             this.ResumeLayout(false);
 

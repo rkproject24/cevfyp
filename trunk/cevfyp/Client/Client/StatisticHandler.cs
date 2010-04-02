@@ -18,7 +18,7 @@ namespace Client
         string localAddr;
         string statisticXmlDir;
         private List<plotgraph> graphTreeData;
-        private bool connected;
+        private bool connected, upConnected;
 
         private bool enable;
 
@@ -42,7 +42,7 @@ namespace Client
             enable = false;
         }
 
-        private bool createGraph(int totaltree)
+        private bool createGraph(int totaltree, string type)
         {
 
             //graphTreeData = new List<plotgraph>(totaltree);
@@ -63,6 +63,9 @@ namespace Client
 
                 byte[] treeNo = BitConverter.GetBytes(totaltree);
                 statisticStream.Write(treeNo, 0, treeNo.Length);
+
+                byte[] graphtype = StrToByteArray(type);
+                statisticStream.Write(graphtype, 0, graphtype.Length);
                 
                 //byte[] statisticXmlDirByte = StrToByteArray(statisticXmlDir);
                 //byte[] MsgLength = BitConverter.GetBytes(statisticXmlDirByte.Length);
@@ -77,7 +80,7 @@ namespace Client
             return true;
         }
 
-        public bool updateCurve(DateTime start, DateTime end, int size ,int tree, int treeTotal)
+        public bool updateCurve(DateTime start, DateTime end, int size ,int tree, int treeTotal, string type)
         {
             //graphTreeData[tree].AddRecord(start, end, size);
             if (enable)
@@ -89,10 +92,13 @@ namespace Client
                 {
                     trackerTcpClient = new TcpClient(localAddr, statisticListen);
                     statisticStream = trackerTcpClient.GetStream();
-
+                    statisticStream.ReadTimeout = 1000;
                     //define client type
-                    Byte[] clienttype = StrToByteArray("<renewCur>");
+                    byte[] clienttype = StrToByteArray("<renewCur>");
                     statisticStream.Write(clienttype, 0, clienttype.Length);
+
+                    byte[] graphtype = StrToByteArray(type);
+                    statisticStream.Write(graphtype, 0, graphtype.Length);
 
                     byte[] recoonectMsg = new byte[1];
                     statisticStream.Read(recoonectMsg, 0, recoonectMsg.Length);
@@ -100,11 +106,12 @@ namespace Client
 
                     if (connected)
                     {
-
                         byte[] treeNo = BitConverter.GetBytes(tree);
                         statisticStream.Write(treeNo, 0, treeNo.Length);
 
                         string commandStr = start.ToBinary() + "@" + end.ToBinary() + "@" + size;
+                        if (graphtype.Equals("<upload>"))
+                            Console.WriteLine(commandStr);
                         byte[] commandStrByte = StrToByteArray(commandStr);
                         byte[] MsgLength = BitConverter.GetBytes(commandStrByte.Length);
                         statisticStream.Write(MsgLength, 0, MsgLength.Length);
@@ -112,8 +119,8 @@ namespace Client
                     }
                     else
                     {
-                        createGraph(treeTotal);
-                        updateCurve(start, end, size, tree, treeTotal);
+                        createGraph(treeTotal, type);
+                        updateCurve(start, end, size, tree, treeTotal, type);
                     }
                 }
                 catch

@@ -53,7 +53,7 @@
             this._docker.ForeColor = System.Drawing.Color.Transparent;
             this._docker.Location = new System.Drawing.Point(0, 0);
             this._docker.Name = "_docker";
-            this._docker.Size = new System.Drawing.Size(765, 400);
+            this._docker.Size = new System.Drawing.Size(765, 405);
             this._docker.TabIndex = 0;
             this._docker.TitleBarGradientColor1 = System.Drawing.SystemColors.WindowFrame;
             this._docker.TitleBarGradientColor2 = System.Drawing.SystemColors.ControlDarkDark;
@@ -70,7 +70,7 @@
             this.panel2.Controls.Add(this._docker);
             this.panel2.Location = new System.Drawing.Point(2, 34);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(765, 400);
+            this.panel2.Size = new System.Drawing.Size(765, 405);
             this.panel2.TabIndex = 23;
             // 
             // dowloadSpeedTimer
@@ -163,7 +163,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.ClientSize = new System.Drawing.Size(769, 463);
+            this.ClientSize = new System.Drawing.Size(769, 468);
             this.Controls.Add(this.panel2);
             this.Name = "ClientForm";
             this.Padding = new System.Windows.Forms.Padding(8, 9, 8, 9);

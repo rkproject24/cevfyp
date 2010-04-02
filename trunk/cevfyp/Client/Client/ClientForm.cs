@@ -123,6 +123,10 @@ namespace Client
 
             this.TitleBar.TitleBarCaption = message;
         }
+        public void ChannelComboBox(string message)
+        {
+            ((ControlFrm)controlFrm).cbChannel.Items.Add(message);
+        }
 
         //public void updateGraph(plotgraph data)
         //{
@@ -186,7 +190,7 @@ namespace Client
 
             ControlFrm control = new ControlFrm(this, clientHandler);
             //    //SpeedFrm result = new SpeedFrm("tree0", graphTreeData);
-            control.Bounds = new Rectangle(200, 100, 454, 110);
+            control.Bounds = new Rectangle(200, 100, 454, 120);
             control.Text = "Menu";
             controlFrm = control;
             //return control;
@@ -198,6 +202,10 @@ namespace Client
 
             _docker.DockForm(info4, DockStyle.Bottom, zDockMode.Inner);
             _docker.SetHeight(info4, 60);
+
+            //refresh the channel list
+            if (clientHandler.downChannelList(((LoggerFrm)downloadFrm).tbIP.Text.ToString()))
+                ((ControlFrm)controlFrm).cbChannel.SelectedIndex = 0;
         }
 
 

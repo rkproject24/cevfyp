@@ -64,22 +64,22 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.nudTimeout = new System.Windows.Forms.NumericUpDown();
+            this.nudNullChunk = new System.Windows.Forms.NumericUpDown();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.tbTrackerPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.nudNullChunk = new System.Windows.Forms.NumericUpDown();
-            this.nudTimeout = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudChunkBuf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NudStartBuf)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimeout)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -261,6 +261,11 @@
             // NudStartBuf
             // 
             this.NudStartBuf.Location = new System.Drawing.Point(85, 75);
+            this.NudStartBuf.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             this.NudStartBuf.Name = "NudStartBuf";
             this.NudStartBuf.Size = new System.Drawing.Size(100, 20);
             this.NudStartBuf.TabIndex = 10;
@@ -444,6 +449,53 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Download";
             // 
+            // nudTimeout
+            // 
+            this.nudTimeout.Location = new System.Drawing.Point(129, 128);
+            this.nudTimeout.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudTimeout.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudTimeout.Name = "nudTimeout";
+            this.nudTimeout.Size = new System.Drawing.Size(75, 20);
+            this.nudTimeout.TabIndex = 19;
+            this.nudTimeout.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            // 
+            // nudNullChunk
+            // 
+            this.nudNullChunk.Location = new System.Drawing.Point(86, 102);
+            this.nudNullChunk.Name = "nudNullChunk";
+            this.nudNullChunk.Size = new System.Drawing.Size(120, 20);
+            this.nudNullChunk.TabIndex = 18;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 102);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(79, 13);
+            this.label19.TabIndex = 17;
+            this.label19.Text = "Max NullChunk";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 130);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(117, 13);
+            this.label18.TabIndex = 14;
+            this.label18.Text = "Connection timeout(ms)";
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -483,53 +535,6 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 130);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(117, 13);
-            this.label18.TabIndex = 14;
-            this.label18.Text = "Connection timeout(ms)";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 102);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(79, 13);
-            this.label19.TabIndex = 17;
-            this.label19.Text = "Max NullChunk";
-            // 
-            // nudNullChunk
-            // 
-            this.nudNullChunk.Location = new System.Drawing.Point(86, 102);
-            this.nudNullChunk.Name = "nudNullChunk";
-            this.nudNullChunk.Size = new System.Drawing.Size(120, 20);
-            this.nudNullChunk.TabIndex = 18;
-            // 
-            // nudTimeout
-            // 
-            this.nudTimeout.Location = new System.Drawing.Point(129, 128);
-            this.nudTimeout.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.nudTimeout.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nudTimeout.Name = "nudTimeout";
-            this.nudTimeout.Size = new System.Drawing.Size(75, 20);
-            this.nudTimeout.TabIndex = 19;
-            this.nudTimeout.Value = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            // 
             // Preference
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -554,8 +559,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.NudPeers)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimeout)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNullChunk)).EndInit();
             this.ResumeLayout(false);
 
         }
