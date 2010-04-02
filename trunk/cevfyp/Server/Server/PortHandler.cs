@@ -35,7 +35,8 @@ namespace Server
         static int CHUNKLIST_CAPACITY = 500;
         static int PULL_CHUNK_PORT_BASE = 0;
         static int PULL_CHUNK_PORT_UP = 0;
-        static int REPLY_CHUNK_TIMEOUT = 1000;
+        static int REPLY_PULL_READ_TIMEOUT = 2000;
+        static int REPLY_PULL_WRITE_TIMEOUT = 2000;
         static int REC_SEND_DIFF = 25;
 
         int max_client;
@@ -637,24 +638,6 @@ namespace Server
                             continue;
                         }
 
-                        //if (responseString.Equals("Conn"))
-                        //{
-                        //    waitingMessage = System.Text.Encoding.ASCII.GetBytes("Nooo");
-
-                        //    for (int i = 0; i < max_client; i++)
-                        //    {
-                        //        if (getTreeCListClient(i) == null && getTreeDListClient(i) == null)
-                        //        {
-                        //            waitingMessage = System.Text.Encoding.ASCII.GetBytes("Have");
-                        //            break;
-                        //        }
-                        //    }
-
-                        //    stream.Write(waitingMessage, 0, waitingMessage.Length);
-                        //    stream.Flush();
-
-                        //}
-
                         Thread.Sleep(20);
                     }
                 }
@@ -762,8 +745,8 @@ namespace Server
                     client.NoDelay = true;
                     //client.SendBufferSize = sConfig.ChunkSize;
                     stream = client.GetStream();
-                    stream.ReadTimeout = REPLY_CHUNK_TIMEOUT;
-                    stream.WriteTimeout = 1000;
+                    stream.ReadTimeout = REPLY_PULL_READ_TIMEOUT;
+                    stream.WriteTimeout = REPLY_PULL_WRITE_TIMEOUT;
 
                     // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_ready\n" });
 
@@ -832,11 +815,6 @@ namespace Server
                         mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_fail\n" });
                     else
                         mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Listen port close~\n" });
-
-                    //if (stream != null)
-                    //    stream.Close();
-                    //if (client != null)
-                    //    client.Close();
                 }
 
                 if (stream != null)
