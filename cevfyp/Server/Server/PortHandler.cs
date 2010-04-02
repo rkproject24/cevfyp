@@ -35,7 +35,7 @@ namespace Server
         static int CHUNKLIST_CAPACITY = 500;
         static int PULL_CHUNK_PORT_BASE = 0;
         static int PULL_CHUNK_PORT_UP = 0;
-        static int REPLY_CHUNK_TIMEOUT = 2000;
+        static int REPLY_CHUNK_TIMEOUT = 1000;
         static int REC_SEND_DIFF = 25;
 
         int max_client;
@@ -46,6 +46,7 @@ namespace Server
         IPAddress localAddr;
         ChunkHandler ch;
         ServerConfig sConfig;
+        VlcHandler vlchandle;
 
         private ServerFrm mainFm;
         private delegate void UpdateTextCallback(string message);
@@ -76,11 +77,30 @@ namespace Server
         TcpListener[] treeCPListener;
         TcpListener[] treeDPListener;
 
-        public PortHandler(int maxClient, int maxTree, string serverip, ServerFrm mainFm)
+        int channelid;
+        int bitRates;
+
+        public int BitRates
+        {
+            get { return bitRates; }
+            set { bitRates = value; }
+
+        }
+
+
+
+        public int Channelid
+        {
+            get { return channelid; }
+            set { channelid = value; }
+        }
+
+        public PortHandler( int maxClient, string serverip, ServerFrm mainFm,VlcHandler vlchandle)
         {
             this.mainFm = mainFm;
             this.max_client = maxClient;
-            this.max_tree = maxTree;
+            this.vlchandle = vlchandle;
+            //this.max_tree = maxTree;
             localAddr = IPAddress.Parse(serverip);
 
             ch = new ChunkHandler();
@@ -88,32 +108,36 @@ namespace Server
             sConfig.load("C:\\ServerConfig");
             PULL_CHUNK_PORT_BASE = sConfig.SLisPortup + 1;
             PULL_CHUNK_PORT_UP = sConfig.SLisPortup + 20;
+        }
 
+        public void init(int maxTree)
+        {
+            this.max_tree = maxTree;
             //treeCPortList = new List<List<cPort>>(maxTree);
             //treeDPortList = new List<List<dPort>>(maxTree);
-            CPortList = new List<cPort>(maxClient);
-            DPortList = new List<dPort>(maxClient);
-            treeSeqList = new List<List<int>>(maxTree);
+            CPortList = new List<cPort>(max_client);
+            DPortList = new List<dPort>(max_client);
+            treeSeqList = new List<List<int>>(max_tree);
 
-            treeChunkList = new List<List<Chunk>>(maxTree);
+            treeChunkList = new List<List<Chunk>>(max_tree);
             //treeCThreadList = new List<List<Thread>>(maxTree);
             // treeDThreadList = new List<List<Thread>>(maxTree);
             //treeCPListener = new List<List<TcpListener>>(maxTree);
             //treeDPListener = new List<List<TcpListener>>(maxTree);
 
-            readWriteReverse = new bool[maxTree];
-            treeCLWriteIndex = new int[maxTree];
-            treeCLReadIndex = new int[maxTree];
-            treeCLCurrentSeq = new int[maxTree];
-            treeCLState = new int[maxTree];
-            DOfflineState = new int[maxClient];
+            readWriteReverse = new bool[max_tree];
+            treeCLWriteIndex = new int[max_tree];
+            treeCLReadIndex = new int[max_tree];
+            treeCLCurrentSeq = new int[max_tree];
+            treeCLState = new int[max_tree];
+            DOfflineState = new int[max_client];
 
             //treeCPListener = new TcpListener[maxTree * maxClient];
             //treeDPListener = new TcpListener[maxTree * maxClient];
-            treeCPListener = new TcpListener[maxClient];
-            treeDPListener = new TcpListener[maxClient];
+            treeCPListener = new TcpListener[max_client];
+            treeDPListener = new TcpListener[max_client];
 
-            createTreeChunkList(maxTree, CHUNKLIST_CAPACITY);
+            createTreeChunkList(max_tree, CHUNKLIST_CAPACITY);
             //createTreePortList(maxTree, maxClient);
             // createTreeThreadList(maxTree, maxClient);  
         }
@@ -351,12 +375,13 @@ namespace Server
                     //DPortClient = treeDPListener[tree_index][DThreadList_index].AcceptTcpClient();
                     DPortClient = treeDPListener[DThreadList_index].AcceptTcpClient();
                     DPortClient.NoDelay = true;
-                    DPortClient.SendBufferSize = sConfig.ChunkSize;
+                    //DPortClient.SendBufferSize = sConfig.ChunkSize;
                     stream = DPortClient.GetStream();
+                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + DThreadList_index + "] peer in\n" });
 
                     //get peer ip
                     IPAddress childAddress = ((IPEndPoint)DPortClient.Client.RemoteEndPoint).Address;
-
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Peer in\n" });
                     //get the peer id
                     byte[] responsePeerMsg = new byte[4];
                     stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -382,12 +407,13 @@ namespace Server
                     DPortList[DThreadList_index] = dpt;
 
                     //register the child
-                    while (!registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer))
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + DThreadList_index + "]register be4\n" });
+                    while (!registerToTracker(tree_index, peerId, childAddress, listenPort, "0"))
                     {
-                        registerToTracker(tree_index, peerId, childAddress, listenPort, "0", maxPeer);
-                        Thread.Sleep(100);
+                        Random random = new Random();
+                        Thread.Sleep(random.Next(30, 60));
                     }
-
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + DThreadList_index + "]register after\n" });
                     while (true)
                     {
                         //if control port dead which cause this case happen
@@ -514,7 +540,7 @@ namespace Server
         {
 
             byte[] waitingMessage = new byte[4];
-            byte[] responseMessage = new Byte[4];
+            byte[] responseMessage = new byte[4];
             int ran_port = TcpApps.RanPort(sConfig.CportBase, sConfig.Conportup);
             int tree_index = 0;
             TcpClient CPortClient = null;
@@ -598,6 +624,15 @@ namespace Server
 
                         if (responseString.Equals("Wait"))
                         {
+                            //send the bitrate of current video
+                            string sendstr = "bitRate@" + bitRates;//vlchandle.getBitRate();
+                            byte[] sendbyte = StrToByteArray(sendstr);
+                            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                            stream.Write(MsgLength, 0, MsgLength.Length); //send size of id
+                            //Thread.Sleep(10);
+                            stream.Write(sendbyte, 0, sendbyte.Length);
+
+                          //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "sendBitRate" });
                             Thread.Sleep(20);
                             continue;
                         }
@@ -663,7 +698,7 @@ namespace Server
                     Byte[] clienttype = StrToByteArray("<unRegists>");
                     connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
-                    string sendstr = tree + "@" + peerId + "@0";
+                    string sendstr = channelid+"@"+ tree + "@" + peerId + "@0";
                     Byte[] sendbyte = StrToByteArray(sendstr);
                     //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -690,8 +725,6 @@ namespace Server
 
             return true;
         }
-
-
         private void replyChunk()
         {
             TcpClient client = null;
@@ -727,10 +760,10 @@ namespace Server
 
                     client = replyChunkListener.AcceptTcpClient();
                     client.NoDelay = true;
-                    client.SendBufferSize = sConfig.ChunkSize;
+                    //client.SendBufferSize = sConfig.ChunkSize;
                     stream = client.GetStream();
                     stream.ReadTimeout = REPLY_CHUNK_TIMEOUT;
-                    stream.WriteTimeout = 2000;
+                    stream.WriteTimeout = 1000;
 
                     // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_ready\n" });
 
@@ -816,6 +849,144 @@ namespace Server
 
 
         }
+
+
+        /*private void replyChunk()
+        {
+            TcpClient client = null;
+            NetworkStream stream = null;
+            int target_tree, result_index, reqSeq;
+            byte[] responseData = new byte[sConfig.ReceiveStreamSize];
+            //byte[] receiveMessage = new byte[4];
+            //byte[] reponseMessage = new byte[4];
+            Chunk ck = new Chunk();
+            ck = ch.streamingToChunk(sConfig.ReceiveStreamSize, responseData, 0);
+
+            bool portStarted = false;
+            while (!portStarted)
+            {
+                try
+                {
+                    replyChunkListener = new TcpListener(localAddr, replyChunkPort);
+                    replyChunkListener.Start(1);
+                    portStarted = true;
+                }
+                catch (Exception ex)
+                {
+                    replyChunkPort = TcpApps.RanPort(PULL_CHUNK_PORT_BASE, PULL_CHUNK_PORT_UP);
+                }
+                Thread.Sleep(10);
+            }
+
+            mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "IP:" + localAddr.ToString() + "\nPort[" + replyChunkPort.ToString() + "]:Listening~\n" });
+
+            while (true)
+            {
+                try
+                {
+                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_waiting\n" });
+
+                    client = replyChunkListener.AcceptTcpClient();
+                    client.NoDelay = true;
+                    // client.SendBufferSize = sConfig.ChunkSize;
+                    stream = client.GetStream();
+                    stream.ReadTimeout = REPLY_CHUNK_TIMEOUT;
+                    stream.WriteTimeout = 2000;
+
+                    mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_receive\n" });
+
+                    while (true)
+                    {
+                        // mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_receive\n" });
+
+                        byte[] sendMessage = new byte[sConfig.ChunkSize];
+
+                        byte[] receiveMessage = new byte[4];
+                        stream.Read(receiveMessage, 0, receiveMessage.Length);
+                        stream.Flush();
+                        //string responType = ByteArrayToString(receiveMessage);
+                        reqSeq = BitConverter.ToInt16(receiveMessage, 0);
+
+                        //if (responType.Equals("wait"))
+                        if (reqSeq == -1)
+                        {
+                            //reponseMessage = StrToByteArray("wait");
+                            byte[] reponseMessage = BitConverter.GetBytes(-1);
+                            stream.Write(reponseMessage, 0, reponseMessage.Length);
+                            stream.Flush();
+                            Thread.Sleep(10);
+                            continue;
+                        }
+
+                        //reqSeq = Convert.ToInt32(responType);
+
+                        mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Seq:" + reqSeq + "\n" });
+
+                        if (reqSeq > 0)
+                        {
+                            target_tree = calcTreeIndex(reqSeq);
+
+                            // resultChunk = searchReqChunk(target_tree, reqSeq);
+                            // sendMessage = ch.chunkToByte(resultChunk, sConfig.ChunkSize);
+                            // stream.Write(sendMessage, 0, sendMessage.Length);
+                            // stream.Flush();
+
+                            result_index = search(target_tree, 0, CHUNKLIST_CAPACITY - 1, reqSeq);
+
+                            if (result_index != -1)
+                                sendMessage = ch.chunkToByte(treeChunkList[target_tree][result_index], sConfig.ChunkSize);
+                            else
+                                sendMessage = ch.chunkToByte(ck, sConfig.ChunkSize);
+
+                            stream.Write(sendMessage, 0, sendMessage.Length);
+                            stream.Flush();
+
+                            if (result_index != -1)
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedChunk:" + treeChunkList[target_tree][result_index].seq + "\n" });
+                            else
+                                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedChunk:" + 0 + "\n" });
+
+                        }
+                        else
+                        {
+
+                            mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_receive:" + reqSeq + "\n" });
+
+                            sendMessage = ch.chunkToByte(ck, sConfig.ChunkSize);
+                            stream.Write(sendMessage, 0, sendMessage.Length);
+                            stream.Flush();
+
+                            mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedChunk:" + 0 + "~\n" });
+
+                            //break;
+                        }
+
+                        Thread.Sleep(10);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //System.Windows.Forms.MessageBox.Show("replyThread:"+ex.ToString());
+
+                    if (!localterminate)
+                        mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Pull_fail\n" });
+                    else
+                        mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Listen port close~\n" });
+
+
+                }
+
+                if (stream != null)
+                    stream.Close();
+                if (client != null)
+                    client.Close();
+
+                Thread.Sleep(10);
+            }
+
+
+        }
+        */
 
         public Chunk searchReqChunk(int target_tree, int reqSeq)
         {
@@ -936,7 +1107,7 @@ namespace Server
 
         }
         // Write for tracker registration.
-        private bool registerToTracker(int tree, string peerId, IPAddress childAddress, int listenPort, string layer, int maxPeer)
+        private bool registerToTracker(int tree, string peerId, IPAddress childAddress, int listenPort, string layer)
         {
             TcpClient connectTracker;
             NetworkStream connectTrackerStream;
@@ -945,7 +1116,6 @@ namespace Server
                 connectTracker = new TcpClient(mainFm.tbTracker.Text, sConfig.TrackerPort);
                 //connectTracker = new TcpClient(clientFm.tbServerIp.Text, cConfig.TrackerPort);
                 connectTrackerStream = connectTracker.GetStream();
-
                 //define client message type
                 Byte[] clienttype = StrToByteArray("<cRegister>");
                 connectTrackerStream.Write(clienttype, 0, clienttype.Length);
@@ -966,7 +1136,7 @@ namespace Server
 
 
                 //string sendstr = listenPort + "@" + tree + "@" + peerId + "@" + this.cConfig.MaxPeer + "@" + layer;
-                string sendstr = childAddress.ToString() + "@" + listenPort + "@" + tree + "@" + peerId + "@" + maxPeer + "@" + layer + "@0";
+                string sendstr = childAddress.ToString() + "@" + listenPort +"@"+ channelid  + "@" + tree + "@" + peerId  + "@" + layer + "@0";
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -980,6 +1150,9 @@ namespace Server
             }
             catch
             {
+                //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "register ex:\n" + ex });
+                mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Register fail\n" });
+                return false;
             }
 
             return true;
