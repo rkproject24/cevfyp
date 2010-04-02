@@ -38,6 +38,8 @@
             this.preferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReset = new System.Windows.Forms.Button();
             this.TreelistView = new System.Windows.Forms.ListView();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cbChannel = new System.Windows.Forms.ComboBox();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +65,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(256, 47);
+            this.label2.Location = new System.Drawing.Point(404, 38);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 2;
@@ -72,7 +74,7 @@
             // cbbTree
             // 
             this.cbbTree.FormattingEnabled = true;
-            this.cbbTree.Location = new System.Drawing.Point(288, 38);
+            this.cbbTree.Location = new System.Drawing.Point(436, 35);
             this.cbbTree.Name = "cbbTree";
             this.cbbTree.Size = new System.Drawing.Size(77, 21);
             this.cbbTree.TabIndex = 3;
@@ -124,18 +126,38 @@
             this.TreelistView.TabIndex = 6;
             this.TreelistView.UseCompatibleStateImageBehavior = false;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(274, 38);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(46, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Channel";
+            // 
+            // cbChannel
+            // 
+            this.cbChannel.FormattingEnabled = true;
+            this.cbChannel.Location = new System.Drawing.Point(324, 35);
+            this.cbChannel.Name = "cbChannel";
+            this.cbChannel.Size = new System.Drawing.Size(74, 21);
+            this.cbChannel.TabIndex = 8;
+            this.cbChannel.SelectedIndexChanged += new System.EventHandler(this.cbChannel_SelectedIndexChanged);
+            // 
             // TrackerMainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(520, 291);
+            this.Controls.Add(this.cbChannel);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnOn);
             this.Controls.Add(this.TreelistView);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.cbbTree);
             this.Controls.Add(this.rtbClientlist);
+            this.Controls.Add(this.cbbTree);
+            this.Controls.Add(this.label2);
             this.Name = "TrackerMainFrm";
             this.Text = "Tracker";
             this.contextMenuStrip1.ResumeLayout(false);
@@ -155,6 +177,8 @@
         private System.Windows.Forms.ToolStripMenuItem preferenceToolStripMenuItem;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.ListView TreelistView;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cbChannel;
     }
 }
 

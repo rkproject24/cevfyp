@@ -15,12 +15,12 @@ namespace TrackerServer
         //bool[] childDead;
         //List<PeerNode> childPeers;
 
-        public ChildUnregHandler(TrackerMainFrm mainFrm, int tree, string peerId, int waitTime, string Peerlist_name)
+        public ChildUnregHandler(TrackerMainFrm mainFrm, int tree, string peerId, int waitTime, string Peerlist_name, int channel)
         {
             //childPeers = new List<PeerNode>();
  
             Thread.Sleep(waitTime); //time to wait for peer reconnect
-            PeerInfoAccessor treeAccessor = new PeerInfoAccessor(Peerlist_name + tree);
+            PeerInfoAccessor treeAccessor = new PeerInfoAccessor("CH" + channel + Peerlist_name + tree);
             
             //if(!treeAccessor.load())
             //    mainFrm.rtbClientlist.BeginInvoke(new UpdateTextCallback(mainFrm.UpdatertbClientlist), new object[] { "xml load error \n" });
@@ -31,7 +31,7 @@ namespace TrackerServer
                 treeAccessor.load();
             }
                          
-            PeerNode p1 = new PeerNode(peerId, "deleting", 0, 0, "-1");
+            PeerNode p1 = new PeerNode(peerId, "deleting", 0, "-1");
             while (true)
             {
                 try
@@ -46,7 +46,7 @@ namespace TrackerServer
                         if (child != null)
                         {
                             mainFrm.rtbClientlist.BeginInvoke(new UpdateTextCallback(mainFrm.UpdatertbClientlist), new object[] { "Peer" + peerId + " create unregThread Peer" + child.Id + "\n" });
-                            Thread unRegChild = new Thread(delegate() { new ChildUnregHandler(mainFrm, tree, child.Id, RandomNumber(waitTime, waitTime+1000), Peerlist_name); });
+                            Thread unRegChild = new Thread(delegate() { new ChildUnregHandler(mainFrm, tree, child.Id, RandomNumber(waitTime, waitTime + 1000), Peerlist_name, channel); });
                             unRegChild.IsBackground = true;
                             unRegChild.Name = "ChildUnreg_Tree:" + tree + ":" + child.Id;
                             unRegChild.Start();
