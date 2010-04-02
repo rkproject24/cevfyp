@@ -19,11 +19,12 @@ namespace Client
             this.clientFrm = clientFrm;
             this.clientHandler = clientHandler;
             btnDisconnect.Enabled = false;
+            //clientHandler.downChannelList(((LoggerFrm)clientFrm.downloadFrm).tbIP.Text.ToString());
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            string response = clientHandler.establishConnect(((LoggerFrm)clientFrm.downloadFrm).tbIP.Text.ToString());
+            string response = clientHandler.establishConnect();
             if (!response.Equals(""))
             {
                 MessageBox.Show(response);
@@ -61,6 +62,13 @@ namespace Client
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
             clientHandler.setVolume(trackBar1.Value);
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            if (clientHandler.downChannelList(((LoggerFrm)clientFrm.downloadFrm).tbIP.Text.ToString()))
+                ((ControlFrm)clientFrm.controlFrm).cbChannel.SelectedIndex = 0;
+
         }
     }
 }
