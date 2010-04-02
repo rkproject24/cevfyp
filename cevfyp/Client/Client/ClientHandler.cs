@@ -33,9 +33,17 @@ namespace Client
 
         //===================================
         static int RECEIVE_RANGE = 100;
-        static int SEND_PORT_TIMEOUT = 5000;
-        static int READ_CHUNK_TIMEOUT = 1000;
-        static int WRITE_CHUNK_TIMEOUT = 1000;
+        static int SEND_PORT_READ_TIMEOUT = 5000;
+        static int SEND_PORT_WEITE_TIMEOUT = 3000;
+
+        static int PULL_PORT_WRITE_TIMEOUT = 2000;
+        static int PULL_PORT_READ_TIMEOUT = 2000;
+        static int PULL_STREAM_WRITE_TIMEOUT = 2000;
+        static int PULL_STREAM_READ_TIMEOUT = 2000;
+
+        static int PULL_STREAM_CONNECT_TIMEOUT = 2000;
+        static int PULL_PORT_CONNECT_TIMEOUT = 2000;
+
 
         static int PULL_FAIL_NUM = 50;
 
@@ -744,7 +752,7 @@ namespace Client
                             continue;
                         }
 
-                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage); //printOnDL("T[" + tree_index + "]:" + streamingChunk.seq + "\n");
+                        streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);  //printOnDL("T[" + tree_index + "]:" + streamingChunk.seq + "\n");
 
                         //***********************Chunk Null********************
                         if (streamingChunk == null)
@@ -796,9 +804,11 @@ namespace Client
                         //*******************Set chunk to upload buffer*********************
                         if (streamingChunk.seq > treeCLCurrentSeq[tree_index])
                         {
+                            
                             if (uploading)
                                 upPorth.setChunkList(streamingChunk, tree_index);
                             treeCLCurrentSeq[tree_index] = streamingChunk.seq;
+                        
                         }
 
                         //*******************Set chunk to playback buffer*********************
@@ -1191,7 +1201,7 @@ namespace Client
             {
                 connectClient = new TcpClient();
                 IAsyncResult MyResult = connectClient.BeginConnect(pn.Ip, pn.ListenPort, null, null);
-                MyResult.AsyncWaitHandle.WaitOne(500, true);
+                MyResult.AsyncWaitHandle.WaitOne(PULL_PORT_CONNECT_TIMEOUT, true);
                 if (!MyResult.IsCompleted)
                 {
                     printOnDL_PULL("Pull_Port_Timeout\n");
@@ -1201,8 +1211,8 @@ namespace Client
                 else if (connectClient.Connected == true)
                 {
                     connectStream = connectClient.GetStream();
-                    connectStream.ReadTimeout = READ_CHUNK_TIMEOUT;
-                    connectStream.WriteTimeout = WRITE_CHUNK_TIMEOUT;
+                    connectStream.ReadTimeout = PULL_PORT_READ_TIMEOUT;
+                    connectStream.WriteTimeout = PULL_PORT_WRITE_TIMEOUT;
 
                     byte[] reqtype = StrToByteArray("chunkReq");
                     connectStream.Write(reqtype, 0, reqtype.Length);
@@ -1238,7 +1248,7 @@ namespace Client
             {
                 pullClient = new TcpClient();
                 IAsyncResult MyResult2 = pullClient.BeginConnect(pn.Ip, pull_port, null, null);
-                MyResult2.AsyncWaitHandle.WaitOne(500, true);
+                MyResult2.AsyncWaitHandle.WaitOne(PULL_STREAM_CONNECT_TIMEOUT, true);
                 if (!MyResult2.IsCompleted)
                 {
                     printOnDL_PULL("Pull_Stream_Timeout\n");
@@ -1248,8 +1258,8 @@ namespace Client
                 else if (pullClient.Connected == true)
                 {
                     pullStream = pullClient.GetStream();
-                    pullStream.ReadTimeout = READ_CHUNK_TIMEOUT;
-                    pullStream.WriteTimeout = 2000;
+                    pullStream.ReadTimeout = PULL_STREAM_READ_TIMEOUT;
+                    pullStream.WriteTimeout = PULL_STREAM_WRITE_TIMEOUT;
                     printOnDL_PULL("Pull_Stream_OK\n");
                     return true;
                 }
@@ -1288,7 +1298,7 @@ namespace Client
 
                 streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
 
-                if (streamingChunk == null && streamingChunk.seq == 0)
+                if (streamingChunk == null || streamingChunk.seq == 0)
                 {
                     if (streamingChunk == null)
                         printOnDL_PULL("Seq:chunkNull\n");
@@ -1327,7 +1337,7 @@ namespace Client
                     upPorth.setChunkList2(streamingChunk, tIndex);
 
                     if (upPorth.getReadingSeq(tIndex) < streamingChunk.seq)
-                        printOnDL_PULL("Seq:" + chunkList[chunkList_index].seq + " coverUPB\n");
+                        printOnDL_PULL("Seq:" + streamingChunk.seq + " coverUPB\n");
                     else
                         printOnDL_PULL("Seq:" + tempTargetSeq + " coverUPBLate\n");
                 }
@@ -1570,7 +1580,7 @@ namespace Client
                 receiveChunkThread.Clear();
                 receiveControlThread.Clear();
 
-                int totalRconMiss = 0, totalPushMiss = 0;
+                int totalRconMiss = 0, totalPushMiss = 0, totalReconnect=0;
                 for (int i = 0; i < treeNO; i++)
                 {
                     printOnDL("\nT[" + i + "]beforeRecon=" + beforeRconPlaySeq[i] + "\n");
@@ -1581,14 +1591,15 @@ namespace Client
                     printOnDL("WaitMiss=" + WaitMiss[i] + "\n");
                     totalRconMiss += ReconMiss[i];
                     totalPushMiss += PushMiss[i];
-
+                    totalReconnect += ReconCount[i];
                     chunkList_wIndex[i] = 0;
                 }
                 printOnDL("\nTotalRconMiss~=" + totalRconMiss + "\n");
-                printOnDL("TotalPushMiss~=" + totalPushMiss + "\n\n");
-                printOnDL("totalRcover=" + totalRecover + "\n");
-                printOnDL("totalMissPlayChunk=" + totalMissPlayChunk + "\n");
-                printOnDL("totalPlayChunk=" + totalPlayChunk + "\n");
+                printOnDL("TotalPushMiss~=" + totalPushMiss + "\n");
+                printOnDL("TotalRecover=" + totalRecover + "\n");
+                printOnDL("TotalReconnect=" + totalReconnect + "\n");
+                printOnDL("TotalMissPlayChunk=" + totalMissPlayChunk + "\n");
+                printOnDL("TotalPlayChunk=" + totalPlayChunk + "\n");
                 
                 //chunkList_wIndex = 0;
                 chunkList_rIndex = 0;
@@ -1597,6 +1608,7 @@ namespace Client
                 totalMissPlayChunk = 0;
                 totalPlayChunk = 0;
                 totalRecover = 0;
+                totalReconnect = 0;
                 chunkList.Clear();
                 pullPnList.Clear();
 
@@ -1637,7 +1649,8 @@ namespace Client
                 {
                     client = listenPeer.AcceptTcpClient();
                     stream = client.GetStream();
-                    stream.ReadTimeout = SEND_PORT_TIMEOUT;
+                    stream.ReadTimeout = SEND_PORT_READ_TIMEOUT;
+                    stream.WriteTimeout = SEND_PORT_WEITE_TIMEOUT;
 
                     total_req_num = 0;
                     req_tree_num = 0;
