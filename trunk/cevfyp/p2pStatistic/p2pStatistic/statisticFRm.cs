@@ -210,7 +210,7 @@ namespace p2pStatistic
         {
             try
             {
-
+                if (graphCreated)
                 for (int i = 0; i < totalTree; i++)
                 {
                     if (xmlWriting[i] == false && xmlWriting != null && xmldata != null)
@@ -219,26 +219,29 @@ namespace p2pStatistic
                         xmldata.UpdateGraph(zedGraphCon, i, "Tree");
                         xmlWriting[i] = false;
                     }
-
-                    if (uploadXmlWriting[i] == false && uploadXmlWriting != null && uploadXmldata != null)
-                    {
-                        uploadXmlWriting[i] = true;
-                        uploadXmldata.UpdateGraph(zedGraphCon1, i, "UploadTree");
-                        uploadXmlWriting[i] = false;
-                    }
+                    this.zedGraphCon.AxisChange();
+                    this.zedGraphCon.Refresh();
                 }
-
-
-                this.zedGraphCon.AxisChange();
-                this.zedGraphCon.Refresh();
-
-                this.zedGraphCon1.AxisChange();
-                this.zedGraphCon1.Refresh();
+                if (uploadGraphCreated)
+                {
+                    for (int i = 0; i < totalTree; i++)
+                    {
+                        if (uploadXmlWriting[i] == false && uploadXmlWriting != null && uploadXmldata != null)
+                        {
+                            uploadXmlWriting[i] = true;
+                            uploadXmldata.UpdateGraph(zedGraphCon1, i, "UploadTree");
+                            uploadXmlWriting[i] = false;
+                        }
+                    }
+                    this.zedGraphCon1.AxisChange();
+                    this.zedGraphCon1.Refresh();
+                }
                 //CurrentIndex++;
             }
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.ToString());
+                Console.WriteLine(ex);
             }
         }
 
