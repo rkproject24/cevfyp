@@ -227,6 +227,7 @@ namespace Client
             {
                 int port_num = DPortList[dList_index].PortD;
 
+                if(DPortList[dList_index].clientD !=null)
                 DPortList[dList_index].clientD.Close();
 
                 dPort dport = new dPort();
@@ -244,7 +245,8 @@ namespace Client
             if (CPortList[cList_index].peerId != -1)
             {
                 int port_num = CPortList[cList_index].PortC;
-
+                
+                if( CPortList[cList_index].clientC!=null)
                 CPortList[cList_index].clientC.Close();
 
                 cPort cport = new cPort();

@@ -1756,8 +1756,11 @@ namespace Client
                 catch (Exception ex)
                 {
                     if (!checkClose)
-                    {   //Joining client disconnection cause this case run.
-                        ((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "One client join fail...\n" });
+                    {
+                        if (ex.ToString().Contains("period of time"))
+                            ((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Join timeout exception..\n" });
+                        else
+                        ((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Join other exception...\n" });
                     }
                     else
                         ((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "Listen port close\n" });
