@@ -65,16 +65,16 @@ namespace p2pStatistic
             statisticListener = new TcpListener(localAddr, statisticListen);            
             statisticListener.Start();
 
-
             while (true)
             {
-                TcpClient client = statisticListener.AcceptTcpClient();
-                NetworkStream cstream = client.GetStream();
-                //TcpClient.Client.RemoteEndPoint.   
-                cstream.ReadTimeout = 1000;
-                IPAddress clientendpt = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
                 try
                 {
+                    TcpClient client = statisticListener.AcceptTcpClient();
+                    NetworkStream cstream = client.GetStream();
+                    //TcpClient.Client.RemoteEndPoint.   
+                    cstream.ReadTimeout = 1000;
+                    IPAddress clientendpt = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
+
                     //Get the Peer type- server/client
                     byte[] responsePeerMsg = new byte[10];
                     cstream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -283,15 +283,24 @@ namespace p2pStatistic
 
                 statisticListener.Stop();
                 listenerThread.Abort();
-                graphCreated = false;
 
+
+                //zedGraphCon.GraphPane.CurveList.Clear();
+                //zedGraphCon.MasterPane = new ZedGraph.MasterPane();
+                if (graphCreated)
+                {
+                    xmldata.clearGraph(zedGraphCon);
+                    this.zedGraphCon.Refresh();
+                }
+
+                if (uploadGraphCreated)
+                {
+                    uploadXmldata.clearGraph(zedGraphCon1);
+                    this.zedGraphCon1.Refresh();
+                }
+
+                graphCreated = false;
                 uploadGraphCreated = false;
-                zedGraphCon.GraphPane.CurveList.Clear();
-                zedGraphCon.MasterPane = new ZedGraph.MasterPane();
-                xmldata.clearGraph(zedGraphCon);
-                uploadXmldata.clearGraph(zedGraphCon1);
-                this.zedGraphCon.Refresh();
-                this.zedGraphCon1.Refresh();
                 //if (File.Exists("*.xml"))
                 //    File.Delete("*.xml");
                 foreach (string sFile in System.IO.Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml"))
@@ -299,7 +308,9 @@ namespace p2pStatistic
                     System.IO.File.Delete(sFile);
                 }
             }
-            catch { }
+            catch(Exception ex) {
+                Console.WriteLine(ex);
+            }
         }
 
         private int AvgSpeedCalculation(int[] speed)
