@@ -25,11 +25,9 @@ namespace p2pStatistic
         plotgraph uploadXmldata;
         //int CurrentIndex = 0;
         int statisticListen;
-        int uploadStatisticListen;
                 
         IPAddress localAddr;
         TcpListener statisticListener;
-        TcpListener uploadStatisticListener;
         
         Thread listenerThread;
         public delegate void UpdateTextCallback(string message);
@@ -253,8 +251,12 @@ namespace p2pStatistic
             //localAddr = IPAddress.Parse(TcpApps.LocalIPAddress());
             //totalTree = 0;
             //nudPort.Value = TcpApps.RanPort(1701, 1800);
-            if (File.Exists("*.xml"))
-                File.Delete("*.xml");
+            //if (File.Exists("*.xml"))
+            //    File.Delete("*.xml");
+            foreach (string sFile in System.IO.Directory.GetFiles(Directory.GetCurrentDirectory() , "*.xml"))
+            {
+                System.IO.File.Delete(sFile);
+            }
             statisticListen = (Int32)nudPort.Value;
             //uploadStatisticListen = Convert.ToInt32( upPort.Text);
             btnStart.Enabled = false;
@@ -283,7 +285,6 @@ namespace p2pStatistic
                 listenerThread.Abort();
                 graphCreated = false;
 
-                uploadStatisticListener.Stop();
                 uploadGraphCreated = false;
                 zedGraphCon.GraphPane.CurveList.Clear();
                 zedGraphCon.MasterPane = new ZedGraph.MasterPane();
@@ -291,8 +292,12 @@ namespace p2pStatistic
                 uploadXmldata.clearGraph(zedGraphCon1);
                 this.zedGraphCon.Refresh();
                 this.zedGraphCon1.Refresh();
-                if (File.Exists("*.xml"))
-                    File.Delete("*.xml");
+                //if (File.Exists("*.xml"))
+                //    File.Delete("*.xml");
+                foreach (string sFile in System.IO.Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml"))
+                {
+                    System.IO.File.Delete(sFile);
+                }
             }
             catch { }
         }
