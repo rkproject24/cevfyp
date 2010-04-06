@@ -41,3 +41,15 @@ C:\Documents and Settings\vinci\桌面\20100210Demo\20100210Demo\p2pStatistic\p2
 C:\Documents and Settings\vinci\桌面\20100210Demo\20100210Demo\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.Properties.Resources.resources
 C:\Documents and Settings\vinci\桌面\20100210Demo\20100210Demo\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.statisticFRm.resources
 C:\Documents and Settings\vinci\桌面\20100210Demo\20100210Demo\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.csproj.GenerateResource.Cache
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.exe
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.pdb
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\p2pStatistic.exe
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\p2pStatistic.pdb
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\Analysis.dll
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\ClassLibrary.dll
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\ClassLibrary.pdb
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\bin\Debug\Analysis.pdb
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.Properties.Resources.resources
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.statisticFRm.resources
+C:\Users\Eddy\Desktop\cevfyp\p2pStatistic\p2pStatistic\obj\Debug\p2pStatistic.csproj.GenerateResource.Cache
