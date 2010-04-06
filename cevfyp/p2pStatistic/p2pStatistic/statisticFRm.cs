@@ -31,6 +31,7 @@ namespace p2pStatistic
         
         Thread listenerThread;
         public delegate void UpdateTextCallback(string message);
+        public delegate void ResetTextCallback();
 
         bool graphCreated;
         bool uploadGraphCreated;
@@ -307,6 +308,10 @@ namespace p2pStatistic
                 {
                     System.IO.File.Delete(sFile);
                 }
+
+                this.UpLog.BeginInvoke(new ResetTextCallback(this.resetUpLog), new object[] {});
+                this.DownLog.BeginInvoke(new ResetTextCallback(this.resetDownLog), new object[] {});
+
             }
             catch(Exception ex) {
                 Console.WriteLine(ex);
@@ -323,15 +328,15 @@ namespace p2pStatistic
             return (sum / totalTree);
         }
 
-        public void updateOD(int OD)
-        {
-            this.TOD.BeginInvoke(new UpdateTextCallback(this.updateTOD), new object[] { OD.ToString() });
-        }
+        //public void updateOD(int OD)
+        //{
+        //    this.TOD.BeginInvoke(new UpdateTextCallback(this.updateTOD), new object[] { OD.ToString() });
+        //}
 
-        public void updateOU(int OU)
-        {
-            this.TOU.BeginInvoke(new UpdateTextCallback(this.updateTOU), new object[] { OU.ToString() });
-        }
+        //public void updateOU(int OU)
+        //{
+        //    this.TOU.BeginInvoke(new UpdateTextCallback(this.updateTOU), new object[] { OU.ToString() });
+        //}
 
         public void updateAvgDS(int AvgDown)
         {
@@ -343,24 +348,24 @@ namespace p2pStatistic
             this.UT.BeginInvoke(new UpdateTextCallback(this.updateUpSpeed), new object[] { Avgup.ToString() });
         }
 
-        public void updatePL(int PL)
-        {
-            this.TPL.BeginInvoke(new UpdateTextCallback(this.updateTPL), new object[] { PL.ToString() });
-        }
+        //public void updatePL(int PL)
+        //{
+        //    this.TPL.BeginInvoke(new UpdateTextCallback(this.updateTPL), new object[] { PL.ToString() });
+        //}
 
         public void updatePP(int PP)
         {
             this.TPP.BeginInvoke(new UpdateTextCallback(this.updateTPP), new object[] { PP.ToString() });
         }
 
-        public void updatePM(int PM)
-        {
-            this.TPM.BeginInvoke(new UpdateTextCallback(this.updateTPM), new object[] { PM.ToString() });
-        }
+        //public void updatePM(int PM)
+        //{
+        //    this.TPM.BeginInvoke(new UpdateTextCallback(this.updateTPM), new object[] { PM.ToString() });
+        //}
 
-        public void updatePR(int PR)
-        {
-            this.TPR.BeginInvoke(new UpdateTextCallback(this.updateTPR), new object[] { PR.ToString() });
-        }
+        //public void updatePR(int PR)
+        //{
+        //    this.TPR.BeginInvoke(new UpdateTextCallback(this.updateTPR), new object[] { PR.ToString() });
+        //}
     }
 }
