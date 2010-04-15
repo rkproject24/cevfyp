@@ -441,6 +441,29 @@ namespace ClassLibrary
             return "";
         }
 
+        public int NodeCount(string nodeName)
+        {
+            XmlElement root;
+            try
+            {
+                root = xmlDoc.DocumentElement;
+                if (root.HasChildNodes)
+                {
+                    if (root.FirstChild.Name.Equals(nodeName))
+                        return root.ChildNodes.Count;
+                }
+                else
+                    return 0;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Reading Error! Please input both group and type!");
+                //return "error";
+                return -1;
+            }
+            return 0;
+        }
+
         public List<string> Readlist(string nodeName, string attributeName, string attributeValue)
         {
             // xmlDoc = new XmlDocument();
