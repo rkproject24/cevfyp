@@ -96,7 +96,7 @@ namespace Server
             set { channelid = value; }
         }
 
-        public PortHandler( int maxClient, string serverip, ServerFrm mainFm,VlcHandler vlchandle)
+        public PortHandler(int maxClient, string serverip, ServerFrm mainFm, VlcHandler vlchandle)
         {
             this.mainFm = mainFm;
             this.max_client = maxClient;
@@ -257,7 +257,8 @@ namespace Server
             {
                 int port_num = DPortList[dList_index].PortD;
 
-                DPortList[dList_index].clientD.Close();
+                if (DPortList[dList_index].clientD != null)
+                    DPortList[dList_index].clientD.Close();
 
                 dPort dport = new dPort();
                 dport.clientD = null;
@@ -275,7 +276,8 @@ namespace Server
             {
                 int port_num = CPortList[cList_index].PortC;
 
-                CPortList[cList_index].clientC.Close();
+                if (CPortList[cList_index].clientC != null)
+                    CPortList[cList_index].clientC.Close();
 
                 cPort cport = new cPort();
                 cport.clientC = null;
@@ -301,14 +303,14 @@ namespace Server
                 CPortThread.IsBackground = true;
                 CPortThread.Name = " Cport_handle_" + "_" + j;
                 CPortThread.Start();
-                Thread.Sleep(20);
+                Thread.Sleep(50);
                 CThreadList.Add(CPortThread);
 
                 Thread DPortThread = new Thread(delegate() { TreePortHandle_Dport(j); });
                 DPortThread.IsBackground = true;
                 DPortThread.Name = " Dport_handle_" + "_" + j;
                 DPortThread.Start();
-                Thread.Sleep(20);
+                Thread.Sleep(50);
                 DThreadList.Add(DPortThread);
 
             }
@@ -375,9 +377,12 @@ namespace Server
                     //DPortClient = DportListener.AcceptTcpClient();
                     //DPortClient = treeDPListener[tree_index][DThreadList_index].AcceptTcpClient();
                     DPortClient = treeDPListener[DThreadList_index].AcceptTcpClient();
+
                     DPortClient.NoDelay = true;
-                    //DPortClient.SendBufferSize = sConfig.ChunkSize;
+                    DPortClient.SendBufferSize = sConfig.ChunkSize;
+
                     stream = DPortClient.GetStream();
+
                     mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "T[" + DThreadList_index + "] peer in\n" });
 
                     //get peer ip
@@ -597,8 +602,8 @@ namespace Server
                     cpt.peerId = Int32.Parse(peerId);
                     CPortList[CThreadList_index] = cpt;
 
-                    stream.ReadTimeout = 3000;
-                    stream.WriteTimeout = 3000;
+                    stream.ReadTimeout = 4000;
+                    stream.WriteTimeout = 4000;
                     while (true)
                     {
 
@@ -633,7 +638,7 @@ namespace Server
                             //Thread.Sleep(10);
                             stream.Write(sendbyte, 0, sendbyte.Length);
 
-                          //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "sendBitRate" });
+                            //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "sendBitRate" });
                             Thread.Sleep(20);
                             continue;
                         }
@@ -681,7 +686,7 @@ namespace Server
                     Byte[] clienttype = StrToByteArray("<unRegists>");
                     connectTrackerStream.Write(clienttype, 0, clienttype.Length);
 
-                    string sendstr = channelid+"@"+ tree + "@" + peerId + "@0";
+                    string sendstr = channelid + "@" + tree + "@" + peerId + "@0";
                     Byte[] sendbyte = StrToByteArray(sendstr);
                     //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
@@ -759,7 +764,7 @@ namespace Server
                         //Chunk resultChunk = new Chunk();
 
                         stream.Read(responseMessage2, 0, responseMessage2.Length);
-                        stream.Flush();
+                        //stream.Flush();
                         reqSeq = BitConverter.ToInt16(responseMessage2, 0);
 
                         mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "Seq:" + reqSeq + "\n" });
@@ -782,7 +787,7 @@ namespace Server
                                 sendMessage = ch.chunkToByte(ck, sConfig.ChunkSize);
 
                             stream.Write(sendMessage, 0, sendMessage.Length);
-                            stream.Flush();
+                            //  stream.Flush();
 
                             if (result_index != -1)
                                 mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedChunk:" + treeChunkList[target_tree][result_index].seq + "\n" });
@@ -797,7 +802,7 @@ namespace Server
 
                             sendMessage = ch.chunkToByte(ck, sConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
-                            stream.Flush();
+                            //stream.Flush();
 
                             mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "uploadedChunk:" + 0 + "~\n" });
 
@@ -1114,7 +1119,7 @@ namespace Server
 
 
                 //string sendstr = listenPort + "@" + tree + "@" + peerId + "@" + this.cConfig.MaxPeer + "@" + layer;
-                string sendstr = childAddress.ToString() + "@" + listenPort +"@"+ channelid  + "@" + tree + "@" + peerId  + "@" + layer + "@0";
+                string sendstr = childAddress.ToString() + "@" + listenPort + "@" + channelid + "@" + tree + "@" + peerId + "@" + layer + "@0";
                 Byte[] sendbyte = StrToByteArray(sendstr);
                 //connectTrackerStream.Write(sendbyte, 0, sendbyte.Length);
 
