@@ -27,7 +27,7 @@ namespace ClassLibrary
             //RPI.AddAttribute("Info", "MaxId", "0");
             this.xmlFile = fileName;
         }
-
+        
         public int getEleNum()
         {
             return RPI.GetElementNum();
@@ -272,6 +272,17 @@ namespace ClassLibrary
             }
             return resultlist;
 
+        }
+
+        public int getPeerTotal()
+        {
+            return RPI.NodeCount("Peer");
+        }
+
+        public PeerNode getPeerByIndex(int i)
+        {
+            string id = RPI.ReadByIndex("Peer", "ID", i);
+            return getPeer(id);
         }
     }
 }
