@@ -109,6 +109,11 @@ namespace Client
             ((LoggerFrm)downloadFrm).lbSpeed.Text = speed + "kb";
             //rtbdownload.AppendText(message);
         }
+        public void UpdateUploadSpeed(string speed)
+        {
+            ((LoggerFrm)uploadFrm).lbSpeed.Text = speed + "kb";
+            //rtbdownload.AppendText(message);
+        }
 
         public void UpdateMainFmText(string message)
         {
@@ -234,6 +239,7 @@ namespace Client
                 result.Text = "Download";
                 result.label1.Text = "TrackerIP";
                 result.lbSpeed.Text = "0Kb";
+                result.lbSpeed.ForeColor = Color.LightGreen;
                 return result;
             }
             else if (identifier == new Guid(code2))
