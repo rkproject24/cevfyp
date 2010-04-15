@@ -87,12 +87,12 @@ namespace Server
         }
         public void play()
         {
-            
+
             vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text, vlcStreamPort);//, sConfig.PluginPath);
             if (getStreamingThread != null) getStreamingThread.Abort(); //by vinci
 
             ch = new ChunkHandler();
-            
+
             getStreamingThread = new Thread(new ThreadStart(getStreaming));
             getStreamingThread.IsBackground = true;
             getStreamingThread.Name = "get_Streaming";
@@ -177,7 +177,7 @@ namespace Server
                 //ph = new PortHandler(max_client, max_tree, mainFm.tbServerIp.Text, mainFm);
                 ph.startTreePort();
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
-                
+
                 localAddr = IPAddress.Parse(mainFm.tbServerIp.Text);
                 listenerThread = new Thread(new ThreadStart(listenForClients));
                 listenerThread.IsBackground = true;
@@ -327,7 +327,7 @@ namespace Server
                             // stream.Read(responseMessage2, 0, responseMessage2.Length);
                             // req_tree_num = BitConverter.ToInt16(responseMessage2, 0);
 
-                            
+
                             //for (int j = 0; j < max_client; j++)
                             for (int j = lastPortPair; j < max_client; j++)
                             {
@@ -429,7 +429,7 @@ namespace Server
             return enc.GetString(bytes);
         }
 
-        
+
 
         private void getStreaming()
         {
@@ -444,6 +444,9 @@ namespace Server
                     //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Start Listen Port:" + vlcStreamPort + "\n" });
                     getClient = new TcpClient(TcpApps.LocalIPAddress(), vlcStreamPort);
                     //getClient = new TcpClient("vinci.dyndns.info", 1000);
+                    //getClient.ReceiveBufferSize = 1000000;
+                    //getClient.NoDelay = true;
+
                     vlcStream = getClient.GetStream();
                     break;
                 }
@@ -452,10 +455,6 @@ namespace Server
                     Thread.Sleep(20);
                 }
             }
-            
-
-            //getClient.NoDelay = true;
-
 
             try
             {
