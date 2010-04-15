@@ -17,18 +17,23 @@ namespace Client
         string[] args;
         int boardcastport;
         public bool playing = false;
-
+        int httpCaching = 2000;
         public VlcHandler()
         {
             cConfig.load("C:\\ClientConfig");
             args = new string[]
             {
-            "-I", "dummy", "--no-ignore-config", "--http-caching=1000",
+            "-I", "dummy", "--no-ignore-config", "--http-caching="+httpCaching,"--http-reconnect","--ipv4-timeout=2000", 
             @"--plugin-path="+cConfig.PluginPath+"\\plugins",
             "--vout-filter=deinterlace", "--deinterlace-mode=blend"
             };
 
             //"--ignore-config",
+        }
+
+        public int getHttpCaching()
+        {
+            return httpCaching;
         }
 
         public bool getPlayingState()

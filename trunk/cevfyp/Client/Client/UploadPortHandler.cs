@@ -79,7 +79,8 @@ namespace Client
         TcpListener[] treeDPListener;
 
         StatisticHandler statisticHr;
-        Thread[] uploadCurveThread;
+        Thread uploadSpeedThread;
+        //Thread[] uploadCurveThread;
         public UploadPortHandler(ClientConfig cConfig, string serverip, ClientForm clientFm, int maxTree, ClientHandler clientMain, StatisticHandler statisticHr)
         {
             this.statisticHr = statisticHr;
@@ -118,7 +119,7 @@ namespace Client
             treeDPListener = new TcpListener[this.max_client];
 
             createTreeChunkList(maxTree, CHUNKLIST_CAPACITY);
-            uploadCurveThread = new Thread[max_client];
+            //uploadCurveThread = new Thread[max_client];
             // createTreeThreadList(maxTree, maxClient);
         }
 
@@ -271,14 +272,14 @@ namespace Client
                 CPortThread.IsBackground = true;
                 CPortThread.Name = " Cport_handle_" + "_" + j;
                 CPortThread.Start();
-                Thread.Sleep(20);
+                Thread.Sleep(50);
                 CThreadList.Add(CPortThread);
 
                 Thread DPortThread = new Thread(delegate() { TreePortHandle_Dport(j); });
                 DPortThread.IsBackground = true;
                 DPortThread.Name = " Dport_handle_" + "_" + j;
                 DPortThread.Start();
-                Thread.Sleep(20);
+                Thread.Sleep(50);
                 DThreadList.Add(DPortThread);
 
             }
@@ -290,6 +291,13 @@ namespace Client
             replyChunkThread.IsBackground = true;
             replyChunkThread.Name = "reply_Chunk";
             replyChunkThread.Start();
+            Thread.Sleep(50);
+
+            //uploadSpeedThread = new Thread(new ThreadStart(showUploadSpeed));
+            //uploadSpeedThread.IsBackground = true;
+            //uploadSpeedThread.Name = "showUploadSpeed";
+            //uploadSpeedThread.Start();
+            //Thread.Sleep(50);
         }
 
         private void TreePortHandle_Dport(int DThreadList_index)
@@ -337,7 +345,7 @@ namespace Client
                 {
                     DPortClient = treeDPListener[DThreadList_index].AcceptTcpClient();
                     DPortClient.NoDelay = true;
-                   // DPortClient.SendBufferSize = cConfig.ChunkSize;
+                    DPortClient.SendBufferSize = cConfig.ChunkSize;
                     stream = DPortClient.GetStream();
 
                     //get peer ip
@@ -482,6 +490,7 @@ namespace Client
                                         //DPortList[tree_index].speed = plotgraph.speedCalculate(start, end, cConfig.ChunkSize * 30 * 8);
                                         sendCount = 1;
                                         start = DateTime.Now;
+                                        showUploadSpeed();
                                     }
                                     sendCount++;
                                 }
@@ -809,7 +818,7 @@ namespace Client
                                 sendMessage = ch.chunkToByte(ck, cConfig.ChunkSize);
 
                             stream.Write(sendMessage, 0, sendMessage.Length);
-                            stream.Flush();
+                            //stream.Flush();
 
                             if (result_index != -1)
                                 printOnUL_PULL("uploadChunk:" + reqSeq + "\n");
@@ -821,7 +830,7 @@ namespace Client
                             printOnUL_PULL("Pull_receive:" + reqSeq + "\n");
                             sendMessage = ch.chunkToByte(ck, cConfig.ChunkSize);
                             stream.Write(sendMessage, 0, sendMessage.Length);
-                            stream.Flush();
+                            //stream.Flush();
                             printOnUL_PULL("uploadChunk:" + 0 + "~\n");
 
                             //break;
@@ -1087,41 +1096,56 @@ namespace Client
 
             }
         }
-        public void startUploadStat()
+
+        public void showUploadSpeed()
         {
-            //statisticHr.StatisticListen = downStatPort + 50;
-            //uploadHandler.Enable = true;
-            //Console.WriteLine("maxTree:" + max_tree);
-            for (int j = 0; j < max_client; j++)
-            {
-                //Console.WriteLine("j:" + j);
-                Thread uploadstateThread = new Thread(delegate() { updateTreeCurve(j); });
-                uploadstateThread.IsBackground = true;
-                uploadstateThread.Name = "uploadThreadTree_" + j;
-                uploadstateThread.Start();
-                Thread.Sleep(20);
-                uploadCurveThread[j] = uploadstateThread;
-            }
+           // while (true)
+            //{
+                int totalUpSpeed = 0;
+                for (int i = 0; i < this.max_client; i++)
+                {
+                    if (DPortList[i].clientD != null)
+                        totalUpSpeed += DPortList[i].speed;
+                    ((LoggerFrm)clientFm.uploadFrm).lbSpeed.BeginInvoke(new UpdateTextCallback(clientFm.UpdateUploadSpeed), new object[] { totalUpSpeed/1000 +""});
+                }
+                Thread.Sleep(1000);
+            //}
         }
 
-        public void updateTreeCurve(int treetemp)
-        {
-            //int totalUpSpeed = 0;
-            // Console.WriteLine("upload Curve:"+treetemp);
-            while (true)
-            {
-                if (DPortList[treetemp].peerId != -1)
-                {
-                    //totalUpSpeed = DPortList[treetemp].speed;
-                        //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "Listen port close~\n" });
-                    if (DPortList[treetemp].speed!=0)
-                        statisticHr.updateCurve(DateTime.Now, DateTime.Now, DPortList[treetemp].speed, treetemp, max_client, "<upload>");
-                    Console.WriteLine(DPortList[treetemp].speed + " T" + treetemp + " MAx" + max_client + "<upload>");
-                }
-                //totalUpSpeed = 0;
-                Thread.Sleep(3500);
-            }
-        }
+        //public void startUploadStat()
+        //{
+        //    //statisticHr.StatisticListen = downStatPort + 50;
+        //    //uploadHandler.Enable = true;
+        //    //Console.WriteLine("maxTree:" + max_tree);
+        //    for (int j = 0; j < max_client; j++)
+        //    {
+        //        //Console.WriteLine("j:" + j);
+        //        Thread uploadstateThread = new Thread(delegate() { updateTreeCurve(j); });
+        //        uploadstateThread.IsBackground = true;
+        //        uploadstateThread.Name = "uploadThreadTree_" + j;
+        //        uploadstateThread.Start();
+        //        Thread.Sleep(20);
+        //        uploadCurveThread[j] = uploadstateThread;
+        //    }
+        //}
+
+        //public void updateTreeCurve(int treetemp)
+        //{
+        //    //int totalUpSpeed = 0;
+        //    // Console.WriteLine("upload Curve:"+treetemp);
+        //    while (true)
+        //    {
+        //        if (DPortList[treetemp].peerId != -1)
+        //        {
+        //            //totalUpSpeed = DPortList[treetemp].speed;
+        //                //((LoggerFrm)clientFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFm.UpdateRtbUpload), new object[] { "Listen port close~\n" });
+        //            if (DPortList[treetemp].speed!=0)
+        //                statisticHr.updateCurve(DateTime.Now, DateTime.Now, DPortList[treetemp].speed, treetemp, max_client, "<upload>");
+        //            Console.WriteLine(DPortList[treetemp].speed + " T" + treetemp + " MAx" + max_client + "<upload>");
+        //        }
+        //        Thread.Sleep(3000);
+        //    }
+        //}
 
     }//end class
 }

@@ -44,8 +44,9 @@ namespace Client
         static int PULL_STREAM_CONNECT_TIMEOUT = 2000;
         static int PULL_PORT_CONNECT_TIMEOUT = 2000;
 
+        static int VLC_WRITE_TIMEOUT = 1000;
 
-        static int PULL_FAIL_NUM = 50;
+        static int PULL_FAIL_NUM = 3;
 
         public int treeNO = 0;
         //int chunkList_wIndex = 0;  //write index
@@ -63,6 +64,9 @@ namespace Client
         int[] afterRconPlaySeq;
         int[] WaitMiss;
         int[] ReconCount;
+        int[] ReceiveCount;
+        int[] RealReceiveCount;
+        int[] RealReceiveChunkNull;
 
         bool serverConnect = false;
         bool vlcConnect = false;
@@ -91,6 +95,7 @@ namespace Client
         int[] treeReconnectState;
         int[] treeCLStartRead;
         int[] lastMissSeq;
+        bool[] firstWrite;
 
         int missCLWriteIndex;
         int missCLReadIndex;
@@ -112,6 +117,8 @@ namespace Client
         private ClientForm mainFm;
         public delegate void UpdateTextCallback(string message);
         public delegate void UpdateGraphCallback(plotgraph graphdata);
+        //public delegate void StopVlcPlayer();
+
         private PeerHandler peerh;
         ClientConfig cConfig = new ClientConfig();
         StatisticHandler statHandler;
@@ -124,7 +131,7 @@ namespace Client
 
         public int currentCh;
         //int maxChannel;
-        int firstAttempTime = 3;
+        int firstAttempTime = 6;
         bool playStarted = false;
         public int bitrate;
 
@@ -175,6 +182,7 @@ namespace Client
             fr_asking = new bool[treeNO];
             waitMsg = new string[treeNO];
 
+            firstWrite = new bool[treeNO];
             lastMissSeq = new int[treeNO];
             PushMiss = new int[treeNO];
             ReconMiss = new int[treeNO];
@@ -182,6 +190,9 @@ namespace Client
             beforeRconPlaySeq = new int[treeNO];
             WaitMiss = new int[treeNO];
             ReconCount = new int[treeNO];
+            ReceiveCount = new int[treeNO];
+            RealReceiveCount = new int[treeNO];
+            RealReceiveChunkNull = new int[treeNO];
 
             graphThreads = new List<Thread>(treeNO);
             receiveChunkThread = new List<Thread>(treeNO);
@@ -228,7 +239,7 @@ namespace Client
 
         public string getSelfID(int tree_index)
         {
-            return peerh.Selfid[tree_index];
+            return peerh.Selfid;//[tree_index];
         }
 
 
@@ -262,6 +273,11 @@ namespace Client
             //connect tracker
             response = connectToTracker(currentCh );
 
+            //get selfid
+            while (!peerh.getSelfid())
+                return "No selfID";
+            Console.WriteLine("getselfid()="+peerh.Selfid);
+
             if (response == "OK")
             {
                 //bool[] check = new bool[treeNO];
@@ -292,25 +308,9 @@ namespace Client
                 bool[] conSrcThread = new bool[treeNO];
                 //startUpload();
 
+
                 for (int i = 0; i < treeNO; i++)
                 {
-
-                    //check = connectToSources(i, false);
-                    //if (!check)
-                    //{
-                    //    response = "One of Data Ports cannot join!!!!";
-
-                    //    //unreg. already join tree
-                    //    for (int k = 0; k <= i; k++)
-                    //    {
-                    //        if (ClientC[k] != null)
-                    //            sendExit(k);
-                    //    }
-
-                    //    break;
-                    //}
-
-                    //check[i] = false;
                     conSrcThread[i] = false;
                     connectSrcThread[i] = new Thread(delegate() { conSrcThread[i] = connectToSources( i, false, true); });
                     connectSrcThread[i].IsBackground = true;
@@ -431,7 +431,7 @@ namespace Client
                     return false;
             }
             bool conPeer = false;
-
+            
             conPeer = peerh.connectPeers(tree_index + 1, reconnectUse);
 
             if (conPeer)
@@ -595,7 +595,7 @@ namespace Client
 
             //move to broadcast_VlcStreaming
             if (virtualServerPort == 0)
-                Thread.Sleep(20);
+                Thread.Sleep(100);
             vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
         }
 
@@ -630,16 +630,16 @@ namespace Client
             {
                 if (idChange)
                 {
-                    string idStr = "";
-                    //mainFm.Text = "Client:";
-                    mainFm.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "" });
-                    //((ControlFrm)mainFm.controlFrm).lbId.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "" });
-                    for (int i = 0; i < peerh.Selfid.Length; i++)
-                    {
-                        idStr += peerh.Selfid[i] + ",";
-                    }
+                    //string idStr = "";
+                    ////mainFm.Text = "Client:";
+                    //mainFm.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "" });
+                    ////((ControlFrm)mainFm.controlFrm).lbId.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "" });
+                    //for (int i = 0; i < peerh.Selfid.Length; i++)
+                    //{
+                    //    idStr += peerh.Selfid[i];
+                    //}
                     //((ControlFrm)mainFm.controlFrm).lbId.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { idStr });
-                    mainFm.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "Client:" + idStr });
+                    mainFm.BeginInvoke(new UpdateTextCallback(mainFm.UpdateLabel5), new object[] { "Client:" + peerh.Selfid });
 
                     // mainFm.Text += peerh.Selfid[0] + ",";
 
@@ -673,17 +673,18 @@ namespace Client
                     if (ClientD[tree_index] != null && treeReconnectState[tree_index] == 0)
                     {
                         clientD = ClientD[tree_index];
-                        //clientD.ReceiveBufferSize = cConfig.ChunkSize;
+                        clientD.ReceiveBufferSize = cConfig.ChunkSize;
                         clientD.NoDelay = true;
                         streams = clientD.GetStream();
+                        
                         streams.ReadTimeout = cConfig.ReadStreamTimeout;
                         afterRconPlaySeq[tree_index] = playingSeq;
                     }
                     else
                     {
                         //*********************Reconnection miss handle****************************
-                        //if (((ControlFrm)mainFm.controlFrm).PullChb.Checked && treeCLCurrentSeq[tree_index] < playingSeq + 10)
-                        //    missChunkHandle(1, tree_index,0);
+                        if (treeCLCurrentSeq[tree_index] < playingSeq + 10)
+                            missChunkHandle(1, tree_index,0);
                            
                         upPorth.setTreeCLState(tree_index, 0);
                         printOnSeqTextBox(tree_index, "Recon..");
@@ -729,11 +730,11 @@ namespace Client
                         if (type[0].Equals("Wait"))
                         {
                             //************Wait miss handle***************************
-                            //if (((ControlFrm)mainFm.controlFrm).PullChb.Checked && treeCLCurrentSeq[tree_index] < playingSeq + 10 && treeCLCurrentSeq[tree_index] != 0)
-                            //    missChunkHandle(2, tree_index);
+                            if (treeCLCurrentSeq[tree_index] < playingSeq + 10 && treeCLCurrentSeq[tree_index] != 0)
+                                missChunkHandle(2, tree_index,0);
 
                             waitMsg[tree_index] = responseString;
-                            if (type[1] == peerh.Selfid[tree_index])
+                            if (type[1] == peerh.Selfid)//[tree_index])
                             {
                                 printOnDL("loopErr Wait@" + type[1] + "\n");
                                 PeerNode tempPn = peerh.JoinPeer[tree_index];
@@ -754,9 +755,13 @@ namespace Client
 
                         streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);  //printOnDL("T[" + tree_index + "]:" + streamingChunk.seq + "\n");
 
+                        RealReceiveCount[tree_index] += 1;
+
                         //***********************Chunk Null********************
                         if (streamingChunk == null)
                         {
+                            RealReceiveChunkNull[tree_index] += 1;
+
                             printOnDL("T[" + tree_index + "] chunk null\n");
                             if (checkNullCount >= cConfig.MaxNullChunk)
                             {
@@ -775,8 +780,9 @@ namespace Client
                         checkNullCount = 0;
 
                         //***********************Push miss handle************
-                        if (((ControlFrm)mainFm.controlFrm).PullChb.Checked && streamingChunk.seq != treeCLCurrentSeq[tree_index] + treeNO && firstConnectRound == false)
-                            missChunkHandle(0, tree_index, streamingChunk.seq);
+                        //if (((ControlFrm)mainFm.controlFrm).PullChb.Checked && streamingChunk.seq != treeCLCurrentSeq[tree_index] + treeNO && firstConnectRound == false)
+                        if (streamingChunk.seq != treeCLCurrentSeq[tree_index] + treeNO && firstConnectRound == false)
+                          missChunkHandle(0, tree_index, streamingChunk.seq);
 
                         if (streamingChunk.seq < playingSeq - RECEIVE_RANGE)
                         {
@@ -791,8 +797,8 @@ namespace Client
                             if (streamingChunk.seq > treeCLCurrentSeq[tree_index])
                             {
                                 treeCLCurrentSeq[tree_index] = streamingChunk.seq;
-                                if (streamingChunk.seq > playingSeq)
-                                    chunkList_rIndex = calcPlaybackIndex(streamingChunk.seq);
+                                //if (streamingChunk.seq > playingSeq)
+                                //    chunkList_rIndex = calcPlaybackIndex(streamingChunk.seq);
                             }
                             firstConnectRound = false;
                             //**treeCLStartRead[tree_index] = calcChunkIndex(streamingChunk.seq);
@@ -817,6 +823,10 @@ namespace Client
                             int write_index = calcPlaybackIndex(streamingChunk.seq);
                             chunkList[write_index] = streamingChunk;
                             chunkList_wIndex[tree_index] = write_index;
+                            if (!firstWrite[tree_index])
+                                firstWrite[tree_index] = true;
+
+                            ReceiveCount[tree_index] += 1;
                         }
 
                         printOnSeqTextBox(tree_index, treeCLCurrentSeq[tree_index].ToString());
@@ -896,7 +906,7 @@ namespace Client
                     {
                         clientC = ClientC[tree_index];
                         stream = clientC.GetStream();
-                        stream.ReadTimeout = 3000;
+                        stream.ReadTimeout = cConfig.ReadStreamTimeout; ;
                     }
 
                     while (true)
@@ -909,8 +919,18 @@ namespace Client
                             stream.Close();
                             clientC.Close();
 
-                            ClientD[tree_index].Close();ClientD[tree_index] = null;
-                            ClientC[tree_index].Close();ClientC[tree_index] = null;
+
+                            if (ClientD[tree_index] != null)
+                            {
+                                ClientD[tree_index].Close();
+                                ClientD[tree_index] = null;
+                            }
+
+                            if (ClientC[tree_index] != null)
+                            {
+                                ClientC[tree_index].Close();
+                                ClientC[tree_index] = null;
+                            }
 
                             if (treeReconnectState[tree_index] == 1)
                                 reconnection(tree_index, "timeout");
@@ -959,10 +979,16 @@ namespace Client
                     if (stream != null) stream.Close();
                     if (clientC != null) clientC.Close();
 
-                    if (ClientD[tree_index] != null && ClientC[tree_index] != null)
+                    if (ClientD[tree_index] != null)
                     {
-                        ClientD[tree_index].Close();ClientD[tree_index] = null;
-                        ClientC[tree_index].Close();ClientC[tree_index] = null;
+                        ClientD[tree_index].Close();
+                        ClientD[tree_index] = null;
+                    }
+
+                    if (ClientC[tree_index] != null)
+                    {
+                        ClientC[tree_index].Close();
+                        ClientC[tree_index] = null;
                     }
 
                     if (!checkClose)
@@ -986,31 +1012,52 @@ namespace Client
         private void broadcastVlcStreaming()
         {
             TcpClient client = null;
-
+            bool ranPort = false;
+            bool vlcRestart = false;
             while (true)
             {
                 if (checkClose)
                     break;
                 try
                 {
-                    while (true)
+                    if (!ranPort)
                     {
-                        try
+                        while (true)
                         {
-                            virtualServerPort = TcpApps.RanPort(cConfig.VlcPortBase, cConfig.VlcPortup);//peerh.Cport11 + cConfig.VlcPortBase;
-                            server = new TcpListener(localAddr, virtualServerPort);
-                            server.Start();
-                            ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "virtualServerPort:" + virtualServerPort + "\n" });
-                            break;
-                        }
-                        catch
-                        {
-                            Thread.Sleep(10);
+                            try
+                            {
+                                virtualServerPort = TcpApps.RanPort(cConfig.VlcPortBase, cConfig.VlcPortup);//peerh.Cport11 + cConfig.VlcPortBase;
+                                server = new TcpListener(localAddr, virtualServerPort);
+                                server.Start();
+                                ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "virtualServerPort:" + virtualServerPort + "\n" });
+                                ranPort = true;
+                                break;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(10);
+                            }
                         }
                     }
+                    else
+                    {
+                        server.Start();
+                        Thread.Sleep(400);
+                        ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlc start:" + virtualServerPort + "\n" });
+                    
+                    }
+
 
                     client = server.AcceptTcpClient();
+                    ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlc join:" + virtualServerPort + "\n" });
+                    if (vlcRestart)
+                    {
+                        vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
+                        vlcRestart = false;
+                    }       
                     localvlcstream = client.GetStream();
+                    localvlcstream.WriteTimeout = VLC_WRITE_TIMEOUT;
+                    
                     byte[] sendMessage = System.Text.Encoding.ASCII.GetBytes("HTTP/1.0 200 OK\r\nContent-type: application/octet-stream\r\nCache-Control: no-cache\r\n\r\n");
                     localvlcstream.Write(sendMessage, 0, sendMessage.Length);
 
@@ -1018,6 +1065,33 @@ namespace Client
 
                     byte[] sendClientChunk;
                     playStarted = false;
+                    bool checkStart = false;
+                    int tempMinRead = 0;
+                    while (true)
+                    {
+                       
+                        for (int i = 0; i < treeNO; i++)
+                        {
+                            if (firstWrite[i])
+                            {
+                                checkStart = true;
+                                if(chunkList_wIndex[i]<=tempMinRead)
+                                   tempMinRead=chunkList_wIndex[i];
+                            }
+                            else
+                                checkStart = false;
+                        }
+
+                        if (checkStart)
+                        {
+                            chunkList_rIndex = tempMinRead;
+                            break;
+                        }
+
+                        Thread.Sleep(10);
+                    }
+
+
                     while (client.Connected == true && vlcConnect)
                     {
                         if (checkbuff())
@@ -1032,14 +1106,18 @@ namespace Client
 
                                 ((ControlFrm)mainFm.controlFrm).lbPlaySeq.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { chunkList_rIndex.ToString() + ":" + playingSeq });
                                 //mainFm.tbReadStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { chunkList_rIndex.ToString() + ":" + playingSeq });
+                                totalPlayChunk += 1;
+                                // ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "PC="+totalPlayChunk+"["+chunkList_rIndex+"]["+playingSeq+"]\n" });
+                         
                             }
                             else
                             {
                                 totalMissPlayChunk += 1;
-                                //((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "totalMissPlayChunk="+totalMissPlayChunk+"\n" });
+                                //((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "MPC=" + totalMissPlayChunk + "[" + chunkList_rIndex + "][" + chunkList[chunkList_rIndex].seq + "]\n" });
+                         
                             }
 
-                            totalPlayChunk += 1;
+                            //totalPlayChunk += 1;
 
                             if (chunkList_rIndex == cConfig.ChunkCapacity - 1)
                                 chunkList_rIndex = 0;
@@ -1055,7 +1133,19 @@ namespace Client
                     if (localvlcstream != null)localvlcstream.Close();
                     if (client != null) client.Close();
 
-                   // ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { ex.ToString() });
+                   //server.Stop();
+                   // server = null;
+
+                    if (!checkClose)
+                    {
+                        ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlcTimeout\n" });
+                        //vlc.stop();
+                        Thread.Sleep(100);
+                       // vlcRestart = true;
+                        //((PlaybackFrm)mainFm.playFrm).playPanel.BeginInvoke(Delegate.CreateDelegate(VlcHandler,
+                        
+                        //((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { ex.ToString() });
+                    }
                 }
                 Thread.Sleep(10);
             }
@@ -1257,6 +1347,7 @@ namespace Client
                 }
                 else if (pullClient.Connected == true)
                 {
+                    pullClient.NoDelay = true;
                     pullStream = pullClient.GetStream();
                     pullStream.ReadTimeout = PULL_STREAM_READ_TIMEOUT;
                     pullStream.WriteTimeout = PULL_STREAM_WRITE_TIMEOUT;
@@ -1287,14 +1378,14 @@ namespace Client
             {
                 byte[] message = BitConverter.GetBytes(tempTargetSeq);
                 pullStream.Write(message, 0, message.Length);
-                pullStream.Flush();
+                //pullStream.Flush();
                 printOnDL_PULL("Seq:" + tempTargetSeq + " pulling\n");
 
                 do
                 {
                     dataRead += pullStream.Read(responseMessage, dataRead, cConfig.ChunkSize - dataRead);
                 } while (dataRead < cConfig.ChunkSize);
-                pullStream.Flush();
+               // pullStream.Flush();
 
                 streamingChunk = (Chunk)ch.byteToChunk(bf, responseMessage);
 
@@ -1380,7 +1471,8 @@ namespace Client
                     if (lastMissSeq[tree_index] != missBase)
                     {
                         //printOnDL_PULL("T[" + tree_index + "]:" + missBase + " Push miss add\n");
-                        addMissChunkToList(missBase);
+                        if (((ControlFrm)mainFm.controlFrm).PullChb.Checked)
+                            addMissChunkToList(missBase);
                         lastMissSeq[tree_index] = missBase;
                     }
 
@@ -1394,7 +1486,9 @@ namespace Client
                 missBase = treeCLCurrentSeq[tree_index] + treeNO;
                 if (lastMissSeq[tree_index] != missBase)
                 {
-                    addMissChunkToList(missBase);
+                    //if (((ControlFrm)mainFm.controlFrm).PullChb.Checked)
+                    //addMissChunkToList(missBase);
+
                     lastMissSeq[tree_index] = missBase;
                     //printOnDL_PULL("T[" + tree_index + "]:" + missBase + " ReconMissAdd\n");
                 }
@@ -1444,6 +1538,7 @@ namespace Client
                 {
                     lowest_seq = chunkList[chunkList_wIndex[i]].seq;
                     lowest_wIndex = chunkList_wIndex[i];
+                    //printOnDL(chunkList[chunkList_wIndex[i]].seq + "<" + lowest_seq + "\n");
                 }
             }
 
@@ -1454,8 +1549,10 @@ namespace Client
             else
             {
                 indexdiff = lowest_wIndex + cConfig.ChunkCapacity - chunkList_rIndex;
+                //printOnDL("diff: " + indexdiff +"\n");
             }
 
+           
             //   ((LoggerFrm)mainFm.uploadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbUpload), new object[] { "checkBuff:"+indexdiff.ToString()+"\n" });
 
             if (indexdiff > cConfig.StartBuf)
@@ -1551,6 +1648,39 @@ namespace Client
                 ((ControlFrm)mainFm.controlFrm).lbTree2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTBox3), new object[] { str });
         }
 
+        private void dataToTxt(string ID,bool Pull,int TWM,int TRM,int TPM,int TReceive,int TRecover,int TReconnection,int TMPChunk,int TPC,int TRC,int TRNC,int TreeNo,int MPO,int chunkSize,int startBuff,int playbackBuffer,int vlcBuffer)
+        {
+            try
+            {
+                StreamWriter SW;
+                string path = @"textResult.txt";
+
+                string name = "ID,Pull,TotalWaitMiss,TotalReconnectMiss,TotalPushMiss,TotalReconnection,TotalRecover,TotalMissPlayChunk,TotalPlayedChunk,TotalRecivedChunk,TotalRealReceive,TotalNullCountTreeNo,Max portOut,chunkSize,startBuff,playbackBuffer,vlcBuffer(ms)";
+                string result = ID + "," + Pull + "," + TWM + "," + TRM + "," + TPM + "," + TReconnection + ","+ TRecover + "," + TMPChunk + "," + TPC + ","
+                    + TReceive + "," + TRC + "," + TRNC + "," + TreeNo + "," + MPO + "," + chunkSize + "," + startBuff + "," + playbackBuffer + "," + vlcBuffer;
+
+                if (!File.Exists(path))
+                {
+                    SW = File.CreateText(path);
+                    SW.WriteLine(name);
+                    SW.WriteLine(result);
+                    SW.Close();
+                }
+                else
+                {
+                    SW = File.AppendText(path);
+                    SW.WriteLine(result);
+                    SW.Close();
+                }
+
+                printOnDL("write result ok\n");
+            }
+            catch (Exception ex)
+            {
+                printOnDL("write result error\n");
+            }
+        }
+
         public void closeAllThread()
         {
             if (serverConnect == true)
@@ -1580,7 +1710,7 @@ namespace Client
                 receiveChunkThread.Clear();
                 receiveControlThread.Clear();
 
-                int totalRconMiss = 0, totalPushMiss = 0, totalReconnect=0;
+                int totalReceive = 0, totalRconMiss = 0, totalPushMiss = 0, totalWaitMiss = 0, totalReconnect = 0, totalRC = 0,totalRNC=0 ;
                 for (int i = 0; i < treeNO; i++)
                 {
                     printOnDL("\nT[" + i + "]beforeRecon=" + beforeRconPlaySeq[i] + "\n");
@@ -1589,26 +1719,41 @@ namespace Client
                     printOnDL("RconMiss~=" + ReconMiss[i] + "\n");
                     printOnDL("PushMiss~=" + PushMiss[i] + "\n");
                     printOnDL("WaitMiss=" + WaitMiss[i] + "\n");
+                    printOnDL("ReceiveCount=" + ReceiveCount[i] + "\n");
                     totalRconMiss += ReconMiss[i];
                     totalPushMiss += PushMiss[i];
+                    totalWaitMiss += WaitMiss[i];
                     totalReconnect += ReconCount[i];
+                    totalReceive += ReceiveCount[i];
+                    totalRC += RealReceiveCount[i];
+                    totalRNC += RealReceiveChunkNull[i];
                     chunkList_wIndex[i] = 0;
                 }
                 printOnDL("\nTotalRconMiss~=" + totalRconMiss + "\n");
                 printOnDL("TotalPushMiss~=" + totalPushMiss + "\n");
+                printOnDL("TotalWaitMiss~=" + totalWaitMiss + "\n");
                 printOnDL("TotalRecover=" + totalRecover + "\n");
                 printOnDL("TotalReconnect=" + totalReconnect + "\n");
+                printOnDL("TotalReceive=" + totalReceive + "\n");
                 printOnDL("TotalMissPlayChunk=" + totalMissPlayChunk + "\n");
                 printOnDL("TotalPlayChunk=" + totalPlayChunk + "\n");
+
+                bool pullMode=false;
+                 if (((ControlFrm)mainFm.controlFrm).PullChb.Checked)
+                pullMode=true;
+
+                dataToTxt(getSelfID(0),pullMode,totalWaitMiss,totalRconMiss,totalPushMiss,totalReceive,totalRecover,totalReconnect,totalMissPlayChunk,totalPlayChunk,totalRC,totalRNC,treeNO,cConfig.MaxPeer,cConfig.ChunkSize,cConfig.StartBuf,cConfig.ChunkCapacity,vlc.getHttpCaching());
+
+
                 
                 //chunkList_wIndex = 0;
                 chunkList_rIndex = 0;
                 virtualServerPort = 0;
                 playingSeq = 0;
-                totalMissPlayChunk = 0;
-                totalPlayChunk = 0;
-                totalRecover = 0;
-                totalReconnect = 0;
+                //totalMissPlayChunk = 0;
+                //totalPlayChunk = 0;
+                //totalRecover = 0;
+                //totalReconnect = 0;
                 chunkList.Clear();
                 pullPnList.Clear();
 
