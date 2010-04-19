@@ -1014,6 +1014,8 @@ namespace Client
             TcpClient client = null;
             bool ranPort = false;
             bool vlcRestart = false;
+            bool checkStart = false;
+            bool firstRun = true;
             while (true)
             {
                 if (checkClose)
@@ -1065,30 +1067,28 @@ namespace Client
 
                     byte[] sendClientChunk;
                     playStarted = false;
-                    bool checkStart = false;
-                    int tempMinRead = 0;
-                    while (true)
+
+                    //********First run,setup the read index of the playback buffer.************
+                    if (firstRun)
                     {
-                       
-                        for (int i = 0; i < treeNO; i++)
+                        while (true)
                         {
-                            if (firstWrite[i])
+                            for (int i = 0; i < treeNO; i++)
                             {
-                                checkStart = true;
-                                if(chunkList_wIndex[i]<=tempMinRead)
-                                   tempMinRead=chunkList_wIndex[i];
+                                if (firstWrite[i])
+                                {
+                                    checkStart = true;
+                                    firstRun = false;
+                                    chunkList_rIndex = chunkList_wIndex[i];
+                                    break;
+                                }
                             }
-                            else
-                                checkStart = false;
-                        }
 
-                        if (checkStart)
-                        {
-                            chunkList_rIndex = tempMinRead;
-                            break;
+                            if (checkStart)
+                                break;
+                            
+                            Thread.Sleep(10);
                         }
-
-                        Thread.Sleep(10);
                     }
 
 
