@@ -458,6 +458,7 @@ namespace Client
                         return false;
                     }
 
+                    //****************No connection of loacl address*****************
                     if (conNode.Ip == TcpApps.LocalIPAddress())
                     {
                         ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selfid hit T[" + (i - 1) + "] \n" });
