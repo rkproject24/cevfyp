@@ -13,10 +13,12 @@ namespace Client
     public partial class Preference : Form
     {
         private ClientConfig cConfig = new ClientConfig();
+        string configPath;
 
-        public Preference()
+        public Preference( string configPath)
         {
            // this.TitleBar.TitleBarCaption = "Preference";
+            this.configPath = configPath;
             InitializeComponent();
             loadConfig();
           
@@ -24,7 +26,7 @@ namespace Client
 
         private void loadConfig()
         {
-            cConfig.load("C:\\ClientConfig");
+            cConfig.load(configPath);
 
             tbChunkLenght.Text = cConfig.ChunkCapacity.ToString();
             tbPlugin.Text = cConfig.PluginPath;
@@ -37,7 +39,7 @@ namespace Client
             NudStartBuf.Value = cConfig.StartBuf;
             NudChunkBuf.Value = cConfig.ChunkBuf;
             NudPeers.Value = cConfig.MaxPeer;
-            cbDisplay.Checked = cConfig.Localdisplay;
+            //cbDisplay.Checked = cConfig.Localdisplay;
             tbListPortup.Text = cConfig.LisPortup.ToString();
             tbDataPortup.Text = cConfig.Dataportup.ToString();
             tbControlPortup.Text = cConfig.Conportup.ToString();
@@ -69,14 +71,14 @@ namespace Client
 
             cConfig.Trackerip = tbTrackerIp.Text;
             cConfig.TrackerPort = Convert.ToInt32(tbTrackerPort.Text);
-            cConfig.Localdisplay = cbDisplay.Checked;
+            //cConfig.Localdisplay = cbDisplay.Checked;
             cConfig.LisPortup = Convert.ToInt32(tbListPortup.Text);
             cConfig.Dataportup = Convert.ToInt32(tbDataPortup.Text);
             cConfig.Conportup = Convert.ToInt32(tbControlPortup.Text);
             cConfig.MaxNullChunk = Convert.ToInt32(nudNullChunk.Value);
             cConfig.ReadStreamTimeout = Convert.ToInt32(nudTimeout.Value);
 
-            cConfig.save("C:\\ClientConfig");
+            cConfig.save(configPath);
             this.Close();
         }
 

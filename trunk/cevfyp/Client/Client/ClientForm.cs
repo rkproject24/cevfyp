@@ -347,7 +347,7 @@ namespace Client
             switch (e.ButtonIndex)
             {
                 case 0:
-                    Preference serverPre = new Preference();
+                    Preference serverPre = new Preference(clientHandler.configPath);
                     serverPre.Show();
                     //Form form1 = CreateTestForm(new Guid(code));
                     ////form1.Show();
@@ -451,26 +451,6 @@ namespace Client
         {
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }//end form class

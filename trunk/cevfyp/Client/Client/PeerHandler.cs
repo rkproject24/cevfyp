@@ -21,6 +21,7 @@ namespace Client
         int TREE_NO;
         static int GET_PORT_TIMEOUT = 10000;
         static int TOTAL_SELECT_PEER_TIME = 10;
+        static bool connectLocal = true; //connect to local ip address
 
         public int RANDOM_PEER = 0;
         public int NO_NULLCHUNK = 1;
@@ -199,6 +200,8 @@ namespace Client
                     if (channelMaxID == 0)
                         return -1;
                 }
+                else
+                    return -1;
             }
             catch
             {
@@ -459,9 +462,9 @@ namespace Client
                     }
 
                     //****************No connection of loacl address*****************
-                    if (conNode.Ip == TcpApps.LocalIPAddress())
+                    if (conNode.Ip == TcpApps.LocalIPAddress() && !connectLocal)
                     {
-                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selfid hit T[" + (i - 1) + "] \n" });
+                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selfip hit T[" + (i - 1) + "] \n" });
                         removePeer(conNode, i - 1);
                         //if (conNode != null)
                         //  ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + " ~\n" });
@@ -855,6 +858,81 @@ namespace Client
             return tempPeer;
         }
 
+        public List<PeerNode> selectPeerList(int tree, bool forceSaveXml, int size)
+        {
+            if (chunkNullUpdated)
+            {
+                bool saved = updateTotalChunkNull(tree, JoinPeer[tree]);//update the totalChunkNull to xml
+                while (forceSaveXml && !saved)
+                {
+                    if (updateTotalChunkNull(tree, JoinPeer[tree]))
+                        break;
+                    Thread.Sleep(10);
+                }
+            }
+
+            List<PeerNode> tempPeer = null;
+            treeAccessor = new PeerInfoAccessor(folder + "\\CH" + currentCh + Peerlist_name + tree);
+
+            bool checkLoad = treeAccessor.load();
+            if (!checkLoad)
+            {
+                ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeer: XMLLOADING\n" });
+
+                return null;
+                //Thread.Sleep(20);
+                //continue;
+            }
+
+            try
+            {
+
+                //if (type == RANDOM_PEER)
+                //{
+                //    PeerNode target = treeAccessor.getRandomPeer();//treeAccessor.getPeer(id);
+                //    tempPeer = target;
+                //    //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "Ran_select peer:" + target.Id + " T:" + tree + "\n" });
+
+                //}
+                //else
+                //{
+                    List<PeerNode> target = treeAccessor.getLeastChunkNullPeer(size);
+                    tempPeer = target;
+                    //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "Non-Ran_select peer:" + tempPeer.Id + " T:" + tree + "\n" });
+
+                //}
+
+                for (int i = 0; i < tempPeer.Count; i++)
+                {
+                    if (tempPeer[i].Id == selfid)//selfid[tree])
+                    {
+                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID=selfID " + " T:" + tree + "\n" });
+                        removePeer(tempPeer[i], tree);
+                        //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "Remove selfID " + " T:" + tree + "\n" });
+
+                        tempPeer = null;
+                    }
+                }
+                //if(target == null)
+                //    //continue;
+                //if (treeAccessor.reconecting(tempPeer.Id))//if peer is not exist, skip
+                //{
+                //    tempPeer = null;
+                //    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID:" + tempPeer.Id + " peer is not exist\n" });
+
+                //}   //continue;
+
+            }
+            catch (Exception ex)
+            {
+                if (tempPeer != null)
+                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "select peerlist   T:" + tree + " error:\n" + ex.ToString() + "\n" });
+                tempPeer = null;
+                Thread.Sleep(20);
+            }
+
+            return tempPeer;
+        }
 
 
     }
