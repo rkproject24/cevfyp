@@ -42,8 +42,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tbvlcPortup = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.cbDisplay = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.btnVLClib = new System.Windows.Forms.Button();
             this.NudChunkBuf = new System.Windows.Forms.NumericUpDown();
             this.NudStartBuf = new System.Windows.Forms.NumericUpDown();
@@ -123,9 +121,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 108);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 13);
+            this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 4;
-            this.label5.Text = "Max. Peers/Tree";
+            this.label5.Text = "Max. Peer(s)";
             // 
             // label6
             // 
@@ -177,8 +175,6 @@
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Controls.Add(this.tbvlcPortup);
             this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Controls.Add(this.cbDisplay);
-            this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.btnVLClib);
             this.groupBox1.Controls.Add(this.NudChunkBuf);
             this.groupBox1.Controls.Add(this.NudStartBuf);
@@ -191,7 +187,7 @@
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox1.Location = new System.Drawing.Point(12, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(195, 177);
+            this.groupBox1.Size = new System.Drawing.Size(195, 139);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Local Play";
@@ -211,25 +207,6 @@
             this.label17.Size = new System.Drawing.Size(16, 13);
             this.label17.TabIndex = 15;
             this.label17.Text = "to";
-            // 
-            // cbDisplay
-            // 
-            this.cbDisplay.AutoSize = true;
-            this.cbDisplay.Location = new System.Drawing.Point(85, 144);
-            this.cbDisplay.Name = "cbDisplay";
-            this.cbDisplay.Size = new System.Drawing.Size(44, 17);
-            this.cbDisplay.TabIndex = 14;
-            this.cbDisplay.Text = "true";
-            this.cbDisplay.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(8, 145);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(75, 13);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "local playback";
             // 
             // btnVLClib
             // 
@@ -597,8 +574,6 @@
         private System.Windows.Forms.Button btnVLClib;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbTrackerPort;
-        private System.Windows.Forms.CheckBox cbDisplay;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label14;

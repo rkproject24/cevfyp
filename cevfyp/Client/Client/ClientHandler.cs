@@ -44,9 +44,10 @@ namespace Client
         static int PULL_STREAM_CONNECT_TIMEOUT = 2000;
         static int PULL_PORT_CONNECT_TIMEOUT = 2000;
 
-        static int VLC_WRITE_TIMEOUT = 1000;
+        static int VLC_WRITE_TIMEOUT = 1500;
 
         static int PULL_FAIL_NUM = 3;
+        public string configPath = "C:\\ClientConfig";
 
         public int treeNO = 0;
         //int chunkList_wIndex = 0;  //write index
@@ -116,7 +117,7 @@ namespace Client
         NetworkStream pullStream = null;
         private ClientForm mainFm;
         public delegate void UpdateTextCallback(string message);
-        public delegate void UpdateGraphCallback(plotgraph graphdata);
+        //public delegate void UpdateGraphCallback(plotgraph graphdata);
         //public delegate void StopVlcPlayer();
 
         private PeerHandler peerh;
@@ -138,13 +139,11 @@ namespace Client
         public ClientHandler(ClientForm mainFm)
         {
             this.mainFm = mainFm;
-            vlc = new VlcHandler();
+            vlc = new VlcHandler(configPath);
             ch = new ChunkHandler();
             statHandler = new StatisticHandler();
 
             //cConfig.load("C:\\ClientConfig");
-
-            
 
             //mainFm.tbhostIP.Text = TcpApps.LocalIPAddress();
             //mainFm.tbServerIp.Text = cConfig.Trackerip;
@@ -381,7 +380,7 @@ namespace Client
         {
             if (tracker.Equals(""))
             {
-                cConfig.load("C:\\ClientConfig");
+                cConfig.load(configPath);
                 this.trackerIp = cConfig.Trackerip;
             }
             peerh = new PeerHandler(this.trackerIp, mainFm);
@@ -400,7 +399,7 @@ namespace Client
         }
         private string connectToTracker(int channel)
         {
-            cConfig.load("C:\\ClientConfig");
+            cConfig.load(configPath);
             if (((LoggerFrm)mainFm.downloadFrm).tbIP.Text.Equals(""))
                 ((LoggerFrm)mainFm.downloadFrm).tbIP.Text = cConfig.Trackerip;
             peerh.TrackIp = trackerIp;
@@ -596,7 +595,7 @@ namespace Client
             //move to broadcast_VlcStreaming
             if (virtualServerPort == 0)
                 Thread.Sleep(100);
-            vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
+            vlc.play(((PlaybackFrm)mainFm.playFrm), virtualServerPort);
         }
 
 
@@ -1013,9 +1012,10 @@ namespace Client
         {
             TcpClient client = null;
             bool ranPort = false;
-            bool vlcRestart = false;
+            //bool vlcRestart = false;
             bool checkStart = false;
             bool firstRun = true;
+            Thread vlcRestartTh = null;
             while (true)
             {
                 if (checkClose)
@@ -1044,7 +1044,7 @@ namespace Client
                     else
                     {
                         server.Start();
-                        Thread.Sleep(400);
+                        //Thread.Sleep(400);
                         ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlc start:" + virtualServerPort + "\n" });
                     
                     }
@@ -1052,11 +1052,11 @@ namespace Client
 
                     client = server.AcceptTcpClient();
                     ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlc join:" + virtualServerPort + "\n" });
-                    if (vlcRestart)
-                    {
-                        vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
-                        vlcRestart = false;
-                    }       
+                    //if (vlcRestart)
+                    //{
+                    //    vlc.play(((PlaybackFrm)mainFm.playFrm).playPanel, virtualServerPort);
+                    //    vlcRestart = false;
+                    //}       
                     localvlcstream = client.GetStream();
                     localvlcstream.WriteTimeout = VLC_WRITE_TIMEOUT;
                     
@@ -1140,7 +1140,40 @@ namespace Client
                     {
                         ((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "vlcTimeout\n" });
                         //vlc.stop();
-                        Thread.Sleep(100);
+                        //Thread.Sleep(50);
+                        ((ControlFrm)mainFm.controlFrm).lbPlaySeq.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "reinitial VLC" });
+                        
+                        //ranPort = false;
+                        //virtualServerPort = 0;
+                        //while (true)
+                        //{
+                        //    try
+                        //    {
+                        //        virtualServerPort = TcpApps.RanPort(cConfig.VlcPortBase, cConfig.VlcPortup);//peerh.Cport11 + cConfig.VlcPortBase;
+                        //        server = new TcpListener(localAddr, virtualServerPort);
+                        //        server.Start();
+                        //        //((LoggerFrm)mainFm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRtbDownload), new object[] { "virtualServerPort:" + virtualServerPort + "\n" });
+                        //        ranPort = true;
+                        //        break;
+                        //    }
+                        //    catch
+                        //    {
+                        //        Thread.Sleep(10);
+                        //    }
+                        //}
+
+                        //vlc.restart(virtualServerPort);
+                        if (vlcRestartTh != null)
+                        {
+                            if (!vlcRestartTh.IsAlive)
+                            {
+                                vlcRestartTh = new Thread(delegate() { vlc.restart(virtualServerPort); });
+                                vlcRestartTh.IsBackground = true;
+                                vlcRestartTh.Name = "restartVLC";
+                                vlcRestartTh.Start();
+                            }
+                        }
+
                        // vlcRestart = true;
                         //((PlaybackFrm)mainFm.playFrm).playPanel.BeginInvoke(Delegate.CreateDelegate(VlcHandler,
                         
@@ -1160,14 +1193,13 @@ namespace Client
             pullStream = null;
             bool getport = false, getstream = false;
             PeerNode pn = null;
-
+            Random rm = new Random();
             while (true)
             {
                 if (((ControlFrm)mainFm.controlFrm).PullChb.Checked)
                 {
                     if (getport == false)
-                    {
-                        Random rm = new Random();
+                    {                       
                         temp_tree_index = rm.Next(0, treeNO);
 
                         pn = pullGetPn(temp_tree_index);
@@ -1264,10 +1296,11 @@ namespace Client
             {
                 if (pullPnList.Count == 0)
                 {
-                    for (int i = 0; i < treeNO; i++)
-                    {
-                        pullPnList.Add(peerh.selectPeer(temp_tree_index, false, peerh.NO_NULLCHUNK));
-                    }
+                    //for (int i = 0; i < treeNO; i++)
+                    //{
+                    //    pullPnList.Add(peerh.selectPeer(temp_tree_index, false, peerh.NO_NULLCHUNK));
+                    //}
+                    pullPnList = peerh.selectPeerList(temp_tree_index, false, treeNO);
                 }
                 PeerNode pn = pullPnList[0];
                 pullPnList.RemoveAt(0);
@@ -1571,6 +1604,7 @@ namespace Client
                 //  mainFm.tbStatus.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox3), new object[] { "Buffering..." });
                 //}
             }
+            ((ControlFrm)mainFm.controlFrm).lbPlaySeq.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "Buffering..." });
             playStarted = false;
             return false;
         }
@@ -1695,7 +1729,8 @@ namespace Client
                 vlcConnect = false;
                 uploading = false;
                 server.Stop();
-                vlc.stop();
+                if(vlc.playing)
+                    vlc.stop();
                 broadcastVlcStreamingThread.Abort();
                 vlcConnect = false;
                 //updateChunkListThread.Abort();
