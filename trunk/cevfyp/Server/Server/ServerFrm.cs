@@ -45,6 +45,10 @@ namespace Server
         {
             richTextBox2.AppendText(message);
         }
+        public void UpdateStatus(string message)
+        {
+            statusIPLb.Text = message;
+        }
 
         public ServerFrm()
         {

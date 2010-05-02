@@ -36,7 +36,7 @@ namespace Server
 
         TcpListener listenServer;
         Thread listenerThread;
-        Thread getStreamingThread;
+        Thread getStreamingThread=null;
         Thread reStreamingThread;
 
         VlcHandler vlc = new VlcHandler();
@@ -64,7 +64,10 @@ namespace Server
             this.max_client = sConfig.MaxClient;
             //this.max_tree = sConfig.TreeSize;
             channelId = -1;
-            ph = new PortHandler(max_client, mainFm.tbServerIp.Text, mainFm, vlc);
+            
+            ph = new PortHandler(max_client, TcpApps.LocalIPAddress(), mainFm, vlc);
+            
+            //ph = new PortHandler(max_client, mainFm.tbServerIp.Text, mainFm, vlc);
             //vlcStreamPort = sConfig.VlcStreamPort;
         }
 
@@ -73,7 +76,7 @@ namespace Server
         {
             mainFm.tbMaxClient.Text = sConfig.MaxClient.ToString();
             //mainFm.tbServerIp.Text = sConfig.Serverip;
-            mainFm.tbServerIp.Text = TcpApps.LocalIPAddress();
+            //mainFm.tbServerIp.Text = TcpApps.LocalIPAddress();
             mainFm.tbfilesrc.Text = sConfig.VideoDir;
             mainFm.tbTracker.Text = sConfig.Trackerip;
         }
@@ -87,8 +90,9 @@ namespace Server
         }
         public void play()
         {
+            if (mainFm.tbServerIp.Text == "" && mainFm.tbServerPort.Text == "")
+                vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text, vlcStreamPort);//, sConfig.PluginPath);
 
-            vlc.streaming(mainFm.panel1, mainFm.tbfilesrc.Text, vlcStreamPort);//, sConfig.PluginPath);
             if (getStreamingThread != null) getStreamingThread.Abort(); //by vinci
 
             ch = new ChunkHandler();
@@ -125,6 +129,7 @@ namespace Server
 
         public void stop(bool manualStop)
         {
+
             if (vlc.getPlayingState())
             {
                 vlc.stop(manualStop);
@@ -132,7 +137,14 @@ namespace Server
                 // mainFm.textBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateTextBox2), new object[] { "" });
                 //mainFm.richTextBox1.Clear();
 
-                getStreamingThread.Abort(); //by vinci
+                //getStreamingThread.Abort(); //by vinci
+            }
+            if (getStreamingThread != null)
+            {
+                if (getStreamingThread.IsAlive)
+                {
+                    getStreamingThread.Abort(); //by vinci
+                }
             }
         }
 
@@ -178,7 +190,8 @@ namespace Server
                 ph.startTreePort();
                 //mainFm.richTextBox1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox1), new object[] { "startport after\n" });
 
-                localAddr = IPAddress.Parse(mainFm.tbServerIp.Text);
+                localAddr = IPAddress.Parse(TcpApps.LocalIPAddress());
+                mainFm.statusStrip1.BeginInvoke(new UpdateTextCallback(mainFm.UpdateStatus), new object[] { TcpApps.LocalIPAddress() });
                 listenerThread = new Thread(new ThreadStart(listenForClients));
                 listenerThread.IsBackground = true;
                 listenerThread.Name = " listen_for_clients";
@@ -283,7 +296,7 @@ namespace Server
                 }
                 catch (Exception ex)
                 {
-                    mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
+                    //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { ex.ToString() });
                     slPort = TcpApps.RanPort(sConfig.SLPort, sConfig.SLisPortup);
                     Thread.Sleep(10);
                 }
@@ -442,7 +455,10 @@ namespace Server
                 try
                 {
                     //mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "Start Listen Port:" + vlcStreamPort + "\n" });
-                    getClient = new TcpClient(TcpApps.LocalIPAddress(), vlcStreamPort);
+                    if(mainFm.tbServerIp.Text != "" && mainFm.tbServerPort.Text != "")
+                        getClient = new TcpClient(mainFm.tbServerIp.Text, Int32.Parse(mainFm.tbServerPort.Text));
+                    else
+                        getClient = new TcpClient(TcpApps.LocalIPAddress(), vlcStreamPort);
                     //getClient = new TcpClient("vinci.dyndns.info", 1000);
                     //getClient.ReceiveBufferSize = 1000000;
                     //getClient.NoDelay = true;
@@ -482,7 +498,12 @@ namespace Server
                         checkFirst = false;
                     }
                     else
-                        vlcStream.ReadTimeout = 500;// If read timeout(500) , we assume the movie has finished playing and then throw catch
+                    {
+                        if(((IPEndPoint)getClient.Client.RemoteEndPoint).Address.ToString().Equals(TcpApps.LocalIPAddress()))
+                            vlcStream.ReadTimeout = 500;// If read timeout(500) , we assume the movie has finished playing and then throw catch
+                        else
+                            vlcStream.ReadTimeout = 1500;
+                    }
 
                     byte[] responseData = new byte[sConfig.ReceiveStreamSize];
 

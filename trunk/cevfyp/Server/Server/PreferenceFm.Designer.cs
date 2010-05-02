@@ -49,6 +49,14 @@
             this.tbStreamType = new System.Windows.Forms.TextBox();
             this.tbPlugin = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.tbConportup = new System.Windows.Forms.TextBox();
+            this.tbDataportup = new System.Windows.Forms.TextBox();
+            this.tbSLPortup = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.tbTrackerPort = new System.Windows.Forms.TextBox();
             this.tbTracker = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.NudMaxClient = new System.Windows.Forms.NumericUpDown();
@@ -58,14 +66,6 @@
             this.tbSLPort = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
-            this.tbTrackerPort = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.tbSLPortup = new System.Windows.Forms.TextBox();
-            this.tbDataportup = new System.Windows.Forms.TextBox();
-            this.tbConportup = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NudMaxClient)).BeginInit();
@@ -140,9 +140,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(6, 93);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(78, 12);
+            this.label8.Size = new System.Drawing.Size(54, 12);
             this.label8.TabIndex = 7;
-            this.label8.Text = "MaxClient/Tree";
+            this.label8.Text = "MaxClient";
             // 
             // label9
             // 
@@ -287,6 +287,70 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "P2P server";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(138, 70);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(14, 12);
+            this.label16.TabIndex = 26;
+            this.label16.Text = "to";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(136, 40);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(14, 12);
+            this.label15.TabIndex = 25;
+            this.label15.Text = "to";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(136, 17);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(14, 12);
+            this.label14.TabIndex = 24;
+            this.label14.Text = "to";
+            // 
+            // tbConportup
+            // 
+            this.tbConportup.Location = new System.Drawing.Point(158, 65);
+            this.tbConportup.Name = "tbConportup";
+            this.tbConportup.Size = new System.Drawing.Size(60, 22);
+            this.tbConportup.TabIndex = 23;
+            // 
+            // tbDataportup
+            // 
+            this.tbDataportup.Location = new System.Drawing.Point(158, 37);
+            this.tbDataportup.Name = "tbDataportup";
+            this.tbDataportup.Size = new System.Drawing.Size(60, 22);
+            this.tbDataportup.TabIndex = 22;
+            // 
+            // tbSLPortup
+            // 
+            this.tbSLPortup.Location = new System.Drawing.Point(158, 11);
+            this.tbSLPortup.Name = "tbSLPortup";
+            this.tbSLPortup.Size = new System.Drawing.Size(60, 22);
+            this.tbSLPortup.TabIndex = 21;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(156, 148);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(24, 12);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "Port";
+            // 
+            // tbTrackerPort
+            // 
+            this.tbTrackerPort.Location = new System.Drawing.Point(182, 145);
+            this.tbTrackerPort.Name = "tbTrackerPort";
+            this.tbTrackerPort.Size = new System.Drawing.Size(42, 22);
+            this.tbTrackerPort.TabIndex = 19;
+            // 
             // tbTracker
             // 
             this.tbTracker.Location = new System.Drawing.Point(63, 145);
@@ -377,70 +441,6 @@
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-            // 
-            // tbTrackerPort
-            // 
-            this.tbTrackerPort.Location = new System.Drawing.Point(182, 145);
-            this.tbTrackerPort.Name = "tbTrackerPort";
-            this.tbTrackerPort.Size = new System.Drawing.Size(42, 22);
-            this.tbTrackerPort.TabIndex = 19;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(156, 148);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(24, 12);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "Port";
-            // 
-            // tbSLPortup
-            // 
-            this.tbSLPortup.Location = new System.Drawing.Point(158, 11);
-            this.tbSLPortup.Name = "tbSLPortup";
-            this.tbSLPortup.Size = new System.Drawing.Size(60, 22);
-            this.tbSLPortup.TabIndex = 21;
-            // 
-            // tbDataportup
-            // 
-            this.tbDataportup.Location = new System.Drawing.Point(158, 37);
-            this.tbDataportup.Name = "tbDataportup";
-            this.tbDataportup.Size = new System.Drawing.Size(60, 22);
-            this.tbDataportup.TabIndex = 22;
-            // 
-            // tbConportup
-            // 
-            this.tbConportup.Location = new System.Drawing.Point(158, 65);
-            this.tbConportup.Name = "tbConportup";
-            this.tbConportup.Size = new System.Drawing.Size(60, 22);
-            this.tbConportup.TabIndex = 23;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(136, 17);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(14, 12);
-            this.label14.TabIndex = 24;
-            this.label14.Text = "to";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(136, 40);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(14, 12);
-            this.label15.TabIndex = 25;
-            this.label15.Text = "to";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(138, 70);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(14, 12);
-            this.label16.TabIndex = 26;
-            this.label16.Text = "to";
             // 
             // PreferenceFm
             // 
