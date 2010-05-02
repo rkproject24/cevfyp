@@ -20,7 +20,8 @@ namespace Client
         private List<plotgraph> graphTreeData;
         private bool connected, upConnected;
         private List<string[]> cmdstr;
-
+        public string statLog;
+        private PeerHandler peerh;
         Thread sendStatThread;
         private bool enable;
 
@@ -34,7 +35,7 @@ namespace Client
             get { return statisticListen; }
             set { statisticListen = value; }
         }
-
+        
 
         public StatisticHandler()
         {
@@ -50,6 +51,10 @@ namespace Client
             sendStatThread.Start();
         }
 
+        public void setPeerhandler(PeerHandler peerh)
+        {
+            this.peerh = peerh;
+        }
         private bool createGraph(int totaltree, string type)
         {
 
@@ -69,11 +74,14 @@ namespace Client
                 Byte[] clienttype = StrToByteArray("<newCurve>");
                 statisticStream.Write(clienttype, 0, clienttype.Length);
 
+                byte[] graphtype = StrToByteArray(type);
+                statisticStream.Write(graphtype, 0, graphtype.Length);
+
                 byte[] treeNo = BitConverter.GetBytes(totaltree);
                 statisticStream.Write(treeNo, 0, treeNo.Length);
 
-                byte[] graphtype = StrToByteArray(type);
-                statisticStream.Write(graphtype, 0, graphtype.Length);
+                byte[] selfid = BitConverter.GetBytes(Int32.Parse(peerh.Selfid));
+                statisticStream.Write(selfid, 0, selfid.Length);
 
                 //byte[] statisticXmlDirByte = StrToByteArray(statisticXmlDir);
                 //byte[] MsgLength = BitConverter.GetBytes(statisticXmlDirByte.Length);
@@ -100,6 +108,7 @@ namespace Client
                 commandStr[3] = tree + "";
                 commandStr[4] = treeTotal + "";
                 commandStr[5] = type;
+                //commandStr[6] = selfid;
                 cmdstr.Add(commandStr);
                 //sendStat(start, end, size , tree, treeTotal, type);
 
@@ -150,6 +159,13 @@ namespace Client
                             statisticStream.Write(MsgLength, 0, MsgLength.Length);
                             statisticStream.Write(commandStrByte, 0, commandStrByte.Length);
                             cmdstr.RemoveAt(0);
+
+
+                            byte[] statL = StrToByteArray(statLog);
+                            MsgLength = BitConverter.GetBytes(statL.Length);
+                            statisticStream.Write(MsgLength, 0, MsgLength.Length);
+                            statisticStream.Write(statL, 0, statL.Length);
+
                         }
                         else
                         {
