@@ -585,6 +585,7 @@ namespace Server
 
                     CPortClient = treeCPListener[CThreadList_index].AcceptTcpClient();
                     stream = CPortClient.GetStream();
+                    stream.ReadTimeout = 10000;
 
                     byte[] responsePeerMsg = new byte[4];
                     stream.Read(responsePeerMsg, 0, responsePeerMsg.Length);
@@ -602,8 +603,8 @@ namespace Server
                     cpt.peerId = Int32.Parse(peerId);
                     CPortList[CThreadList_index] = cpt;
 
-                    stream.ReadTimeout = 4000;
-                    stream.WriteTimeout = 4000;
+                    //stream.ReadTimeout = 4000;
+                    //stream.WriteTimeout = 4000;
                     while (true)
                     {
 
@@ -631,12 +632,12 @@ namespace Server
                         if (responseString.Equals("Wait"))
                         {
                             //send the bitrate of current video
-                            string sendstr = "bitRate@" + bitRates;//vlchandle.getBitRate();
-                            byte[] sendbyte = StrToByteArray(sendstr);
-                            byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
-                            stream.Write(MsgLength, 0, MsgLength.Length); //send size of id
-                            //Thread.Sleep(10);
-                            stream.Write(sendbyte, 0, sendbyte.Length);
+                            //string sendstr = "bitRate@" + bitRates;//vlchandle.getBitRate();
+                            //byte[] sendbyte = StrToByteArray(sendstr);
+                            //byte[] MsgLength = BitConverter.GetBytes(sendstr.Length);
+                            //stream.Write(MsgLength, 0, MsgLength.Length); //send size of id
+                            ////Thread.Sleep(10);
+                            //stream.Write(sendbyte, 0, sendbyte.Length);
 
                             //  mainFm.richTextBox2.BeginInvoke(new UpdateTextCallback(mainFm.UpdateRichTextBox2), new object[] { "sendBitRate" });
                             Thread.Sleep(20);
