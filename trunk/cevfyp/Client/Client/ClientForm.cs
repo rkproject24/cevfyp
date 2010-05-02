@@ -127,6 +127,7 @@ namespace Client
             this.Text = message;
 
             this.TitleBar.TitleBarCaption = message;
+            Refresh();
         }
         public void ChannelComboBox(string message)
         {

@@ -70,5 +70,7 @@ namespace Client
                 ((ControlFrm)clientFrm.controlFrm).cbChannel.SelectedIndex = 0;
 
         }
+
+       
     }
 }

@@ -457,18 +457,16 @@ namespace Client
 
                     if (conNode == null)
                     {
-                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "conNode=null T[" + (i - 1) + "] \n" });
+                       // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "conNode=null T[" + (i - 1) + "] \n" });
                         return false;
                     }
 
-                    //****************No connection of loacl address*****************
+                    //**************** connection of loacl address*****************
                     if (conNode.Ip == TcpApps.LocalIPAddress() && !connectLocal)
                     {
-                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selfip hit T[" + (i - 1) + "] \n" });
+                       // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selfip hit T[" + (i - 1) + "] \n" });
                         removePeer(conNode, i - 1);
-                        //if (conNode != null)
-                        //  ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + " ~\n" });
-                        conNode = null;
+                       conNode = null;
                         Thread.Sleep(20);
                         continue;
                     }
@@ -485,8 +483,8 @@ namespace Client
                             connectServerClient.Close();
 
                         removePeer(conNode, i - 1);
-                        if (conNode != null)
-                            ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + "**\n" });
+                        //if (conNode != null)
+                        //    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + "**\n" });
 
                         return false;
 
@@ -526,8 +524,8 @@ namespace Client
                             // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + "\n" });
 
                             removePeer(conNode, i - 1);
-                            if (conNode != null)
-                                ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + " ~\n" });
+                           // if (conNode != null)
+                               // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + " ~\n" });
                             conNode = null;
                         }
 
@@ -598,8 +596,8 @@ namespace Client
 
                 //remove peer from list
                 removePeer(conNode, i - 1);
-                if (conNode != null)
-                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + "\n" });
+                //if (conNode != null)
+                  //  ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "SelectPeer " + conNode.Id + " remove T:" + (i - 1) + "\n" });
 
                 return false;
             }
@@ -773,7 +771,7 @@ namespace Client
             bool checkLoad = treeAccessor.load();
             if (!checkLoad)
             {
-                ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeer: XMLLOADING\n" });
+               // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeer: XMLLOADING\n" });
 
                 return null;
                 //Thread.Sleep(20);
@@ -822,7 +820,7 @@ namespace Client
 
                 if (tempPeer.Id == selfid)//selfid[tree])
                 {
-                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID=selfID " + " T:" + tree + "\n" });
+                   // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID=selfID " + " T:" + tree + "\n" });
                     removePeer(tempPeer, tree);
                     //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "Remove selfID " + " T:" + tree + "\n" });
 
@@ -833,7 +831,7 @@ namespace Client
                 if (treeAccessor.reconecting(tempPeer.Id))//if peer is not exist, skip
                 {
                     tempPeer = null;
-                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID:" + tempPeer.Id + " peer is not exist\n" });
+                  //  ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID:" + tempPeer.Id + " peer is not exist\n" });
 
                 }   //continue;
 
@@ -848,8 +846,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                if (tempPeer != null)
-                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "select peer " + tempPeer.Id + " T:" + tree + " error:\n" + ex.ToString() + "\n" });
+               // if (tempPeer != null)
+                  //  ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "select peer " + tempPeer.Id + " T:" + tree + " error:\n" + ex.ToString() + "\n" });
                 tempPeer = null;
                 Thread.Sleep(20);
             }
@@ -877,7 +875,7 @@ namespace Client
             bool checkLoad = treeAccessor.load();
             if (!checkLoad)
             {
-                ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeer: XMLLOADING\n" });
+                //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeer: XMLLOADING\n" });
 
                 return null;
                 //Thread.Sleep(20);
@@ -906,7 +904,7 @@ namespace Client
                 {
                     if (tempPeer[i].Id == selfid)//selfid[tree])
                     {
-                        ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID=selfID " + " T:" + tree + "\n" });
+                       // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "selectPeerID=selfID " + " T:" + tree + "\n" });
                         removePeer(tempPeer[i], tree);
                         //((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "Remove selfID " + " T:" + tree + "\n" });
 
@@ -925,8 +923,8 @@ namespace Client
             }
             catch (Exception ex)
             {
-                if (tempPeer != null)
-                    ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "select peerlist   T:" + tree + " error:\n" + ex.ToString() + "\n" });
+               // if (tempPeer != null)
+                   // ((LoggerFrm)clientFrm.downloadFrm).rtbdownload.BeginInvoke(new UpdateTextCallback(clientFrm.UpdateRtbDownload), new object[] { "select peerlist   T:" + tree + " error:\n" + ex.ToString() + "\n" });
                 tempPeer = null;
                 Thread.Sleep(20);
             }
