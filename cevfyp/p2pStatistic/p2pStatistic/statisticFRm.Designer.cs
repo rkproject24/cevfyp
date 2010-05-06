@@ -40,15 +40,23 @@
             this.DL = new System.Windows.Forms.Label();
             this.US = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.T1Sp = new System.Windows.Forms.Label();
             this.Download_Log = new System.Windows.Forms.GroupBox();
             this.Upload_Log = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.DT = new System.Windows.Forms.Label();
-            this.UT = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.TotalPP = new System.Windows.Forms.Label();
-            this.TPP = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.ReceiveNull = new System.Windows.Forms.Label();
+            this.ReceiveChunk = new System.Windows.Forms.Label();
+            this.CTPB = new System.Windows.Forms.Label();
+            this.RecCount = new System.Windows.Forms.Label();
+            this.WaitMiss = new System.Windows.Forms.Label();
+            this.PushMiss = new System.Windows.Forms.Label();
+            this.RecMiss = new System.Windows.Forms.Label();
+            this.Title = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudPort)).BeginInit();
             this.Download_Log.SuspendLayout();
             this.Upload_Log.SuspendLayout();
@@ -77,7 +85,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(213, 78);
+            this.btnStart.Location = new System.Drawing.Point(216, 119);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(53, 21);
             this.btnStart.TabIndex = 3;
@@ -87,7 +95,7 @@
             // 
             // nudPort
             // 
-            this.nudPort.Location = new System.Drawing.Point(215, 50);
+            this.nudPort.Location = new System.Drawing.Point(218, 91);
             this.nudPort.Maximum = new decimal(new int[] {
             65532,
             0,
@@ -99,7 +107,7 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(272, 78);
+            this.btnReset.Location = new System.Drawing.Point(275, 119);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(53, 21);
             this.btnReset.TabIndex = 6;
@@ -168,30 +176,31 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label1.Location = new System.Drawing.Point(213, 35);
+            this.label1.Location = new System.Drawing.Point(216, 76);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 12);
             this.label1.TabIndex = 2;
             this.label1.Text = "Listen Port";
             // 
-            // T1Sp
-            // 
-            this.T1Sp.AutoSize = true;
-            this.T1Sp.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.T1Sp.Location = new System.Drawing.Point(196, 89);
-            this.T1Sp.Name = "T1Sp";
-            this.T1Sp.Size = new System.Drawing.Size(69, 12);
-            this.T1Sp.TabIndex = 16;
-            this.T1Sp.Text = "Avg Speed ";
-            // 
             // Download_Log
             // 
             this.Download_Log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Download_Log.Controls.Add(this.btnStart);
-            this.Download_Log.Controls.Add(this.btnReset);
             this.Download_Log.Controls.Add(this.DownLog);
-            this.Download_Log.Controls.Add(this.label1);
-            this.Download_Log.Controls.Add(this.nudPort);
+            this.Download_Log.Controls.Add(this.label8);
+            this.Download_Log.Controls.Add(this.Title);
+            this.Download_Log.Controls.Add(this.label3);
+            this.Download_Log.Controls.Add(this.label2);
+            this.Download_Log.Controls.Add(this.RecMiss);
+            this.Download_Log.Controls.Add(this.label4);
+            this.Download_Log.Controls.Add(this.ReceiveNull);
+            this.Download_Log.Controls.Add(this.label7);
+            this.Download_Log.Controls.Add(this.PushMiss);
+            this.Download_Log.Controls.Add(this.RecCount);
+            this.Download_Log.Controls.Add(this.label5);
+            this.Download_Log.Controls.Add(this.CTPB);
+            this.Download_Log.Controls.Add(this.ReceiveChunk);
+            this.Download_Log.Controls.Add(this.label6);
+            this.Download_Log.Controls.Add(this.WaitMiss);
             this.Download_Log.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Download_Log.Location = new System.Drawing.Point(367, 15);
             this.Download_Log.Name = "Download_Log";
@@ -203,14 +212,11 @@
             // Upload_Log
             // 
             this.Upload_Log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Upload_Log.Controls.Add(this.btnStart);
+            this.Upload_Log.Controls.Add(this.btnReset);
             this.Upload_Log.Controls.Add(this.UpLog);
-            this.Upload_Log.Controls.Add(this.T1Sp);
-            this.Upload_Log.Controls.Add(this.label4);
-            this.Upload_Log.Controls.Add(this.DT);
-            this.Upload_Log.Controls.Add(this.UT);
-            this.Upload_Log.Controls.Add(this.label5);
-            this.Upload_Log.Controls.Add(this.TotalPP);
-            this.Upload_Log.Controls.Add(this.TPP);
+            this.Upload_Log.Controls.Add(this.label1);
+            this.Upload_Log.Controls.Add(this.nudPort);
             this.Upload_Log.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Upload_Log.Location = new System.Drawing.Point(367, 266);
             this.Upload_Log.Name = "Upload_Log";
@@ -219,63 +225,147 @@
             this.Upload_Log.TabStop = false;
             this.Upload_Log.Text = "Upoad Log";
             // 
-            // label4
+            // label8
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(203, 119);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 12);
-            this.label4.TabIndex = 48;
-            this.label4.Text = "Upload:";
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Red;
+            this.label8.Location = new System.Drawing.Point(309, 184);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(12, 12);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "0";
             // 
-            // DT
+            // label7
             // 
-            this.DT.AutoSize = true;
-            this.DT.ForeColor = System.Drawing.Color.Red;
-            this.DT.Location = new System.Drawing.Point(291, 107);
-            this.DT.Name = "DT";
-            this.DT.Size = new System.Drawing.Size(48, 12);
-            this.DT.TabIndex = 27;
-            this.DT.Text = "Avg DS";
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.Color.Red;
+            this.label7.Location = new System.Drawing.Point(310, 162);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(12, 12);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "0";
             // 
-            // UT
+            // label6
             // 
-            this.UT.AutoSize = true;
-            this.UT.ForeColor = System.Drawing.Color.Red;
-            this.UT.Location = new System.Drawing.Point(291, 119);
-            this.UT.Name = "UT";
-            this.UT.Size = new System.Drawing.Size(48, 12);
-            this.UT.TabIndex = 30;
-            this.UT.Text = "Avg US";
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.Color.Red;
+            this.label6.Location = new System.Drawing.Point(310, 141);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(12, 12);
+            this.label6.TabIndex = 25;
+            this.label6.Text = "0";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(203, 107);
+            this.label5.ForeColor = System.Drawing.Color.Red;
+            this.label5.Location = new System.Drawing.Point(309, 120);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 12);
-            this.label5.TabIndex = 47;
-            this.label5.Text = "Download:";
+            this.label5.Size = new System.Drawing.Size(12, 12);
+            this.label5.TabIndex = 24;
+            this.label5.Text = "0";
             // 
-            // TotalPP
+            // label4
             // 
-            this.TotalPP.AutoSize = true;
-            this.TotalPP.Font = new System.Drawing.Font("PMingLiU", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.TotalPP.Location = new System.Drawing.Point(194, 161);
-            this.TotalPP.Name = "TotalPP";
-            this.TotalPP.Size = new System.Drawing.Size(89, 12);
-            this.TotalPP.TabIndex = 34;
-            this.TotalPP.Text = "Tol Pkt Pulled:";
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.Red;
+            this.label4.Location = new System.Drawing.Point(310, 97);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 12);
+            this.label4.TabIndex = 23;
+            this.label4.Text = "0";
             // 
-            // TPP
+            // label3
             // 
-            this.TPP.AutoSize = true;
-            this.TPP.ForeColor = System.Drawing.Color.Red;
-            this.TPP.Location = new System.Drawing.Point(292, 161);
-            this.TPP.Name = "TPP";
-            this.TPP.Size = new System.Drawing.Size(71, 12);
-            this.TPP.TabIndex = 35;
-            this.TPP.Text = "Pkt Number";
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(310, 73);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 12);
+            this.label3.TabIndex = 22;
+            this.label3.Text = "0";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.Red;
+            this.label2.Location = new System.Drawing.Point(310, 51);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(12, 12);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "0";
+            // 
+            // ReceiveNull
+            // 
+            this.ReceiveNull.AutoSize = true;
+            this.ReceiveNull.Location = new System.Drawing.Point(214, 184);
+            this.ReceiveNull.Name = "ReceiveNull";
+            this.ReceiveNull.Size = new System.Drawing.Size(81, 12);
+            this.ReceiveNull.TabIndex = 20;
+            this.ReceiveNull.Text = "ReceiveNull :";
+            // 
+            // ReceiveChunk
+            // 
+            this.ReceiveChunk.AutoSize = true;
+            this.ReceiveChunk.Location = new System.Drawing.Point(214, 162);
+            this.ReceiveChunk.Name = "ReceiveChunk";
+            this.ReceiveChunk.Size = new System.Drawing.Size(94, 12);
+            this.ReceiveChunk.TabIndex = 19;
+            this.ReceiveChunk.Text = "ReceiveChunk :";
+            // 
+            // CTPB
+            // 
+            this.CTPB.AutoSize = true;
+            this.CTPB.Location = new System.Drawing.Point(214, 141);
+            this.CTPB.Name = "CTPB";
+            this.CTPB.Size = new System.Drawing.Size(46, 12);
+            this.CTPB.TabIndex = 18;
+            this.CTPB.Text = "CTPB :";
+            // 
+            // RecCount
+            // 
+            this.RecCount.AutoSize = true;
+            this.RecCount.Location = new System.Drawing.Point(214, 120);
+            this.RecCount.Name = "RecCount";
+            this.RecCount.Size = new System.Drawing.Size(68, 12);
+            this.RecCount.TabIndex = 17;
+            this.RecCount.Text = "RecCount :";
+            // 
+            // WaitMiss
+            // 
+            this.WaitMiss.AutoSize = true;
+            this.WaitMiss.Location = new System.Drawing.Point(214, 97);
+            this.WaitMiss.Name = "WaitMiss";
+            this.WaitMiss.Size = new System.Drawing.Size(64, 12);
+            this.WaitMiss.TabIndex = 16;
+            this.WaitMiss.Text = "WaitMiss :";
+            // 
+            // PushMiss
+            // 
+            this.PushMiss.AutoSize = true;
+            this.PushMiss.Location = new System.Drawing.Point(214, 73);
+            this.PushMiss.Name = "PushMiss";
+            this.PushMiss.Size = new System.Drawing.Size(64, 12);
+            this.PushMiss.TabIndex = 15;
+            this.PushMiss.Text = "PushMiss :";
+            // 
+            // RecMiss
+            // 
+            this.RecMiss.AutoSize = true;
+            this.RecMiss.Location = new System.Drawing.Point(214, 51);
+            this.RecMiss.Name = "RecMiss";
+            this.RecMiss.Size = new System.Drawing.Size(59, 12);
+            this.RecMiss.TabIndex = 14;
+            this.RecMiss.Text = "RecMiss :";
+            // 
+            // Title
+            // 
+            this.Title.AutoSize = true;
+            this.Title.Location = new System.Drawing.Point(216, 18);
+            this.Title.Name = "Title";
+            this.Title.Size = new System.Drawing.Size(93, 12);
+            this.Title.TabIndex = 13;
+            this.Title.Text = "Statistic Record";
             // 
             // statisticFRm
             // 
@@ -290,6 +380,7 @@
             this.Controls.Add(this.zedGraphCon);
             this.Controls.Add(this.Download_Log);
             this.Controls.Add(this.Upload_Log);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.Name = "statisticFRm";
             this.Text = "Statistic";
@@ -327,45 +418,40 @@
             this.UpLog.Text = "";
         }
 
-        public void updateUpSpeed(string US)
+        public void updatel2(string l2)
         {
-            this.UT.Text = US;
+            this.label2.Text = l2;
         }
 
-        public void updateDownSpeed(string DS)
+        public void updatel3(string l3)
         {
-            this.DT.Text = DS;
+            this.label3.Text = l3;
         }
 
-        //public void updateTPL(string PL)
-        //{
-        //    this.TPL.Text = PL;
-        //}
-
-        public void updateTPP(string PP)
+        public void updatel4(string l4)
         {
-            this.TPP.Text = PP;
+            this.label4.Text = l4;
         }
 
-        //public void updateTPM(string PM)
-        //{
-        //    this.TPM.Text = PM;
-        //}
+        public void updatel5(string l5)
+        {
+            this.label5.Text = l5;
+        }
 
-        //public void updateTPR(string PR)
-        //{
-        //    this.TPR.Text = PR;
-        //}
+        public void updatel6(string l6)
+        {
+            this.label6.Text = l6;
+        }
 
-        //public void updateTOD(string OD)
-        //{
-        //    this.TOD.Text = OD;
-        //}
+        public void updatel7(string l7)
+        {
+            this.label7.Text = l7;
+        }
 
-        //public void updateTOU(string OU)
-        //{
-        //    this.TOU.Text = OU;
-        //}
+        public void updatel8(string l8)
+        {
+            this.label8.Text = l8;
+        }
 
         private ZedGraph.ZedGraphControl zedGraphCon;
         private System.Windows.Forms.Timer timer1;
@@ -378,14 +464,22 @@
         private System.Windows.Forms.Label DL;
         private System.Windows.Forms.Label US;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label T1Sp;
         private System.Windows.Forms.GroupBox Download_Log;
         private System.Windows.Forms.GroupBox Upload_Log;
-        private System.Windows.Forms.Label UT;
-        private System.Windows.Forms.Label DT;
-        private System.Windows.Forms.Label TPP;
-        private System.Windows.Forms.Label TotalPP;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label Title;
+        private System.Windows.Forms.Label ReceiveNull;
+        private System.Windows.Forms.Label ReceiveChunk;
+        private System.Windows.Forms.Label CTPB;
+        private System.Windows.Forms.Label RecCount;
+        private System.Windows.Forms.Label WaitMiss;
+        private System.Windows.Forms.Label PushMiss;
+        private System.Windows.Forms.Label RecMiss;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
     }
 }
